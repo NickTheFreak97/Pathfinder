@@ -3,10 +3,17 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Provider } from 'react-redux';
+import { store } from './Components/Redux/Store/store';
+import { MantineProvider, ColorSchemeProvider } from "@mantine/core";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={ store }>
+        <MantineProvider theme={{ colorScheme: "light" }}>
+          <App />
+        </MantineProvider>
+      </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

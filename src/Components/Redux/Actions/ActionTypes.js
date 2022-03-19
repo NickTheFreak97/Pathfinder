@@ -1,0 +1,2 @@
+export const POLYGON_ADDED = 'POLYGON_ADDED';
+
