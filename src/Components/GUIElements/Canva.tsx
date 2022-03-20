@@ -1,6 +1,8 @@
 import React from 'react';
 import { Stage, Layer, Circle } from 'react-konva';
 
+import Grid from './Shapes/Grid';
+
 interface CanvaProps {
     width?: number,
     height?: number,
@@ -24,7 +26,7 @@ const Canva = (props : CanvaProps) => {
             onClick={ ()=> { } }
             
           >
-
+              <Grid width={props.width} height={props.height ? props.height*0.75 : window.innerHeight} />
           </Stage>
     )
 }
