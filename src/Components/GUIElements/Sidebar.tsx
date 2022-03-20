@@ -1,15 +1,17 @@
 import React from 'react';
 import { Navbar } from '@mantine/core';
 
+import ModeSelector from './ModeSelector';
+
 const Sidebar = () => {
     return <Navbar
     style={{
       height: "100vh",
-      width: "200px",
+      width: "fit-content",
       padding: "1rem",
     }}
   >
-    Lorem Ipsum
+    <ModeSelector />
   </Navbar>
 }
 
