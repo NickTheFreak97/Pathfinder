@@ -16,14 +16,13 @@ const Main = ()=>{
 
     return (
         <Container
-            fluid
             ref={containerRef}
-            sx={{
+            style={{
                 height: "calc(100% - 32px)",
                 backgroundColor: "#F5F5F5",
                 margin: 0,
                 padding: 0,
-                flex: "0 1 100%",
+                maxWidth: "none",
             }}
         >
             <Canva width={theWidth} height={theHeight}/>
