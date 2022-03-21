@@ -1,32 +1,42 @@
 import React from "react";
-import { Stage, Layer, Circle } from "react-konva";
-
+import { Stage, Layer } from "react-konva";
 import Grid from "./Shapes/Grid";
+import RenderPolygons from "../UseCases/inputPolygon/RenderPolygons";
+
+import { Provider } from "react-redux";
+import { store } from "../Redux/Store/store";
 
 interface CanvaProps {
   width?: number;
   height?: number;
 }
-
-const Canva = (props: CanvaProps) => {
+const Canva: React.FC<CanvaProps> = ({ width, height }) => {
+  
+  /**
+   * See this issue: https://stackoverflow.com/questions/71556080/uncaught-error-could-not-find-store-in-the-context-of-connectrenderpolygons
+   * canvas elements must be wrapped inside a redux provider componend when under react-konva 
+   */
   return (
     <Stage
       style={{
         backgroundColor: "#F9F9F9",
-        width: props.width ? props.width + "px" : "0px",
-        height: props.height ? props.height * 0.75 + "px" : "0px",
+        width: width ? width + "px" : "0px",
+        height: height ? height * 0.75 + "px" : "0px",
         boxShadow: "#E5E2E2 0px 6px 6px -3px",
       }}
-      width={props.width}
-      height={props.height}
+      width={width}
+      height={height}
       onMouseDown={() => {}}
       onMouseMove={() => {}}
       onClick={() => {}}
     >
-      <Grid
-        width={props.width}
-        height={props.height ? props.height * 0.75 : window.innerHeight}
-      />
+      <Provider store={store}>
+        <Grid
+          width={width}
+          height={height ? height * 0.75 : window.innerHeight}
+        />
+        <RenderPolygons />
+      </Provider>
     </Stage>
   );
 };

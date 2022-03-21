@@ -15,7 +15,7 @@ const rootReducer = ( state = initialState, action: Action ) => {
         case POLYGON_ADDED: 
             return {
                 ...state,
-                polygons: {...state.polygons, ...action.payload.polygon},
+                polygons: [...state.polygons, action.payload.polygon],
             }
 
         case CHANGE_INTERACTION_MODE: {
