@@ -1,24 +1,11 @@
 
 import { CHANGE_INTERACTION_MODE, POLYGON_ADDED } from '../Actions/ActionTypes';
 import { InteractionMode } from '../../Utils/interactionMode';
+import { Action } from '../../GUIElements/Types/Redux/Action';
 
 const initialState = {
     polygons: [], 
     useMode: InteractionMode.DRAW_POLYGON,
-}
-
-interface Polygon {
-
-}
-
-export interface State {
-    polygons: Polygon[],
-    useMode: InteractionMode,
-}
-
-interface Action {
-    type: string, 
-    payload: any,
 }
 
 const rootReducer = ( state = initialState, action: Action ) => {
