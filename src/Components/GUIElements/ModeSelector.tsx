@@ -17,8 +17,7 @@ import {
 } from "../UseCases/ChangeMode/changeMode";
 
 import { InteractionMode } from "../Utils/interactionMode";
-import { State } from "../Redux/Reducers/rootReducer";
-
+import { State } from "./Types/Redux/State";
 
 const mapStateToProps = (state: State) => {
   return {
