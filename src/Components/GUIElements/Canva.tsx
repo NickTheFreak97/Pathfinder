@@ -5,15 +5,15 @@ import Konva from "konva";
 
 import { Stage } from "react-konva";
 import Grid from "./Shapes/Grid";
-import RenderPolygons from "../useCases/inputPolygon/RenderPolygons";
+import RenderPolygons from "../UseCases/InputPolygon/RenderPolygons";
 
 import { store } from "../Redux/Store/store";
 
-import { inputPolygonViaClick } from "../useCases/inputPolygon/viaClick";
-import { handleMouseMove } from "../useCases/inputPolygon/onMouseMove";
+import { inputPolygonViaClick } from "../UseCases/InputPolygon/WithMouse/viaClick";
+import { handleMouseMove } from "../UseCases/InputPolygon/WithMouse/onMouseMove";
 import { State } from "./Types/Redux/State";
 import { InteractionMode } from "../Utils/interactionMode";
-import RenderNextPolygon from "../useCases/inputPolygon/RenderNextPolygon";
+import RenderNextPolygon from "../UseCases/InputPolygon/RenderNextPolygon";
 
 const mapStateToProps = (state: State) => {
   return {

@@ -1,6 +1,6 @@
 import Konva from "konva";
-import { setCurrentPoint } from "./Actions/setCurrentPoint";
-import { store } from "../../Redux/Store/store";
+import { setCurrentPoint } from "../Actions/setCurrentPoint";
+import { store } from "../../../Redux/Store/store";
 
 export const handleMouseMove = (event: Konva.KonvaEventObject<MouseEvent>) => {
   const mouseCoords = event.target?.getStage()?.getPointerPosition();

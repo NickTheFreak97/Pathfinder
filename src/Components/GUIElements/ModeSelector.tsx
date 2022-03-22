@@ -14,7 +14,7 @@ import {
 import {
   changeMode,
   ChangeModeAction,
-} from "../useCases/ChangeMode/changeMode";
+} from "../UseCases/ChangeMode/changeMode";
 
 import { InteractionMode } from "../Utils/interactionMode";
 import { State } from "./Types/Redux/State";
@@ -39,7 +39,9 @@ const ModeSelector: React.FC<{ mode: InteractionMode, changeMode: (mode: Interac
       onChange={(newMode: InteractionMode) => {
         changeMode(newMode);
       }}
-      fullWidth
+      
+      style={{width: '250px', flexBasis: '23%', flexShrink: '0'}}
+
       orientation="vertical"
       data={[
         {

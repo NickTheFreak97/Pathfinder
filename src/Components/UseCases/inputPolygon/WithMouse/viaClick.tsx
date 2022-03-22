@@ -4,12 +4,12 @@ import { v4 as uuidv4 } from "uuid";
 import {
   Vertex,
   ThreeOrMoreVertices,
-} from "../../GUIElements/Types/Shapes/PolygonGUIProps";
-import { store } from "../../Redux/Store/store";
+} from "../../../GUIElements/Types/Shapes/PolygonGUIProps";
+import { store } from "../../../Redux/Store/store";
 
-import { addPolygon } from "./Actions/addPolygon";
-import { setCurrentPoint } from "./Actions/setCurrentPoint";
-import { updateVertices } from "./Actions/updateVertices";
+import { addPolygon } from "../Actions/addPolygon";
+import { setCurrentPoint } from "../Actions/setCurrentPoint";
+import { updateVertices } from "../Actions/updateVertices";
 
 /**
  * @disclaimer
