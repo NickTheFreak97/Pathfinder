@@ -14,7 +14,7 @@ import {
 import {
   changeMode,
   ChangeModeAction,
-} from "../UseCases/ChangeMode/changeMode";
+} from "../useCases/ChangeMode/changeMode";
 
 import { InteractionMode } from "../Utils/interactionMode";
 import { State } from "./Types/Redux/State";
