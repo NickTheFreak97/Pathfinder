@@ -1,20 +1,53 @@
-import React from "react";
-import { Stage, Layer } from "react-konva";
+import React, { useState } from "react";
+import { Provider } from "react-redux";
+import { connect } from "react-redux";
+import Konva from "konva";
+
+import { Stage } from "react-konva";
 import Grid from "./Shapes/Grid";
 import RenderPolygons from "../UseCases/inputPolygon/RenderPolygons";
 
-import { Provider } from "react-redux";
 import { store } from "../Redux/Store/store";
+
+import { inputPolygonViaClick } from "../UseCases/inputPolygon/viaClick";
+import { handleMouseMove } from "../UseCases/inputPolygon/onMouseMove";
+import { State } from "./Types/Redux/State";
+import { InteractionMode } from "../Utils/interactionMode";
+import RenderNextPolygon from "../UseCases/inputPolygon/RenderNextPolygon";
+
+const mapStateToProps = (state: State) => {
+  return {
+    usageMode: state.useMode,
+  };
+};
 
 interface CanvaProps {
   width?: number;
   height?: number;
+  usageMode: InteractionMode;
 }
-const Canva: React.FC<CanvaProps> = ({ width, height }) => {
-  
+
+const Canva: React.FC<CanvaProps> = ({ width, height, usageMode }) => {
+
+  const onMouseDown = (event: Konva.KonvaEventObject<MouseEvent>) => {
+    switch( usageMode ) {
+      case InteractionMode.DRAW_POLYGON: {
+        inputPolygonViaClick(event);
+      }
+    }
+  }
+
+  const onMouseMove = (event: Konva.KonvaEventObject<MouseEvent>) => {
+    switch( usageMode ) {
+      case InteractionMode.DRAW_POLYGON: {
+        handleMouseMove(event);
+      }
+    }
+  }
+
   /**
    * See this issue: https://stackoverflow.com/questions/71556080/uncaught-error-could-not-find-store-in-the-context-of-connectrenderpolygons
-   * canvas elements must be wrapped inside a redux provider componend when under react-konva 
+   * canvas elements must be wrapped inside a redux provider componend when under react-konva
    */
   return (
     <Stage
@@ -26,8 +59,8 @@ const Canva: React.FC<CanvaProps> = ({ width, height }) => {
       }}
       width={width}
       height={height}
-      onMouseDown={() => {}}
-      onMouseMove={() => {}}
+      onMouseDown={(evt: Konva.KonvaEventObject<MouseEvent>) => onMouseDown(evt)}
+      onMouseMove={(evt: Konva.KonvaEventObject<MouseEvent>) => onMouseMove(evt)}
       onClick={() => {}}
     >
       <Provider store={store}>
@@ -36,9 +69,13 @@ const Canva: React.FC<CanvaProps> = ({ width, height }) => {
           height={height ? height * 0.75 : window.innerHeight}
         />
         <RenderPolygons />
+        {
+          usageMode === InteractionMode.DRAW_POLYGON &&
+            <RenderNextPolygon />
+        }
       </Provider>
     </Stage>
   );
 };
 
-export default Canva;
+export default connect(mapStateToProps)(Canva);
