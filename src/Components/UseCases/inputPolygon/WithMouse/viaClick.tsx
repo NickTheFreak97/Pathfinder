@@ -74,3 +74,15 @@ export const inputPolygonViaClick = (
     return areaClosed;
   } else return false;
 };
+
+export const isAreaClosed = (vertices: Vertex[], nextPoint: Vertex) => {
+  return vertices.reduce(
+    (isAreaClosed: boolean, vertex: Vertex) => {
+      return (
+        isAreaClosed ||
+        isInside(vertex, tollerance, nextPoint)
+      );
+    },
+    false
+  );
+} 

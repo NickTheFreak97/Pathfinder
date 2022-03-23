@@ -1,17 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Grid, NumberInput, ActionIcon } from "@mantine/core";
-import { UpdateIcon } from "@modulz/radix-icons";
-
+import { PlusIcon } from "@modulz/radix-icons";
+import { v4 as uuidv4 } from "uuid";
 import { connect } from "react-redux";
-import { State } from "../../../GUIElements/Types/Redux/State";
-import { Vertex } from "../../../GUIElements/Types/Shapes/PolygonGUIProps";
 
 import { updateVertices } from "../Actions/updateVertices";
+import { addPolygon } from "../Actions/addPolygon";
+import { setCurrentPoint } from "../Actions/setCurrentPoint";
 
-interface PointInputProps {
-  pointID: number;
+import { isAreaClosed } from "../WithMouse/viaClick";
+import { isConvex } from "./ConvexityTest";
+
+import { Polygon } from "../../../GUIElements/Types/Shapes/Polygon";
+import { State } from "../../../GUIElements/Types/Redux/State";
+import {
+  ThreeOrMoreVertices,
+  Vertex,
+} from "../../../GUIElements/Types/Shapes/PolygonGUIProps";
+
+interface NewPointInputProps {
   vertices: Vertex[];
   updateVertices: (vertices: Vertex[]) => void;
+  addPolygon: (polygon: Polygon) => void;
+  setCurrentPoint: (point: Vertex | null | undefined) => void;
 }
 
 const mapStateToProps = (state: State) => {
@@ -23,20 +34,32 @@ const mapStateToProps = (state: State) => {
 const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
     updateVertices: (vertices: Vertex[]) => dispatch(updateVertices(vertices)),
+    addPolygon: (polygon: Polygon) => dispatch(addPolygon(polygon)),
+    setCurrentPoint: (point: Vertex | null | undefined) =>
+      dispatch(setCurrentPoint(point)),
   };
 };
 
-const PointInput: React.FC<PointInputProps> = ({
-  pointID,
+const PointInput: React.FC<NewPointInputProps> = ({
   vertices,
   updateVertices,
+  addPolygon,
+  setCurrentPoint,
 }) => {
+  const [theVertex, setTheVertex] = useState<Vertex | undefined>([0, 0]);
 
-  const [theVertex, setTheVertex] = useState<Vertex | undefined>(undefined);
-
-  useEffect(() => {
-    setTheVertex(vertices[pointID]);
-  }, [vertices]);
+  const handleClick = () => {
+    const areaClosed = isAreaClosed(vertices, theVertex!);
+    if (areaClosed && vertices.length + 1 >= 3) {
+      setCurrentPoint(undefined);
+      updateVertices([]);
+      addPolygon({
+        id: uuidv4(),
+        vertices: vertices as ThreeOrMoreVertices,
+        isConvex: isConvex(vertices),
+      });
+    } else if (!areaClosed) updateVertices([...vertices, theVertex!]);
+  };
 
   if (!!theVertex)
     return (
@@ -82,16 +105,9 @@ const PointInput: React.FC<PointInputProps> = ({
               alignSelf: "flex-end",
               marginBottom: "0.375rem",
             }}
-            onClick={() => {
-              console.log(theVertex);
-              const newVertices = [...vertices];
-              newVertices.splice(pointID, 0);
-              newVertices.splice(pointID, 1, theVertex);
-
-              updateVertices(newVertices);
-            }}
+            onClick={handleClick}
           >
-            <UpdateIcon />
+            <PlusIcon />
           </ActionIcon>
         </Grid.Col>
       </React.Fragment>

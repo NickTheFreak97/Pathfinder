@@ -10,8 +10,11 @@ export interface PolygonGUIProps {
     points: ThreeOrMoreVertices,
     name: string, 
     fill?: string,
+    errorFill?: string,
+    errorStroke?: string,
     stroke?: string,
     strokeWidth?: number,
     isDraggable?: boolean,
     onPointSelected?: (pointID: string, pointX: number, pointY: number) => void;
+    error?: boolean,
 }

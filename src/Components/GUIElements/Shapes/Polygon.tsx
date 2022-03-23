@@ -56,8 +56,8 @@ const Polygon = (props: PolygonGUIProps) => {
         draggable={props.isDraggable}
         ref={shapeRef}
         name={props.name}
-        fill={props.fill}
-        stroke={props.stroke}
+        fill={props.error? props.errorFill:props.fill}
+        stroke={props.error? props.errorStroke: props.stroke}
         strokeWidth={props.strokeWidth}
         sceneFunc={(context, shape) => {
           context.beginPath();
@@ -91,6 +91,9 @@ Polygon.defaultProps = {
   fill: "rgb(245,251,254)",
   strokeWidth: 1,
   stroke: "#0EA5E9",
+  errorFill: "rgba(104,0,0, .5)",
+  errorStroke: "#680000",
+  error: false,
   isDraggable: false,
   onPointSelected: (pointID: string, pointX: number, pointY: number) => {
     console.log("Clicked point ", pointID, " at ", { x: pointX, y: pointY });

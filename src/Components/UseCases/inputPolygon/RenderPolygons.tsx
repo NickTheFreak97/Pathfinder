@@ -16,7 +16,7 @@ const RenderPolygons: React.FC<{ polygons: Polygon_T[] }> = ({ polygons }) => {
   return (
     <Layer>
       {polygons.map((polygon: Polygon_T) => (
-        <Polygon points={polygon.vertices} name={polygon.id} key={polygon.id} />
+        <Polygon points={polygon.vertices} name={polygon.id} key={polygon.id} error={polygon.isConvex === false}/>
       ))}
     </Layer>
   );
