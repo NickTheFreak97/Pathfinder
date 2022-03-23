@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { Circle, Group } from "react-konva";
-import { PointGUIProps } from "../Types/Shapes/PointGUI";
+import { PointGUIProps } from "../Types/Shapes/PointGUIProps";
 
 const Point = (props: PointGUIProps) => {
   const groupRef = useRef(null);
