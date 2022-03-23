@@ -9,7 +9,8 @@ import { addPolygon } from "../Actions/addPolygon";
 import { setCurrentPoint } from "../Actions/setCurrentPoint";
 
 import { isAreaClosed } from "../WithMouse/viaClick";
-import { isConvex } from "./ConvexityTest";
+import { onAreaClosed, onAreaNotClosed } from "../Common/AreaClosed";
+import { isConvex } from "../Common/ConvexityTest";
 
 import { Polygon } from "../../../GUIElements/Types/Shapes/Polygon";
 import { State } from "../../../GUIElements/Types/Redux/State";
@@ -50,15 +51,12 @@ const PointInput: React.FC<NewPointInputProps> = ({
 
   const handleClick = () => {
     const areaClosed = isAreaClosed(vertices, theVertex!);
+
     if (areaClosed && vertices.length + 1 >= 3) {
-      setCurrentPoint(undefined);
-      updateVertices([]);
-      addPolygon({
-        id: uuidv4(),
-        vertices: vertices as ThreeOrMoreVertices,
-        isConvex: isConvex(vertices),
-      });
-    } else if (!areaClosed) updateVertices([...vertices, theVertex!]);
+      onAreaClosed();
+    } else 
+      if (!areaClosed) 
+        onAreaNotClosed(theVertex!);
   };
 
   if (!!theVertex)

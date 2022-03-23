@@ -20,7 +20,7 @@ const Point = (props: PointGUIProps) => {
           x={props.x}
           y={props.y}
           radius={5}
-          fill={props.innerFill}
+          fill={props.error? props.errorInnerFill : props.innerFill}
           strokeWidth={1}
           stroke={props.stroke}
           strokeScaleEnabled={false}
@@ -30,7 +30,7 @@ const Point = (props: PointGUIProps) => {
           y={props.y}
           radius={11}
           strokeScaleEnabled={false}
-          fill={props.outerFill}
+          fill={props.error? props.errorOuterFill : props.outerFill}
         />
       </Group>
     </React.Fragment>
@@ -40,7 +40,10 @@ const Point = (props: PointGUIProps) => {
 Point.defaultProps = {
   scaleX: 1,
   scaleY: 1,
+  errorInnerFill: "#680000", 
+  errorOuterFill: "rgba(255,82,82,0.5)",
   innerFill: "#006699",
+  error: false,
   outerFill: "rgba(0,102,153,0.25)",
   innerStroke: "black",
   onPointSelected: () => {},
