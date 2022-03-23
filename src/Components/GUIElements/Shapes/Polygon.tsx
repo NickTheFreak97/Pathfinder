@@ -76,6 +76,7 @@ const Polygon = (props: PolygonGUIProps) => {
 
       {props.points.map((vertex: Vertex, i: number) => (
           <Point
+            error={props.error}
             x={vertex[0]}
             y={vertex[1]}
             name={props.name + "_p_" + i}
