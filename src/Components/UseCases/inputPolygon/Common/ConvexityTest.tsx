@@ -19,6 +19,16 @@ const triangleAreaSign = ( P1: Vertex, P2: Vertex, P3: Vertex ) : number => {
     return Math.sign(area);
 }
 
+const slopesEquals = ( slopeA: number, slopeB: number) : boolean => {
+    if( isFinite(slopeA) && isFinite(slopeB) )
+        return slopeA === slopeB;
+    else
+        if( !isFinite(slopeA) && !isFinite(slopeB) )
+            return true;
+        else
+            return false;
+}
+
 /**
  * @credits implementing the polygonal simplicity test described in the
  * following article: http://hera.ugr.es/doi/15026760.pdf pp. 2-3 in attempt to fix
@@ -47,9 +57,21 @@ const isSimple = ( polygon: Vertex[] ) : boolean => {
             if( i !== k && (i+1) % nVertices !== k) {
                 const j: number = (i+1) % nVertices;
                 const Vi = thePolygon[i], Vj = thePolygon[j], Vk=thePolygon[k];
+
+                const slopeIK : number = ( Vk[1]-Vi[1] )/( Vk[0]-Vi[0] );
+                const slopeIJ : number = ( Vj[1]-Vi[1] )/( Vj[0]-Vi[0] );
+
+                const areSlopesEqual : boolean = slopesEquals(slopeIK, slopeIJ);
+                const doSegmentsOverlap: boolean = doSegmentsIntersect( [Vi, Vk], [Vi, Vj] );
+
                 verticesWithinSide = verticesWithinSide ||
-                     ( ( Vk[1]-Vi[1] )/( Vk[0]-Vi[0] ) === ( Vj[1]-Vi[1] )/( Vj[0]-Vi[0] ) && doSegmentsIntersect( [Vi, Vk], [Vi, Vj] )) ;            
-            }
+                     ( areSlopesEqual && doSegmentsOverlap);
+
+                console.log(`Testing (V${i}: {${Vi[0]}, ${Vi[1]}}, V${k}: {${Vk[0]}, ${Vk[1]}}) with slope ${(Vk[1]-Vi[1] )/( Vk[0]-Vi[0] )} vs 
+                    (V${i}: {${Vi[0]}, ${Vi[1]}}, V${j}: : {${Vj[0]}, ${Vj[1]}}) with slope ${( Vj[1]-Vi[1] )/( Vj[0]-Vi[0] )}`);        
+                console.log(areSlopesEqual, doSegmentsOverlap);    
+/*                 console.log( doSegmentsIntersect([Vi, Vk], [Vi, Vj]) );
+ */            }
     
     if( verticesWithinSide )
         return false;

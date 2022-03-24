@@ -46,7 +46,7 @@ const gaussPartialPivot = ( matrix: Matrix2x2 ) : reductionResult | null => {
     for( let k: number = 0; k < matrix.length-1; k++  ) {
         const r = findBiggestMultiplier(matrix, k);
         
-        if( matrix[r][k] == 0 )
+        if( matrix[r][k] === 0 )
             return null;
 
         switches[k] = r;

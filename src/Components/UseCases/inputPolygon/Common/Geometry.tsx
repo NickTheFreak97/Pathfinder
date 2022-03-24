@@ -6,8 +6,10 @@ export type Segment =  [
     Vertex,
 ]
 
+
 const doIntervalsOverlap = ( rangeA: [number, number], rangeB: [number, number] ) : boolean => {
-    return !(rangeB[0] > rangeA[1] || rangeA[0] > rangeB[1]);
+    return !(Math.min(rangeB[0], rangeB[1]) > Math.max(rangeA[0], rangeA[1]) 
+                || Math.min(rangeA[0], rangeA[1]) > Math.max(rangeB[0], rangeB[1]));
 }
 
 /**
@@ -31,13 +33,20 @@ export const doSegmentsIntersect = ( segmA: Segment, segmB: Segment ) : boolean 
         const xProjectionS2: [number, number] = [segmB[0][0], segmB[1][0]]; // [Xc, Xd]
         const yProjectionS2: [number, number] = [segmB[0][1], segmB[1][1]]; // [Yc, Yd]
 
-        if( xProjectionS1[1] === xProjectionS1[0] || xProjectionS2[1] === xProjectionS2[0] )
+        console.log("Comparing horizontal or vertical segments");
+        if( xProjectionS1[1] === xProjectionS1[0] || xProjectionS2[1] === xProjectionS2[0] ) {
+            console.log("Case vertical segment");
             return doIntervalsOverlap( yProjectionS1, yProjectionS2 )
+        }
         else
-            if( yProjectionS1[1] === yProjectionS1[0] || yProjectionS2[1] === yProjectionS2[0] )
+            if( yProjectionS1[1] === yProjectionS1[0] || yProjectionS2[1] === yProjectionS2[0] ) {
+                console.log("Case horizontal segment");
                 return doIntervalsOverlap( xProjectionS1, xProjectionS2 )
-            else
+            }
+            else {
+                console.log("Case generic segment");
                 return doIntervalsOverlap( xProjectionS1, xProjectionS2 ) || doIntervalsOverlap( yProjectionS1, yProjectionS2 );
+            }
     }
 
     const intersection: [number, number] | null = solve2x2System( A, b );
