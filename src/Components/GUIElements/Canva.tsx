@@ -1,4 +1,4 @@
-import React, { Dispatch, useState } from "react";
+import React, { Dispatch } from "react";
 import { Provider } from "react-redux";
 import { connect } from "react-redux";
 import Konva from "konva";
@@ -7,6 +7,7 @@ import { Stage } from "react-konva";
 import Grid from "./Shapes/Grid";
 import RenderPolygons from "../UseCases/InputPolygon/RenderPolygons";
 import RenderNextPolygon from "../UseCases/InputPolygon/RenderNextPolygon";
+import PolygonTransformer from "./Shapes/PolygonTransformer";
 
 import { store } from "../Redux/Store/store";
 
@@ -90,6 +91,7 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, updateSelectedP
           usageMode === InteractionMode.DRAW_POLYGON &&
             <RenderNextPolygon />
         }
+        <PolygonTransformer />
       </Provider>
     </Stage>
   );

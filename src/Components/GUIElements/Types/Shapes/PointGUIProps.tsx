@@ -12,4 +12,6 @@ export interface PointGUIProps {
   onPointSelected: (pointID: string, pointX: number, pointY: number) => void;
   isDraggable?: boolean;
   onDragEnd?: (pointID: string, pointX: number, pointY: number) => void;
+  scaleX: number,
+  scaleY: number,
 }

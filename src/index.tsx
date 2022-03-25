@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import { store } from './Components/Redux/Store/store';
-import { MantineProvider, ColorSchemeProvider } from "@mantine/core";
+import { MantineProvider } from "@mantine/core";
 
 ReactDOM.render(
   <React.StrictMode>

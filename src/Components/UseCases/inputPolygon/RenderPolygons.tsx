@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Layer } from "react-konva";
 import { connect } from "react-redux";
 

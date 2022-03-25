@@ -24,6 +24,7 @@ const Point = (props: PointGUIProps) => {
           strokeWidth={1}
           stroke={props.stroke}
           strokeScaleEnabled={false}
+          scale={{x: props.scaleX!, y: props.scaleY!}}
         />
         <Circle
           x={props.x}
@@ -31,6 +32,7 @@ const Point = (props: PointGUIProps) => {
           radius={11}
           strokeScaleEnabled={false}
           fill={props.error? props.errorOuterFill : props.outerFill}
+          scale={{x: props.scaleX!, y: props.scaleY!}}
         />
       </Group>
     </React.Fragment>

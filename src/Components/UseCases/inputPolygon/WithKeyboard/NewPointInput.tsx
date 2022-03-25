@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Grid, NumberInput, ActionIcon } from "@mantine/core";
 import { PlusIcon } from "@modulz/radix-icons";
-import { v4 as uuidv4 } from "uuid";
 import { connect } from "react-redux";
 
 import { updateVertices } from "../Actions/updateVertices";
@@ -10,12 +9,10 @@ import { setCurrentPoint } from "../Actions/setCurrentPoint";
 
 import { isAreaClosed } from "../WithMouse/viaClick";
 import { onAreaClosed, onAreaNotClosed } from "../Common/AreaClosed";
-import { isConvex } from "../Common/ConvexityTest";
 
 import { Polygon } from "../../../GUIElements/Types/Shapes/Polygon";
 import { State } from "../../../GUIElements/Types/Redux/State";
 import {
-  ThreeOrMoreVertices,
   Vertex,
 } from "../../../GUIElements/Types/Shapes/PolygonGUIProps";
 
