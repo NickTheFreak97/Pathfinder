@@ -1,38 +1,55 @@
-import React, { useState } from "react";
+import React, { Dispatch, useState } from "react";
 import { Provider } from "react-redux";
 import { connect } from "react-redux";
 import Konva from "konva";
-
 import { Stage } from "react-konva";
+
 import Grid from "./Shapes/Grid";
 import RenderPolygons from "../UseCases/InputPolygon/RenderPolygons";
+import RenderNextPolygon from "../UseCases/InputPolygon/RenderNextPolygon";
 
 import { store } from "../Redux/Store/store";
 
 import { inputPolygonViaClick } from "../UseCases/InputPolygon/WithMouse/viaClick";
+import { handlePolygonSelection } from "../UseCases/SelectPolygon/setPolygonID"; 
 import { handleMouseMove } from "../UseCases/InputPolygon/WithMouse/onMouseMove";
-import { State } from "./Types/Redux/State";
+
 import { InteractionMode } from "../Utils/interactionMode";
-import RenderNextPolygon from "../UseCases/InputPolygon/RenderNextPolygon";
+import { State } from "./Types/Redux/State";
 
 const mapStateToProps = (state: State) => {
   return {
     usageMode: state.useMode,
+    selectedPolygonID: state.selectedPolygonID,
   };
 };
+
+const mapDispatchToProps = (dispatch: Dispatch<any>) => {
+  return {
+    updateSelectedPolygonID: (event: Konva.KonvaEventObject<MouseEvent>) : void => dispatch(handlePolygonSelection(event)),
+  }
+}
 
 interface CanvaProps {
   width?: number;
   height?: number;
   usageMode: InteractionMode;
+  selectedPolygonID: string | null | undefined,
+  updateSelectedPolygonID: (event: Konva.KonvaEventObject<MouseEvent>) => void,
 }
 
-const Canva: React.FC<CanvaProps> = ({ width, height, usageMode }) => {
+const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, updateSelectedPolygonID }) => {
 
   const onMouseDown = (event: Konva.KonvaEventObject<MouseEvent>) => {
     switch( usageMode ) {
       case InteractionMode.DRAW_POLYGON: {
         inputPolygonViaClick(event);
+        break;
+      }
+
+      case InteractionMode.SELECT: {
+        updateSelectedPolygonID(event);
+        break;
       }
     }
   }
@@ -78,4 +95,4 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode }) => {
   );
 };
 
-export default connect(mapStateToProps)(Canva);
+export default connect(mapStateToProps, mapDispatchToProps)(Canva);

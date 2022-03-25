@@ -31,6 +31,10 @@ export const isInside = (
 export const inputPolygonViaClick = (
   event: Konva.KonvaEventObject<MouseEvent>
 ): boolean => {
+
+  if( event.target !== event.target.getStage() )
+    return false;
+
   const clickCoords = event.target?.getStage()?.getPointerPosition();
   if (!clickCoords?.x || !clickCoords.y) return false;
 

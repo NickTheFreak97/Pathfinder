@@ -47,11 +47,6 @@ const isSimple = ( polygon: Vertex[] ) : boolean => {
     const thePolygon = testOrientation(polygon) > 0 ? polygon : polygon.reverse();
     let verticesWithinSide: boolean = false;
 
-    /**
-     * Test if at least a vertex of the polygon lays on one of the sides.
-     * @FIXME  replace "doSegmentsIntersect" with a test about parallelism. [Vi->Vk] and [Vi->Vj] 
-     *         obviously intersect at least on {Vi}
-     */
     for( let i: number=0; !verticesWithinSide && i < nVertices; i++ )
         for( let k: number=0; !verticesWithinSide && k < polygon.length; k++ ) 
             if( i !== k && (i+1) % nVertices !== k) {
@@ -66,12 +61,7 @@ const isSimple = ( polygon: Vertex[] ) : boolean => {
 
                 verticesWithinSide = verticesWithinSide ||
                      ( areSlopesEqual && doSegmentsOverlap);
-
-                console.log(`Testing (V${i}: {${Vi[0]}, ${Vi[1]}}, V${k}: {${Vk[0]}, ${Vk[1]}}) with slope ${(Vk[1]-Vi[1] )/( Vk[0]-Vi[0] )} vs 
-                    (V${i}: {${Vi[0]}, ${Vi[1]}}, V${j}: : {${Vj[0]}, ${Vj[1]}}) with slope ${( Vj[1]-Vi[1] )/( Vj[0]-Vi[0] )}`);        
-                console.log(areSlopesEqual, doSegmentsOverlap);    
-/*                 console.log( doSegmentsIntersect([Vi, Vk], [Vi, Vj]) );
- */            }
+         }
     
     if( verticesWithinSide )
         return false;
@@ -109,12 +99,8 @@ export const isConvex = ( polygon: Vertex[] ) : boolean => {
             let res: number = 0;
             let isConvex: boolean = true;
 
-            if( !isSimple(polygon) ) {
-                console.log("Polygon is not simple");
+            if( !isSimple(polygon) )
                 return false;
-            } else {
-                console.log("Polygon is simple");
-            }
 
             polygon.forEach( (thisVertex: Vertex, i: number) => {
                 const thisV: Vertex = thisVertex;
