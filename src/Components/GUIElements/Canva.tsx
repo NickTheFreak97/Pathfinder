@@ -13,6 +13,7 @@ import { store } from "../Redux/Store/store";
 
 import { inputPolygonViaClick } from "../UseCases/InputPolygon/WithMouse/viaClick";
 import { handlePolygonSelection } from "../UseCases/SelectPolygon/setPolygonID"; 
+import { deletePolygon } from "../UseCases/DeletePolygon/deletePolygon";
 import { handleMouseMove } from "../UseCases/InputPolygon/WithMouse/onMouseMove";
 
 import { InteractionMode } from "../Utils/interactionMode";
@@ -28,6 +29,7 @@ const mapStateToProps = (state: State) => {
 const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   return {
     updateSelectedPolygonID: (event: Konva.KonvaEventObject<MouseEvent>) : void => dispatch(handlePolygonSelection(event)),
+    deletePolygon: (event: Konva.KonvaEventObject<MouseEvent>) : void => dispatch(deletePolygon(event)),
   }
 }
 
@@ -37,9 +39,10 @@ interface CanvaProps {
   usageMode: InteractionMode;
   selectedPolygonID: string | null | undefined,
   updateSelectedPolygonID: (event: Konva.KonvaEventObject<MouseEvent>) => void,
+  deletePolygon: (event: Konva.KonvaEventObject<MouseEvent>) => void,
 }
 
-const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, updateSelectedPolygonID }) => {
+const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, updateSelectedPolygonID, deletePolygon }) => {
 
   const onMouseDown = (event: Konva.KonvaEventObject<MouseEvent>) => {
     switch( usageMode ) {
@@ -50,6 +53,11 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, updateSelectedP
 
       case InteractionMode.SELECT: {
         updateSelectedPolygonID(event);
+        break;
+      }
+
+      case InteractionMode.DELETE_POLYGON: {
+        deletePolygon(event);
         break;
       }
     }
