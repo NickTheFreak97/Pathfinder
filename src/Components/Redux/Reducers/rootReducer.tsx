@@ -1,6 +1,6 @@
 
 import { CHANGE_INTERACTION_MODE, POLYGON_ADDED, SET_CURRENT_POINT, UPDATE_NEW_POLY_VERTICES, SET_SELECTED_POLYGON_ID, 
-         DELETE_POLYGON } from '../Actions/ActionTypes';
+         DELETE_POLYGON, SET_START_POINT } from '../Actions/ActionTypes';
 import { InteractionMode } from '../../Utils/interactionMode';
 import { Action } from '../../GUIElements/Types/Redux/Action';
 import { State } from '../../GUIElements/Types/Redux/State';
@@ -12,6 +12,7 @@ const initialState = {
     currentPoint: undefined, 
     newPolygonVertices: [],
     selectedPolygonID: undefined,
+    startPoint: undefined,
 }
 
 const rootReducer = ( state : State = initialState, action: Action ) => {
@@ -56,6 +57,13 @@ const rootReducer = ( state : State = initialState, action: Action ) => {
             return {
                 ...state, 
                 polygons: [...state.polygons].filter( (polygon: Polygon) :boolean => polygon.id !== action.payload.polygonID )
+            }
+        }
+
+        case SET_START_POINT: {
+            return {
+                ...state,
+                startPoint: action.payload.startPoint
             }
         }
 
