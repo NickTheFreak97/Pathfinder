@@ -1,12 +1,24 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
+import Konva from "konva";
 import { Shape, Group } from "react-konva";
-import Point from "./Point";
+import _ from 'lodash';
 
+import Point from "./Point";
 import { PolygonGUIProps, Vertex } from "../Types/Shapes/PolygonGUIProps";
 
+interface AABB {
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+}
+
 const Polygon = (props: PolygonGUIProps) => {
-  const shapeRef = useRef<any>();
-  const groupRef = useRef<any>();
+  const shapeRef = useRef< { getSelfRect: ()=> AABB } & Konva.Shape >(null);
+  const groupRef = useRef< { getSelfRect: ()=> AABB } & Konva.Group >(null);
+
+  const [scaleX, updateScaleX] = useState<number>(1);
+  const [scaleY, updateScaleY] = useState<number>(1);
 
   useEffect(() => {
     /**
@@ -39,15 +51,18 @@ const Polygon = (props: PolygonGUIProps) => {
         };
       };
 
-    if (groupRef && groupRef.current)
+    if (groupRef && groupRef.current && shapeRef && shapeRef.current)
       groupRef.current.getSelfRect = shapeRef.current.getSelfRect;
-  }, []);
+  }, [props.points]);
 
   return (
     <Group
       ref={groupRef}
       name={props.name}
-      onTransformEnd={() => {}}
+      onTransformEnd={_.debounce(() => { 
+        updateScaleX(groupRef?.current?.scaleX() || 1);
+        updateScaleY( groupRef?.current?.scaleY() || 1) 
+      }, 500)}
       onDragEnd={() => {}}
       draggable
     >
@@ -79,6 +94,8 @@ const Polygon = (props: PolygonGUIProps) => {
             error={props.error}
             x={vertex[0]}
             y={vertex[1]}
+            scaleX={ groupRef?.current && 1 / scaleX || undefined }
+            scaleY={ groupRef?.current && 1 / scaleY || undefined }
             name={props.name + "_p_" + i}
             onPointSelected={props.onPointSelected}
             key={props.name + '_p_' + i}

@@ -36,7 +36,7 @@ const PointInput: React.FC<PointInputProps> = ({
 
   useEffect(() => {
     setTheVertex(vertices[pointID]);
-  }, [vertices]);
+  }, [vertices, pointID]);
 
   if (!!theVertex)
     return (

@@ -1,6 +1,5 @@
 import React from "react";
 import { Layer, Line, Text } from "react-konva";
-import PropTypes from "prop-types";
 
 interface TextProps {
   x: number;
@@ -56,8 +55,8 @@ const Grid = (props: GridProps) => {
             Math.round(i * padding) + 0.5,
             height,
           ]}
-          stroke={i == 0 ? "rgba(0,0,0,0.7)" : "#ddd"}
-          strokeWidth={i == 0 ? 2 : 1}
+          stroke={i === 0 ? "rgba(0,0,0,0.7)" : "#ddd"}
+          strokeWidth={i === 0 ? 2 : 1}
         />
         <CoordinatesTxt
           x={i !== 0 ? Math.round(i * padding) : 5}
@@ -73,8 +72,8 @@ const Grid = (props: GridProps) => {
       <React.Fragment key={j}>
         <Line
           points={[0, Math.round(j * padding), width, Math.round(j * padding)]}
-          stroke={j == 0 ? "rgba(0,0,0,0.7)" : "#ddd"}
-          strokeWidth={j == 0 ? 2 : 1}
+          stroke={j === 0 ? "rgba(0,0,0,0.7)" : "#ddd"}
+          strokeWidth={j === 0 ? 2 : 1}
         />
         {j !== 0 && (
           <CoordinatesTxt
