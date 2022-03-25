@@ -5,7 +5,7 @@ import { SET_SELECTED_POLYGON_ID } from "../../Redux/Actions/ActionTypes"
 import { Action } from "../../GUIElements/Types/Redux/Action";
 import { State } from "../../GUIElements/Types/Redux/State";
 
-const setPolygonID = (polygonID: string | null | undefined) => {
+export const setPolygonID = (polygonID: string | null | undefined) => {
     return {
         type: SET_SELECTED_POLYGON_ID,
 
