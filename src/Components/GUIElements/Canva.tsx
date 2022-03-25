@@ -8,6 +8,7 @@ import Grid from "./Shapes/Grid";
 import RenderPolygons from "../UseCases/InputPolygon/RenderPolygons";
 import RenderNextPolygon from "../UseCases/InputPolygon/RenderNextPolygon";
 import PolygonTransformer from "./Shapes/PolygonTransformer";
+import RenderStartDest from "../UseCases/SelectStartDest/Common/RenderStartDest";
 
 import { store } from "../Redux/Store/store";
 
@@ -15,6 +16,7 @@ import { inputPolygonViaClick } from "../UseCases/InputPolygon/WithMouse/viaClic
 import { handlePolygonSelection } from "../UseCases/SelectPolygon/setPolygonID"; 
 import { deletePolygon } from "../UseCases/DeletePolygon/deletePolygon";
 import { handleMouseMove } from "../UseCases/InputPolygon/WithMouse/onMouseMove";
+import { setStartPoint } from "../UseCases/SelectStartDest/selectStart";
 
 import { InteractionMode } from "../Utils/interactionMode";
 import { State } from "./Types/Redux/State";
@@ -30,6 +32,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   return {
     updateSelectedPolygonID: (event: Konva.KonvaEventObject<MouseEvent>) : void => dispatch(handlePolygonSelection(event)),
     deletePolygon: (event: Konva.KonvaEventObject<MouseEvent>) : void => dispatch(deletePolygon(event)),
+    setStartPoint: (event: Konva.KonvaEventObject<MouseEvent>) : void => dispatch(setStartPoint(event)),
   }
 }
 
@@ -40,9 +43,10 @@ interface CanvaProps {
   selectedPolygonID: string | null | undefined,
   updateSelectedPolygonID: (event: Konva.KonvaEventObject<MouseEvent>) => void,
   deletePolygon: (event: Konva.KonvaEventObject<MouseEvent>) => void,
+  setStartPoint: (event: Konva.KonvaEventObject<MouseEvent>) => void,
 }
 
-const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, updateSelectedPolygonID, deletePolygon }) => {
+const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, updateSelectedPolygonID, deletePolygon, setStartPoint }) => {
 
   const onMouseDown = (event: Konva.KonvaEventObject<MouseEvent>) => {
     switch( usageMode ) {
@@ -58,6 +62,11 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, updateSelectedP
 
       case InteractionMode.DELETE_POLYGON: {
         deletePolygon(event);
+        break;
+      }
+
+      case InteractionMode.PICK_START: {
+        setStartPoint(event);
         break;
       }
     }
@@ -100,6 +109,7 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, updateSelectedP
             <RenderNextPolygon />
         }
         <PolygonTransformer />
+        <RenderStartDest />
       </Provider>
     </Stage>
   );

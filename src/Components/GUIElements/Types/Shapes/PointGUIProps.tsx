@@ -4,6 +4,10 @@ export interface PointGUIProps {
   name: string;
   error?: boolean;
   stroke?: string;
+  startInnerFill?: string,
+  startOuterFill?: string,
+  destInnerFill?: string,
+  destOuterFill?: string,
   errorInnerFill?: string,
   errorOuterFill?: string,
   innerStroke?: string;
