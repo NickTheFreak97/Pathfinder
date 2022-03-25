@@ -7,7 +7,6 @@ import { Action } from "../../GUIElements/Types/Redux/Action";
 import { setPolygonID } from "../SelectPolygon/setPolygonID";
 
 import { State } from "../../GUIElements/Types/Redux/State";
-import { Polygon } from "../../GUIElements/Types/Shapes/Polygon";
 
 const _deletePolygon = (polygonID: string) : Action => {
     return {
