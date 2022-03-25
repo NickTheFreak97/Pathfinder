@@ -7,4 +7,5 @@ export interface State {
     useMode: InteractionMode,
     currentPoint: Vertex | null | undefined,
     newPolygonVertices: Vertex [],
+    selectedPolygonID: string | null | undefined,
 }
