@@ -10,4 +10,5 @@ export interface State {
     newPolygonVertices: Vertex [],
     selectedPolygonID: string | null | undefined,
     startPoint: PointInfo | null | undefined,
+    destinationPoint: PointInfo | null | undefined,
 }

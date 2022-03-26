@@ -17,7 +17,7 @@ import { handlePolygonSelection } from "../UseCases/SelectPolygon/setPolygonID";
 import { deletePolygon } from "../UseCases/DeletePolygon/deletePolygon";
 import { handleMouseMove } from "../UseCases/InputPolygon/WithMouse/onMouseMove";
 import { setStartPoint } from "../UseCases/SelectStartDest/selectStart";
-
+import { setDestinationPoint } from "../UseCases/SelectStartDest/selectDestination";
 import { InteractionMode } from "../Utils/interactionMode";
 import { State } from "./Types/Redux/State";
 
@@ -33,6 +33,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => {
     updateSelectedPolygonID: (event: Konva.KonvaEventObject<MouseEvent>) : void => dispatch(handlePolygonSelection(event)),
     deletePolygon: (event: Konva.KonvaEventObject<MouseEvent>) : void => dispatch(deletePolygon(event)),
     setStartPoint: (event: Konva.KonvaEventObject<MouseEvent>) : void => dispatch(setStartPoint(event)),
+    setDestinationPoint: (event: Konva.KonvaEventObject<MouseEvent>) : void => dispatch(setDestinationPoint(event)),
   }
 }
 
@@ -44,9 +45,10 @@ interface CanvaProps {
   updateSelectedPolygonID: (event: Konva.KonvaEventObject<MouseEvent>) => void,
   deletePolygon: (event: Konva.KonvaEventObject<MouseEvent>) => void,
   setStartPoint: (event: Konva.KonvaEventObject<MouseEvent>) => void,
+  setDestinationPoint: (event: Konva.KonvaEventObject<MouseEvent>) => void,
 }
 
-const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, updateSelectedPolygonID, deletePolygon, setStartPoint }) => {
+const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, updateSelectedPolygonID, deletePolygon, setStartPoint, setDestinationPoint }) => {
 
   const onMouseDown = (event: Konva.KonvaEventObject<MouseEvent>) => {
     switch( usageMode ) {
@@ -68,6 +70,10 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, updateSelectedP
       case InteractionMode.PICK_START: {
         setStartPoint(event);
         break;
+      }
+
+      case InteractionMode.PICK_DESTINATION: {
+        setDestinationPoint(event);
       }
     }
   }

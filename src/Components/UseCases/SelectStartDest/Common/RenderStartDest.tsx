@@ -8,16 +8,18 @@ import { State } from "../../../GUIElements/Types/Redux/State";
 import { PointInfo } from "../../../GUIElements/Types/Shapes/PointInfo";
 
 interface RenderStartDestProps {
-    startPoint: PointInfo | null | undefined
+    startPoint: PointInfo | null | undefined,
+    destinationPoint: PointInfo | null | undefined,
 }
 
 const mapStateToProps = (state: State) => {
     return {
         startPoint: state.startPoint,
+        destinationPoint: state.destinationPoint,
     }
 }
 
-const RenderStartDest : React.FC<RenderStartDestProps> = ({startPoint}) => {
+const RenderStartDest : React.FC<RenderStartDestProps> = ({startPoint, destinationPoint}) => {
     return <Layer>
         {
             ( !!startPoint && validate(startPoint.id) ) &&
@@ -25,6 +27,14 @@ const RenderStartDest : React.FC<RenderStartDestProps> = ({startPoint}) => {
                 x={startPoint.coordinates.x!}
                 y={startPoint.coordinates.y!}
                 name={startPoint.id}
+            />
+        }
+        {
+            ( !!destinationPoint && validate(destinationPoint.id) ) && 
+            <Point
+                x={destinationPoint.coordinates.x!}
+                y={destinationPoint.coordinates.y!}
+                name={destinationPoint.id}
             />
         }
     </Layer>

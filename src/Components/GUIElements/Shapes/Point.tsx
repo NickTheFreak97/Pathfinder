@@ -8,10 +8,14 @@ import { setStartPoint } from "../../UseCases/SelectStartDest/selectStart";
 import { PointGUIProps } from "../Types/Shapes/PointGUIProps";
 import { State } from "../Types/Redux/State";
 import { PointInfo } from "../Types/Shapes/PointInfo";
+import { setDestinationPoint } from "../../UseCases/SelectStartDest/selectDestination";
+import { InteractionMode } from "../../Utils/interactionMode";
 
 const mapStateToProps = (state: State) => {
   return {
     startPoint: state.startPoint,
+    destinationPoint: state.destinationPoint,
+    usageMode: state.useMode,
   };
 };
 
@@ -19,16 +23,35 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   return {
     setStartPoint: (event: Konva.KonvaEventObject<MouseEvent>): void =>
       dispatch(setStartPoint(event)),
+    setDestinationPoint: (event: Konva.KonvaEventObject<MouseEvent>): void => 
+      dispatch(setDestinationPoint(event)),
   };
 };
 
-const Point = (
-  props: {
-    setStartPoint: (event: Konva.KonvaEventObject<MouseEvent>) => void;
-    startPoint: PointInfo | null | undefined;
-  } & PointGUIProps
-) => {
+interface PointProps extends PointGUIProps{
+  startPoint?: PointInfo | null | undefined,
+  destinationPoint?: PointInfo | null | undefined,
+  usageMode?: InteractionMode,
+  setStartPoint: (event: Konva.KonvaEventObject<MouseEvent>) => void,
+  setDestinationPoint: (event: Konva.KonvaEventObject<MouseEvent>) => void,
+}
+
+const Point = (props: PointProps)=> {
   const groupRef = useRef(null);
+
+  const handleClickOnPoint = (event: Konva.KonvaEventObject<MouseEvent>)=>{
+    switch(props.usageMode) {
+      case InteractionMode.PICK_START: {
+        props.setStartPoint(event);
+        break;
+      }
+
+      case InteractionMode.PICK_DESTINATION: {
+        props.setDestinationPoint(event);
+        break;
+      }
+    }
+  }
 
   return (
     <React.Fragment>
@@ -37,7 +60,7 @@ const Point = (
         ref={groupRef}
         name={props.name}
         onClick={(event: Konva.KonvaEventObject<MouseEvent>) => {
-          setStartPoint(event);
+          handleClickOnPoint(event);
           props.onPointSelected(props.name, props.x, props.y);
         }}
         onDragEnd={() => {}}
@@ -46,7 +69,12 @@ const Point = (
           x={props.x}
           y={props.y}
           radius={5}
-          fill={props.error ? props.errorInnerFill : ( props.startPoint?.id === props.name ) ? props.startInnerFill : props.innerFill}
+          fill={props.error ? props.errorInnerFill : 
+              ( props.startPoint?.id === props.name ) ? 
+                  props.startInnerFill : 
+                    ( props.destinationPoint?.id === props.name ) ? 
+                        props.destInnerFill : props.innerFill
+          }
           strokeWidth={1}
           stroke={props.innerStroke}
           strokeScaleEnabled={false}
@@ -57,7 +85,12 @@ const Point = (
           y={props.y}
           radius={11}
           strokeScaleEnabled={false}
-          fill={props.error ? props.errorOuterFill : ( props.startPoint?.id === props.name ) ? props.startOuterFill : props.outerFill}
+          fill={props.error ? props.errorOuterFill : 
+            ( props.startPoint?.id === props.name ) ? 
+                props.startOuterFill : 
+                  ( props.destinationPoint?.id === props.name ) ? 
+                      props.destOuterFill : props.outerFill
+        }
           scale={{ x: props.scaleX!, y: props.scaleY! }}
         />
       </Group>
@@ -79,10 +112,13 @@ Point.defaultProps = {
   outerFill: "rgba(0,102,153,0.25)",
   innerStroke: "black",
   onPointSelected: () => {},
-  isStartingPoint: false,
-  isDestPoint: false,
   isDraggable: false,
   onDragEnd: () => {},
-};
+  startPoint: undefined, 
+  destinationPoint: undefined,
+  usageMode: undefined,
+  setStartPoint: undefined,
+  setDestinationPoint: undefined,
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Point);
