@@ -9,6 +9,7 @@ import RenderPolygons from "../UseCases/InputPolygon/RenderPolygons";
 import RenderNextPolygon from "../UseCases/InputPolygon/RenderNextPolygon";
 import PolygonTransformer from "./Shapes/PolygonTransformer";
 import RenderStartDest from "../UseCases/SelectStartDest/Common/RenderStartDest";
+import RenderRays from "../Algorithms/Common/RenderRays";
 
 import { store } from "../Redux/Store/store";
 
@@ -116,6 +117,7 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, updateSelectedP
         }
         <PolygonTransformer />
         <RenderStartDest />
+        <RenderRays />
       </Provider>
     </Stage>
   );
