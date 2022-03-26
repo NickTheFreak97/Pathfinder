@@ -35,11 +35,10 @@ export const deletePolygon = (event: Konva.KonvaEventObject<MouseEvent>) => (dis
             if( selectedPolygonID === selectedShape ) 
                 dispatch(setPolygonID(null));
             
-            if( startPoint?.id === event?.target?.parent?.name() ) {
+            if( startPoint?.id.includes( selectedShape ) ) {
                 dispatch(setStartPoint(undefined));
-                console.log(startPoint?.id, event?.target?.parent?.name(), "Firing delete start event");
             }
-            if( destinationPoint?.id === event?.target?.parent?.name() )
+            if( destinationPoint?.id.includes(selectedShape) )
                 dispatch(setDestinationPoint(undefined));
 
         } else {
