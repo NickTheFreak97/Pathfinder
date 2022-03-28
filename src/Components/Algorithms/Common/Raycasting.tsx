@@ -1,6 +1,10 @@
 import { Point } from "../../GUIElements/Types/Shapes/Point"
 import { Segment } from "../../UseCases/InputPolygon/Common/Geometry"
 
+/**
+ * An implementation of the strategy for testing line segments intersection described here: 
+ * https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line_segment
+ */
 const lineSegmentsIntersection = ( S1: Segment, S2: Segment ) : Point | null => {
     const x1: number = S1[0][0];
     const x2: number = S1[1][0];
@@ -31,8 +35,6 @@ export const raycast = ( source: Point, obstacles: Segment[], destination: Point
     if( !source.x || !source.y || !destination.x || !destination.y )
         return null;
 
-    console.log("Raycasting! bis");
-
     const ray: Segment = [ [source.x!, source.y!], [destination.x!, destination.y!] ];
 
     const intersections: (Point | null)[] = 
@@ -40,4 +42,19 @@ export const raycast = ( source: Point, obstacles: Segment[], destination: Point
             .filter( i => i !== null );
 
     return intersections as Point[];
+}
+
+export const anyVisibleObstacle = ( startPoint: Point, obstacles: Segment[], destinationPoint: Point ) : boolean => {
+    const visibleObstacles: Point[] | undefined | false = 
+        raycast(startPoint, obstacles, destinationPoint )
+            ?.filter( (intersectionPt) => 
+                ( (intersectionPt.x !== destinationPoint.x && 
+                    intersectionPt.y !== destinationPoint.y &&
+                    (intersectionPt.x !== startPoint.x && 
+                        intersectionPt.y !== startPoint.y ) 
+                )
+            ) 
+        );
+
+    return !( !visibleObstacles || visibleObstacles.length <= 0 );
 }
