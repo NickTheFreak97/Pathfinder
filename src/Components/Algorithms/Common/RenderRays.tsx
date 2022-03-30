@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import _ from "lodash";
 import { v4 as uuidv4, validate } from "uuid";
 
-import { raycast, anyVisibleObstacle } from "./Raycasting";
+import { raycast } from "./Raycasting";
 import { getVisibilityMap, VisibilityMap, extractPoint, extractID } from "./VisibilityMap/VisibilityMap";
 import Point from "../../GUIElements/Shapes/Point";
 import { State } from "../../GUIElements/Types/Redux/State";
@@ -78,41 +78,29 @@ const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinatio
                 )
             }
             {
-            _.flatten(
-                Object.keys(visibilityMap).map( (pointID: string) => { 
-                    const start: Vertex = !validate(pointID) ?
-                         extractPoint(pointID) :
-                            ( pointID === startPoint.id ) ?
-                                [ startPoint.coordinates.x!, startPoint.coordinates.y! ] 
-                                    :
-                                [ destinationPoint.coordinates.x!, destinationPoint.coordinates.y! ]
-                    
-                    return visibilityMap[pointID].map( (endPoint: Vertex) => 
-                        <Arrow points={ [ start[0], start[1], endPoint[0], endPoint[1] ] }
-                            fill="#CCC"
-                            stroke="rgba(97,97,97, 0.3)"
-                            strokeWidth={1}
-                            tension={1}
-                            lineCap="round"
-                            lineJoin="round"
-                            pointerWidth={5}
-                            key={`${extractID([start[0], start[1]])}->${extractID([endPoint[0], endPoint[1]])}`}
-                        />  )
-                })
-            )
-            /* {
-                visibilityGraph.map( (segment: Segment) => 
-                    <Arrow points={ [segment[0][0], segment[0][1], segment[1][0], segment[1][1] ] }
-                        fill="#CCC"
-                        stroke="rgba(97,97,97, 0.3)"
-                        strokeWidth={1}
-                        tension={1}
-                        lineCap="round"
-                        lineJoin="round"
-                        pointerWidth={5}
-                    /> 
+                _.flatten(
+                    Object.keys(visibilityMap).map( (pointID: string) => { 
+                        const start: Vertex = !validate(pointID) ?
+                            extractPoint(pointID) :
+                                ( pointID === startPoint.id ) ?
+                                    [ startPoint.coordinates.x!, startPoint.coordinates.y! ] 
+                                        :
+                                    [ destinationPoint.coordinates.x!, destinationPoint.coordinates.y! ]
+                        
+                        return visibilityMap[pointID].map( (endPoint: Vertex) => 
+                            <Arrow points={ [ start[0], start[1], endPoint[0], endPoint[1] ] }
+                                fill="#CCC"
+                                stroke="rgba(97,97,97, 0.3)"
+                                strokeWidth={1}
+                                tension={1}
+                                lineCap="round"
+                                lineJoin="round"
+                                pointerWidth={5}
+                                key={`${extractID([start[0], start[1]])}->${extractID([endPoint[0], endPoint[1]])}`}
+                            />  )
+                    })
                 )
-            } */}
+            }
             <Line 
                 points={[startPoint.coordinates.x!, startPoint.coordinates.y!, destinationPoint.coordinates.x!, destinationPoint.coordinates.y!]}
                 strokeWidth={1}

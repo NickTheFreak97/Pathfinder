@@ -65,16 +65,23 @@ export const getVisibilityMap = (polygons: Polygon[], startPoint: PointInfo | nu
         }    
 
         if( !!startPoint && validate(startPoint.id) ) {
-            visibilityMap[startPoint.id] = getStartPointVisibilityMap( startPoint, polygons, obstacles );
-            visibilityMap[startPoint.id].forEach( (vertex: Vertex) => {
+
+            const startID = extractID([startPoint.coordinates.x!, startPoint.coordinates.y!]);
+            visibilityMap[ startID ] = getStartPointVisibilityMap( startPoint, polygons, obstacles );
+
+            visibilityMap[ startID ].forEach( (vertex: Vertex) => {
                 const vertexID: string = extractID(vertex);
                 visibilityMap[ vertexID ].push( [startPoint.coordinates.x!, startPoint.coordinates.y!] );
             } )
+
         }
 
         if( !!destinationPoint && validate(destinationPoint.id) ) {
-            visibilityMap[destinationPoint.id] = getStartPointVisibilityMap( destinationPoint, polygons, obstacles ); 
-            visibilityMap[destinationPoint.id].forEach( (vertex: Vertex) => {
+            
+            const destinationID = extractID( [destinationPoint.coordinates.x!, destinationPoint.coordinates.y!] )
+            visibilityMap[ destinationID ] = getStartPointVisibilityMap( destinationPoint, polygons, obstacles ); 
+
+            visibilityMap[ destinationID ].forEach( (vertex: Vertex) => {
                 const vertexID: string = extractID(vertex);
                 visibilityMap[ vertexID ].push( [destinationPoint.coordinates.x!, destinationPoint.coordinates.y!] );
             } )
