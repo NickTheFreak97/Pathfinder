@@ -1,3 +1,5 @@
+import { Point } from "./Point";
+
 export type Vertex = [number, number];
 
 export type ThreeOrMoreVertices = {
@@ -17,4 +19,11 @@ export interface PolygonGUIProps {
     isDraggable?: boolean,
     onPointSelected?: (pointID: string, pointX: number, pointY: number) => void;
     error?: boolean,
+}
+
+export const toPoint = (vertex: Vertex) : Point => {
+    return {
+        x: vertex[0],
+        y: vertex[1],
+    }
 }

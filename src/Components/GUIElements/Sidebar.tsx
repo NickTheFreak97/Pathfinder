@@ -7,6 +7,7 @@ import ModeSelector from './ModeSelector';
 import { InteractionMode } from '../Utils/interactionMode';
 import { State } from './Types/Redux/State';
 import PointInputsGrid from '../UseCases/InputPolygon/WithKeyboard/PointInputsGrid';
+import AlgorithmsSelector from '../UseCases/RunAlgorithms/AlgorithmsSelector';
 
 const mapStateToProps = (state: State) => {
   return {
@@ -30,6 +31,10 @@ const Sidebar : React.FC<{ usageMode: InteractionMode }>  = ({ usageMode }) => {
     {
       usageMode === InteractionMode.DRAW_POLYGON &&
       <PointInputsGrid />
+    }
+    {
+      usageMode === InteractionMode.RUN_ALGORITHM &&
+      <AlgorithmsSelector />
     }
   </Navbar>
 }

@@ -5,7 +5,7 @@
   "dependencies": {
     "@mantine/core": "^4.1.0",
     "@mantine/hooks": "^4.1.0",
-    "@mantine/next": "^4.1.0",
+    "@mantine/next": "^4.0.6",
     "@modulz/radix-icons": "^4.0.0",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
