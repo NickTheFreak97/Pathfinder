@@ -1,6 +1,7 @@
 import { Point } from "../../GUIElements/Types/Shapes/Point"
 import { Segment } from "../../UseCases/InputPolygon/Common/Geometry"
-
+import { extractID } from "./VisibilityMap/VisibilityMap";
+import { toVertex } from "../../GUIElements/Types/Shapes/Point";
 /**
  * An implementation of the strategy for testing line segments intersection described here: 
  * https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line_segment
@@ -48,11 +49,9 @@ export const anyVisibleObstacle = ( startPoint: Point, obstacles: Segment[], des
     const visibleObstacles: Point[] | undefined | false = 
         raycast(startPoint, obstacles, destinationPoint )
             ?.filter( (intersectionPt) => 
-                ( (intersectionPt.x !== destinationPoint.x && 
-                    intersectionPt.y !== destinationPoint.y &&
-                    (intersectionPt.x !== startPoint.x && 
-                        intersectionPt.y !== startPoint.y ) 
-                )
+            (
+                extractID(toVertex(intersectionPt)) !== extractID( toVertex(startPoint) ) &&
+                extractID(toVertex(intersectionPt)) !== extractID( toVertex(destinationPoint) ) 
             ) 
         );
 

@@ -87,6 +87,12 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, options, update
     switch( usageMode ) {
       case InteractionMode.DRAW_POLYGON: {
         handleMouseMove(event);
+        break;
+      }
+
+      case InteractionMode.RUN_ALGORITHM: {
+        handleMouseMove(event);
+        break;
       }
     }
   }

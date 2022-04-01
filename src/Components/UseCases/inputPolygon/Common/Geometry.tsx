@@ -3,7 +3,7 @@ import { Vertex } from "../../../GUIElements/Types/Shapes/PolygonGUIProps";
 
 export type Segment = [Vertex, Vertex];
 
-const doIntervalsOverlap = (
+export const doIntervalsOverlap = (
   rangeA: [number, number],
   rangeB: [number, number]
 ): boolean => {

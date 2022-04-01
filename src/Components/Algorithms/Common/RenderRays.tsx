@@ -19,6 +19,7 @@ const mapStateToProps = (state: State) => {
         polygons: state.polygons,
         startPoint: state.startPoint,
         destinationPoint: state.destinationPoint,
+        currentPoint: state.currentPoint,
     }
 }
 
@@ -26,9 +27,10 @@ interface RenderRaysProps {
     polygons: Polygon[],
     startPoint: PointInfo | null | undefined,
     destinationPoint: PointInfo | null | undefined,
+    currentPoint: Vertex | null | undefined,
 }
 
-const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinationPoint}) => {
+const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinationPoint, currentPoint}) => {
 
     const obstacles: Segment[] = 
         _.flatten(
@@ -41,14 +43,14 @@ const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinatio
         )
     
     const pt: Point_t[] | undefined | false = 
-        (!!startPoint && !!destinationPoint) &&
+        (!!startPoint && !!currentPoint) &&
         (
-            raycast(startPoint!.coordinates, obstacles, destinationPoint!.coordinates )
+            raycast(startPoint!.coordinates, obstacles, { x: currentPoint[0], y: currentPoint[1] } )
                 ?.filter( (intersectionPt) => 
                     ( (intersectionPt.x !== startPoint.coordinates.x && 
                         intersectionPt.y !== startPoint.coordinates.y) &&
-                        (intersectionPt.x !== destinationPoint.coordinates.x && 
-                            intersectionPt.y !== destinationPoint.coordinates.y) ) 
+                        (intersectionPt.x !== currentPoint[0] && 
+                            intersectionPt.y !== currentPoint[1]) ) 
                 )
         );
 
@@ -101,14 +103,17 @@ const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinatio
                     })
                 )
             }
-            <Line 
-                points={[startPoint.coordinates.x!, startPoint.coordinates.y!, destinationPoint.coordinates.x!, destinationPoint.coordinates.y!]}
-                strokeWidth={1}
-                fill="#FF9933"
-                stroke="#FF9933"
-                lineCap="round"
-                lineJoin="round"
-                />
+            {
+                (!!startPoint && !!currentPoint) && 
+                <Line 
+                    points={[startPoint.coordinates.x!, startPoint.coordinates.y!, currentPoint![0], currentPoint![1]]}
+                    strokeWidth={1}
+                    fill="#FF9933"
+                    stroke="#FF9933"
+                    lineCap="round"
+                    lineJoin="round"
+                    />
+            }
         </Layer>
 }
 
