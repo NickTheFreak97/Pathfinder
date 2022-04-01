@@ -4,7 +4,7 @@ import { Action, compareActions } from "./Action";
 
 export interface Node {
     state: State,
-    parent: Node,
+    parent: Node | null | undefined,
     action: Action,
     cost: number,
 }

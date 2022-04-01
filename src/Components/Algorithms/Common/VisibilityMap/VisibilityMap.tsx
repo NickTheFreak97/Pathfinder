@@ -20,10 +20,6 @@ export const extractPoint = ( pointID: string ) : Vertex => {
     return [ parseFloat(coordinates[0]), parseFloat(coordinates[1].replace(')', '')) ];
 }
 
-/**
- * @FIXME When start or destination points match with a vertex some
- * visibility arrows go missing
- */
 export const getVisibilityMap = (polygons: Polygon[], startPoint: PointInfo | null | undefined, destinationPoint: PointInfo | null | undefined) : VisibilityMap => {
     const visibilityMap: VisibilityMap = {};
     const obstacles: Segment[] = polygonsToObstacleSegments( polygons );
@@ -73,7 +69,6 @@ export const getVisibilityMap = (polygons: Polygon[], startPoint: PointInfo | nu
                 const vertexID: string = extractID(vertex);
                 visibilityMap[ vertexID ].push( [startPoint.coordinates.x!, startPoint.coordinates.y!] );
             } )
-
         }
 
         if( !!destinationPoint && validate(destinationPoint.id) ) {
@@ -85,6 +80,12 @@ export const getVisibilityMap = (polygons: Polygon[], startPoint: PointInfo | nu
                 const vertexID: string = extractID(vertex);
                 visibilityMap[ vertexID ].push( [destinationPoint.coordinates.x!, destinationPoint.coordinates.y!] );
             } )
+        }
+
+        if( !!startPoint && validate(startPoint.id) && !!destinationPoint && validate(destinationPoint.id) ) {
+            const startID = extractID([startPoint.coordinates.x!, startPoint.coordinates.y!]);
+            if( !anyVisibleObstacle( startPoint.coordinates, obstacles, destinationPoint.coordinates ) )
+                visibilityMap[ startID ].push([destinationPoint.coordinates.x!, destinationPoint.coordinates.y!]);
         }
 
         return visibilityMap;

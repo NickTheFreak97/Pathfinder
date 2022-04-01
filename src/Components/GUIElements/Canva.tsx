@@ -10,6 +10,7 @@ import RenderNextPolygon from "../UseCases/InputPolygon/RenderNextPolygon";
 import PolygonTransformer from "./Shapes/PolygonTransformer";
 import RenderStartDest from "../UseCases/SelectStartDest/Common/RenderStartDest";
 import RenderRays from "../Algorithms/Common/RenderRays";
+import ViewSolution from "../UseCases/RunAlgorithms/ViewSolution/ViewSolution";
 
 import { store } from "../Redux/Store/store";
 
@@ -21,11 +22,13 @@ import { setStartPoint } from "../UseCases/SelectStartDest/selectStart";
 import { setDestinationPoint } from "../UseCases/SelectStartDest/selectDestination";
 import { InteractionMode } from "../Utils/interactionMode";
 import { State } from "./Types/Redux/State";
+import { RunningOptions } from "../UseCases/RunAlgorithms/RunningOptions";
 
 const mapStateToProps = (state: State) => {
   return {
     usageMode: state.useMode,
     selectedPolygonID: state.selectedPolygonID,
+    options: state.options,
   };
 };
 
@@ -43,13 +46,14 @@ interface CanvaProps {
   height?: number;
   usageMode: InteractionMode;
   selectedPolygonID: string | null | undefined,
+  options: RunningOptions,
   updateSelectedPolygonID: (event: Konva.KonvaEventObject<MouseEvent>) => void,
   deletePolygon: (event: Konva.KonvaEventObject<MouseEvent>) => void,
   setStartPoint: (event: Konva.KonvaEventObject<MouseEvent>) => void,
   setDestinationPoint: (event: Konva.KonvaEventObject<MouseEvent>) => void,
 }
 
-const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, updateSelectedPolygonID, deletePolygon, setStartPoint, setDestinationPoint }) => {
+const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, options, updateSelectedPolygonID, deletePolygon, setStartPoint, setDestinationPoint }) => {
 
   const onMouseDown = (event: Konva.KonvaEventObject<MouseEvent>) => {
     switch( usageMode ) {
@@ -116,8 +120,9 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, updateSelectedP
             <RenderNextPolygon />
         }
         <PolygonTransformer />
+        { options.verbose && <RenderRays /> }
+        <ViewSolution />
         <RenderStartDest />
-        <RenderRays />
       </Provider>
     </Stage>
   );

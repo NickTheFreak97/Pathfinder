@@ -1,18 +1,18 @@
 import { Frontier } from "../Types/Problem";
-import { State, compareStates } from "../Types/State";
+import { Node, compareNodes } from "../Types/Node";
 
 export class FIFOFrontier implements Frontier {
-    queue: Array<State>;
+    queue: Array<Node>;
 
     constructor() {
         this.queue = [];
     }
 
-    contains = (state: State) : boolean => {
-        return this.queue.findIndex( (element: State) => compareStates( element, state ) ) !== -1;
+    contains = (node: Node) : boolean => {
+        return this.queue.findIndex( (element: Node) => compareNodes( element, node ) ) !== -1;
     }
 
-    getFirst = () : State | undefined => {
+    getFirst = () : Node | undefined => {
         return this.queue.pop();
     }
 
@@ -20,8 +20,9 @@ export class FIFOFrontier implements Frontier {
         return this.queue.length <= 0;
     } 
 
-    push = (state: State) : void => {
-        this.queue.splice(0,0,state);
+    push = (node: Node) : Array<Node> => {
+        this.queue.splice(0,0,node);
+        return this.queue;
     }
 
     clear = (): void => {

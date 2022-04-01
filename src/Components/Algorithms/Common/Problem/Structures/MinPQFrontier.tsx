@@ -1,24 +1,25 @@
-import { State } from "../Types/State";
-
+import { Frontier } from "../Types/Problem";
+import { Node, compareNodes } from "../Types/Node";
 /**
  * An adaptation of the following code: 
  * https://www.davideaversa.it/blog/typescript-binary-heap/
  */
- export class MinPQFrontier {
-    queue: Array<State>;
-    priority: (state: State) => number;
+ export class MinPQFrontier implements Frontier {
+    queue: Array<Node>;
+    priority: (node: Node) => number;
 
-    constructor(priority: (state: State) => number) {
+    constructor(priority: (node: Node) => number) {
         this.queue = [];
         this.priority = priority;
     }
 
-    push = (state: State) : void => {
-        this.queue.push(state);
+    push = (node: Node) : Array<Node> => {
+        this.queue.push(node);
         this.bubbleUp(this.queue.length - 1);
+        return this.queue;
     }
 
-    pop = () : State => {
+    getFirst = () : Node | undefined => {
         let result = this.queue[0];
         let end = this.queue.pop();
         if (this.queue.length > 0) {
@@ -30,6 +31,14 @@ import { State } from "../Types/State";
 
     isEmpty = (): boolean => {
         return this.queue.length <= 0;
+    }
+
+    clear = (): void => {
+        this.queue = [];
+    }
+
+    contains = (node: Node) : boolean => {
+        return this.queue.findIndex( (element: Node) => compareNodes( element, node ) ) !== -1;
     }
 
     private bubbleUp(n: number) {
