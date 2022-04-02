@@ -2,7 +2,7 @@ import React, { Dispatch } from "react";
 import { Provider } from "react-redux";
 import { connect } from "react-redux";
 import Konva from "konva";
-import { Stage } from "react-konva";
+import { Stage, Layer } from "react-konva";
 
 import Grid from "./Shapes/Grid";
 import RenderPolygons from "../UseCases/InputPolygon/RenderPolygons";
@@ -22,7 +22,9 @@ import { setStartPoint } from "../UseCases/SelectStartDest/selectStart";
 import { setDestinationPoint } from "../UseCases/SelectStartDest/selectDestination";
 import { InteractionMode } from "../Utils/interactionMode";
 import { State } from "./Types/Redux/State";
-import { RunningOptions } from "../UseCases/RunAlgorithms/RunningOptions";
+import { RunningOptions } from "../UseCases/RunAlgorithms/Types/RunningOptions";
+import RenderFrontier from "../UseCases/RunAlgorithms/ViewSolution/RenderFrontier";
+import RenderExplored from "../UseCases/RunAlgorithms/ViewSolution/RenderExplored";
 
 const mapStateToProps = (state: State) => {
   return {
@@ -91,7 +93,6 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, options, update
       }
 
       case InteractionMode.RUN_ALGORITHM: {
-        handleMouseMove(event);
         break;
       }
     }
@@ -120,15 +121,21 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, options, update
           width={width}
           height={height ? height * 0.75 : window.innerHeight}
         />
-        <RenderPolygons />
-        {
-          usageMode === InteractionMode.DRAW_POLYGON &&
-            <RenderNextPolygon />
-        }
-        <PolygonTransformer />
-        { options.verbose && <RenderRays /> }
-        <ViewSolution />
-        <RenderStartDest />
+        <Layer>
+          <RenderPolygons />
+          {
+              usageMode === InteractionMode.DRAW_POLYGON &&
+                <RenderNextPolygon />
+            }
+          <PolygonTransformer />
+        </Layer>
+        <Layer>
+          { options.verbose && <RenderRays /> }
+          <RenderStartDest />
+          <RenderFrontier />
+          <RenderExplored />
+          <ViewSolution />
+        </Layer>
       </Provider>
     </Stage>
   );

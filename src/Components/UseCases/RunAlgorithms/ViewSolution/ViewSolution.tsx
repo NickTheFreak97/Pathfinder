@@ -1,5 +1,5 @@
 import React from "react";
-import { Layer, Arrow } from 'react-konva';
+import { Arrow } from 'react-konva';
 import { connect } from "react-redux";
 import { extractID } from "../../../Algorithms/Common/VisibilityMap/VisibilityMap";
 import { Action } from "../../../Algorithms/Common/Problem/Types/Action";
@@ -26,7 +26,7 @@ const ViewSolution : React.FC<ViewSolutionProps> = ({ solution, startPoint, dest
         return null;
     else
         return (
-            <Layer>
+            <React.Fragment>
                 {
                     solution.map(
                         (point: Vertex, i) => {
@@ -35,8 +35,8 @@ const ViewSolution : React.FC<ViewSolutionProps> = ({ solution, startPoint, dest
                             else 
                                 return (
                                     <Arrow points={ [ point[0], point[1], solution[i+1][0], solution[i+1][1] ] }
-                                        fill="rgb(75, 172, 97)"
-                                        stroke="rgb(75, 172, 97, 0.7)"
+                                        fill="rgb(203, 36, 49)"
+                                        stroke="rgba(203, 36, 49)"
                                         strokeWidth={2}
                                         tension={1}
                                         lineCap="round"
@@ -48,7 +48,7 @@ const ViewSolution : React.FC<ViewSolutionProps> = ({ solution, startPoint, dest
                         } 
                     )
                 }
-            </Layer>
+            </React.Fragment>
         )
 }
 

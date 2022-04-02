@@ -3,6 +3,10 @@ import { Dispatch } from "react";
 import { v4 as uuidv4, validate } from "uuid";
 import { _setStartPoint } from "../selectStart";
 import { _setDestinationPoint } from "../selectDestination";
+import { setFrontier } from "../../SetDataStructures/setFrontier";
+import { setExplored } from "../../SetDataStructures/setExplored";
+import { updateSolution } from "../../RunAlgorithms/Actions/UpdateSolution";
+import { updateVisibilityMap } from "../../RunAlgorithms/Actions/updateVisibilityMap";
 
 import { State } from "../../../GUIElements/Types/Redux/State";
 import { Action } from "../../../GUIElements/Types/Redux/Action";
@@ -99,4 +103,16 @@ export const setExtremumPoint = ( event: Konva.KonvaEventObject<MouseEvent> | nu
     } else {
         dispatch(handleClickOnPolygonVertex(event!, mode));
     }
+
+}
+
+export const resetSolution = () => (dispatch: Dispatch<any>, getState: ()=> State) => {
+    if( !!getState().solution )
+        dispatch( updateSolution(undefined) );
+    if( !!getState().visibilityMap )
+        dispatch( updateVisibilityMap(null) );
+    if( !!getState().frontier )
+        dispatch( setFrontier(null) );
+    if( !!getState().explored )
+        dispatch( setExplored(null) );
 }

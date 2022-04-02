@@ -1,5 +1,5 @@
 import React from "react";
-import { Layer, Line } from "react-konva";
+import { Line } from "react-konva";
 import { connect } from "react-redux";
 import { State } from "../../GUIElements/Types/Redux/State";
 import { Vertex } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
@@ -17,7 +17,7 @@ const RenderNextPolygon: React.FC<{
   currentPoint: Vertex | null | undefined;
 }> = ({ vertices, currentPoint }) => {
   return (
-    <Layer>
+    <React.Fragment>
       <Line
         points={
           !!currentPoint
@@ -29,7 +29,7 @@ const RenderNextPolygon: React.FC<{
         lineCap="round"
         lineJoin="round"
       />
-    </Layer>
+    </React.Fragment>
   );
 };
 

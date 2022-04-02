@@ -112,7 +112,7 @@ const rootReducer = ( state : State = initialState, action: Action ) => {
         case POP_FRONTIER: {
             return {
                 ...state,
-                frontier: action.payload.frontier,
+                frontier: {...state.frontier, queue: action.payload.queue},
             }
         }
 

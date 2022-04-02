@@ -42,27 +42,27 @@ export const pushToFrontier = (node: Node) => ( dispatch: Dispatch<ReduxAction>,
     )
 }
 
-const _popFrontier = ( frontier: Frontier ): ReduxAction => {
+const _popFrontier = ( queue: Array<Node> ): ReduxAction => {
     return {
         type: POP_FRONTIER, 
 
         payload: {
-            frontier
+            queue
         }
     }
 }
 
 export const popFrontier = () => ( dispatch: Dispatch<ReduxAction>, getState: ()=> ReduxState ) => {
-        const frontier = getState().frontier;
+        const newFrontierQ: Array<Node> = [...getState().frontier!.queue];
     
-        if( !frontier )
-            return frontier;
+        if( newFrontierQ.length <= 0 )
+            return null;
         else {
-            const poppedNode: Node | null | undefined = frontier.getFirst();
+            const poppedNode: Node | null | undefined = newFrontierQ.pop();
             if( poppedNode === null || poppedNode === undefined )
                 return;
             else {
-                dispatch( _popFrontier( frontier ) );
+                dispatch( _popFrontier( newFrontierQ ) );
                 return poppedNode;
             }
         }
