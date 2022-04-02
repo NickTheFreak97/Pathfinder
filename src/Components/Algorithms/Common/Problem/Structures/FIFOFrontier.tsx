@@ -13,7 +13,8 @@ export class FIFOFrontier implements Frontier {
     }
 
     getFirst = () : Node | undefined => {
-        return this.queue.pop();
+        const poppedNode: Node | undefined = this.queue.pop();
+        return poppedNode;
     }
 
     isEmpty = () : boolean => {

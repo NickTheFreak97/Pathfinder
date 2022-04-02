@@ -1,4 +1,5 @@
-import { Layer, Line, Arrow } from "react-konva";
+import React from "react";
+import { Line, Arrow } from "react-konva";
 import { connect } from 'react-redux';
 import _ from "lodash";
 import { v4 as uuidv4, validate } from "uuid";
@@ -19,7 +20,6 @@ const mapStateToProps = (state: State) => {
         polygons: state.polygons,
         startPoint: state.startPoint,
         destinationPoint: state.destinationPoint,
-        currentPoint: state.currentPoint,
     }
 }
 
@@ -27,10 +27,9 @@ interface RenderRaysProps {
     polygons: Polygon[],
     startPoint: PointInfo | null | undefined,
     destinationPoint: PointInfo | null | undefined,
-    currentPoint: Vertex | null | undefined,
 }
 
-const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinationPoint, currentPoint}) => {
+const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinationPoint}) => {
 
     const obstacles: Segment[] = 
         _.flatten(
@@ -42,17 +41,10 @@ const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinatio
             )
         )
     
-    const pt: Point_t[] | undefined | false = 
-        (!!startPoint && !!currentPoint) &&
-        (
-            raycast(startPoint!.coordinates, obstacles, { x: currentPoint[0], y: currentPoint[1] } )
-                ?.filter( (intersectionPt) => 
-                    ( (intersectionPt.x !== startPoint.coordinates.x && 
-                        intersectionPt.y !== startPoint.coordinates.y) &&
-                        (intersectionPt.x !== currentPoint[0] && 
-                            intersectionPt.y !== currentPoint[1]) ) 
-                )
-        );
+    const pt: Point_t[] | null | false = 
+        (!!startPoint && !!destinationPoint) &&
+            raycast(startPoint.coordinates, obstacles, destinationPoint.coordinates )
+        
 
     const visibilityMap: VisibilityMap = getVisibilityMap( polygons, startPoint, destinationPoint );
     console.log( visibilityMap );
@@ -60,7 +52,7 @@ const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinatio
     if( !startPoint || !destinationPoint )
         return null;
     else
-        return <Layer>
+        return <React.Fragment>
             {
                 !!pt &&
                 pt.map(
@@ -104,9 +96,9 @@ const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinatio
                 )
             }
             {
-                (!!startPoint && !!currentPoint) && 
+                (!!startPoint && !!destinationPoint) && 
                 <Line 
-                    points={[startPoint.coordinates.x!, startPoint.coordinates.y!, currentPoint![0], currentPoint![1]]}
+                    points={[startPoint.coordinates.x!, startPoint.coordinates.y!, destinationPoint.coordinates.x!, destinationPoint.coordinates.y!]}
                     strokeWidth={1}
                     fill="#FF9933"
                     stroke="#FF9933"
@@ -114,7 +106,7 @@ const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinatio
                     lineJoin="round"
                     />
             }
-        </Layer>
+        </React.Fragment>
 }
 
 export default connect(mapStateToProps)(RenderRays);

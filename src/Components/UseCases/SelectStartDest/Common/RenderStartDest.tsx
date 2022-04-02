@@ -1,4 +1,4 @@
-import { Layer } from "react-konva";
+import React from 'react';
 import { connect } from 'react-redux';
 import { validate } from "uuid";
 
@@ -20,7 +20,7 @@ const mapStateToProps = (state: State) => {
 }
 
 const RenderStartDest : React.FC<RenderStartDestProps> = ({startPoint, destinationPoint}) => {
-    return <Layer>
+    return <React.Fragment>
         {
             ( !!startPoint && validate(startPoint.id) ) &&
             <Point
@@ -37,7 +37,7 @@ const RenderStartDest : React.FC<RenderStartDestProps> = ({startPoint, destinati
                 name={destinationPoint.id}
             />
         }
-    </Layer>
+    </React.Fragment>
 }
 
 export default connect(mapStateToProps)(RenderStartDest);

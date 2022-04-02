@@ -4,7 +4,7 @@
  */
 import Konva from "konva";
 import React, { useEffect, useState } from "react";
-import { Transformer, Layer } from "react-konva";
+import { Transformer } from "react-konva";
 import { connect } from "react-redux";
 import { State } from "../Types/Redux/State";
 
@@ -48,13 +48,13 @@ const TransformerComponent: React.FC<TransformerProps> = ({
   };
 
   return (
-    <Layer>
+    <React.Fragment>
       <Transformer
         ref={(node) => {
           setTransformerNode(node);
         }}
       />
-    </Layer>
+    </React.Fragment>
   );
 };
 

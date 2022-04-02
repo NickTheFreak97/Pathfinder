@@ -1,5 +1,4 @@
 import React from "react";
-import { Layer } from "react-konva";
 import { connect } from "react-redux";
 
 import Polygon from "../../GUIElements/Shapes/Polygon";
@@ -14,11 +13,11 @@ const mapStateToProps = (state: State) => {
 
 const RenderPolygons: React.FC<{ polygons: Polygon_T[] }> = ({ polygons }) => {
   return (
-    <Layer>
+    <React.Fragment>
       {polygons.map((polygon: Polygon_T) => (
         <Polygon points={polygon.vertices} name={polygon.id} key={polygon.id} error={polygon.isConvex === false}/>
       ))}
-    </Layer>
+    </React.Fragment>
   );
 };
 

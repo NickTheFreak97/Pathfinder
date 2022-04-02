@@ -3,7 +3,7 @@ import { InteractionMode } from "../../../Utils/interactionMode";
 import { Vertex } from "../Shapes/PolygonGUIProps";
 import { PointInfo } from "../Shapes/PointInfo";
 import { Explored, Frontier } from "../../../Algorithms/Common/Problem/Types/Problem";
-import { RunningOptions } from "../../../UseCases/RunAlgorithms/RunningOptions";
+import { RunningOptions } from "../../../UseCases/RunAlgorithms/Types/RunningOptions";
 import { VisibilityMap } from "../../../Algorithms/Common/VisibilityMap/VisibilityMap";
 import { Action } from "../../../Algorithms/Common/Problem/Types/Action";
 

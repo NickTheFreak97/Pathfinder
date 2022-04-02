@@ -1,12 +1,12 @@
-import { updateVisibilityMap } from "./updateVisibilityMap";
-import { getVisibilityMap, VisibilityMap, extractID } from "../../Algorithms/Common/VisibilityMap/VisibilityMap";
+import { updateVisibilityMap } from "./Actions/updateVisibilityMap";
+import { getVisibilityMap, extractID } from "../../Algorithms/Common/VisibilityMap/VisibilityMap";
 import { BFS } from "../../Algorithms/BFS";
 import { toVertex } from "../../GUIElements/Types/Shapes/Point";
-import { updateSolution } from "./UpdateSolution";
+import { updateSolution } from "./Actions/UpdateSolution";
 
-import { Algorithms, SelectedAlgorithms } from "./SelectedAlgorithms";
+import { Algorithms, SelectedAlgorithms } from "./Types/SelectedAlgorithms";
 import { store } from "../../Redux/Store/store";
-import { RunningOptions } from "./RunningOptions";
+import { RunningOptions } from "./Types/RunningOptions";
 import { Problem } from "../../Algorithms/Common/Problem/Types/Problem";
 import { State } from "../../Algorithms/Common/Problem/Types/State";
 import { Polygon } from "../../GUIElements/Types/Shapes/Polygon";

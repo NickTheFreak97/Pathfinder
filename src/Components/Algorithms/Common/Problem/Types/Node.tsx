@@ -21,6 +21,6 @@ export const makeNode = ( problem: Problem, parent: Node, action: Action ): Node
 }
 
 export const compareNodes = ( n1: Node, n2: Node ) => {
-    return compareStates(n1.state, n2.state) && n1.parent === n2.parent &&
-        compareActions( n1.action, n2.action ) && n1.cost === n2.cost;
+    return `(${n1.parent?.action[0]},${n1.parent?.action[1]})-->(${n1.action[0]},${n1.action[1]})` ===
+            `(${n2.parent?.action[0]},${n2.parent?.action[1]})-->(${n2.action[0]},${n2.action[1]})`;
 }

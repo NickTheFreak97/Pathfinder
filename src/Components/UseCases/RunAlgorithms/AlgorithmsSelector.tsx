@@ -1,15 +1,15 @@
 import React, { useState, Dispatch } from 'react';
 import { MultiSelect, Stack, Checkbox, Button } from '@mantine/core';
 import { connect } from 'react-redux';
-import { runAlgorithms } from './run';
+import { runAlgorithms } from './onRun';
 
 import { State } from '../../GUIElements/Types/Redux/State';
 import { InteractionMode } from '../../Utils/interactionMode';
 import { Polygon } from '../../GUIElements/Types/Shapes/Polygon';
-import { RunningOptions, updateRunningOptions } from './RunningOptions';
+import { RunningOptions, updateRunningOptions } from './Types/RunningOptions';
 import { Action } from '../../GUIElements/Types/Redux/Action';
 import { PointInfo } from '../../GUIElements/Types/Shapes/PointInfo';
-import { Algorithms, SelectedAlgorithms, makeEmptySelectedAlgorithms } from './SelectedAlgorithms';
+import { Algorithms, SelectedAlgorithms, makeEmptySelectedAlgorithms } from './Types/SelectedAlgorithms';
 
 const mapStateToProps = (state: State) => {
     return {
@@ -80,6 +80,8 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                         label="Compute effective branching factor"
                         color="dark"
                         radius="xs"
+                        checked={options.computeEFB}
+                        disabled={!selectedAlgorithms.BFS}
                         onChange={(event: React.ChangeEvent<Element & { checked: boolean }>) => {
                             updateOptions( {...options, computeEFB: event.currentTarget.checked} )
                         }} 
@@ -98,6 +100,7 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                         label="Save log"
                         color="dark"
                         radius="xs"
+                        checked={options.log}
                         onChange={(event: React.ChangeEvent<Element & { checked: boolean }>) => {
                             updateOptions( {...options, log: event.currentTarget.checked} )
                         }}
