@@ -91,6 +91,7 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                         label="Verbose mode"
                         color="dark"
                         radius="xs"
+                        checked={options.verbose}
                         onChange={(event: React.ChangeEvent<Element & { checked: boolean }>) => {
                             updateOptions( {...options, verbose: event.currentTarget.checked} )
                         }}

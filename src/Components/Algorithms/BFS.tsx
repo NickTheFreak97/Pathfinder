@@ -40,10 +40,10 @@ const _BFS = ( problem: Problem ) : Action[] | undefined => {
                     if( typeof store.getState().explored![toString(nextNode.state)] === "undefined" 
                             && !store.getState().frontier!.contains(nextNode) ) {
 
-                        if( problem.goalTest( poppedNode.state ) ) {
+                        if( problem.goalTest( nextNode.state ) ) {
     
                             const solution: Action[] = [];
-                            let theNode: Node | null | undefined = poppedNode;
+                            let theNode: Node | null | undefined = nextNode;
                             while( theNode !== null ) {
                                 solution.splice( 0, 0, theNode!.action );
                                 theNode = theNode!.parent;

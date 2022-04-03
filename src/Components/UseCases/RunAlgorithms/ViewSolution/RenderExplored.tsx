@@ -32,8 +32,8 @@ const RenderExplored: React.FC<RenderExploredProps> = ({ explored, options }) =>
                                     .map( (coordinate: string) : number => parseFloat(coordinate) )
 
                     return <Arrow points={pt}
-                            fill="rgba(0,128,128, .3)"
-                            stroke="rgba(0,128,128, .3)"
+                            fill="rgba(0,128,128, .15)"
+                            stroke="rgba(0,128,128, .15)"
                             strokeWidth={1}
                             tension={1}
                             lineCap="round"
