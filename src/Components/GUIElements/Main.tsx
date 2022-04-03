@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Container } from '@mantine/core';
 
 import Canva from './Canva';
+import Legend from './Legend';
 
 
 const Main = ()=>{
@@ -26,6 +27,7 @@ const Main = ()=>{
             }}
         >
             <Canva width={theWidth} height={theHeight}/>
+            <Legend />
         </Container>
     )
 }
