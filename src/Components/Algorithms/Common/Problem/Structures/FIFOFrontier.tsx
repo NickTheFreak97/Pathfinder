@@ -13,7 +13,7 @@ export class FIFOFrontier implements Frontier {
     }
 
     getFirst = () : Node | undefined => {
-        const poppedNode: Node | undefined = this.queue.pop();
+        const poppedNode: Node | undefined = this.queue.shift();
         return poppedNode;
     }
 
@@ -22,7 +22,7 @@ export class FIFOFrontier implements Frontier {
     } 
 
     push = (node: Node) : Array<Node> => {
-        this.queue.splice(0,0,node);
+        this.queue.push(node);
         return this.queue;
     }
 

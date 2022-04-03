@@ -53,16 +53,16 @@ const _popFrontier = ( queue: Array<Node> ): ReduxAction => {
 }
 
 export const popFrontier = () => ( dispatch: Dispatch<ReduxAction>, getState: ()=> ReduxState ) => {
-        const newFrontierQ: Array<Node> = [...getState().frontier!.queue];
+        const frontier: Frontier | null | undefined = getState().frontier;
     
-        if( newFrontierQ.length <= 0 )
+        if( !frontier || frontier?.isEmpty() )
             return null;
         else {
-            const poppedNode: Node | null | undefined = newFrontierQ.pop();
-            if( poppedNode === null || poppedNode === undefined )
+            const poppedNode: Node | null | undefined = frontier.getFirst();
+            if( !poppedNode )
                 return;
             else {
-                dispatch( _popFrontier( newFrontierQ ) );
+                dispatch( _popFrontier( frontier.queue.slice() ) );
                 return poppedNode;
             }
         }
