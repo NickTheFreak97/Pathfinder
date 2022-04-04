@@ -13,6 +13,7 @@ import { Polygon } from "../../GUIElements/Types/Shapes/Polygon";
 import { PointInfo } from "../../GUIElements/Types/Shapes/PointInfo";
 import { Action } from "../../Algorithms/Common/Problem/Types/Action";
 import { Vertex } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
+import { DFS } from "../../Algorithms/DFS";
 
 const makeProblem = (): Problem => {
     const startPoint: PointInfo = store.getState().startPoint!;
@@ -52,7 +53,17 @@ export const runAlgorithms = (selected: SelectedAlgorithms) => {
                 store.dispatch(updateSolution(actions));
             }
         ).catch(
-            error => console.log("No path between the given points")
+            () => console.log("No path between the given points")
         )
+    } else {
+
+        if( selected[Algorithms.DFS] ) {
+            DFS(problem).then(
+                (solution: Action[] | undefined) =>  store.dispatch( updateSolution(solution) )
+            ).catch(
+                () => console.log("No path between the given points")
+            )
+        }
+        
     }
 }

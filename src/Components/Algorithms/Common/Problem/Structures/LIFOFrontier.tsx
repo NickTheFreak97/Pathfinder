@@ -13,7 +13,7 @@ export class LIFOFrontier implements Frontier {
     }
 
     getFirst = () : Node | undefined => {
-        return this.queue.pop();
+        return this.queue.shift();
     }
 
     isEmpty = () : boolean => {
@@ -21,7 +21,7 @@ export class LIFOFrontier implements Frontier {
     } 
 
     push = (node: Node) : Array<Node> => {
-        this.queue.push(node);
+        this.queue.splice(0, 0, node);
         return this.queue;
     }
 
