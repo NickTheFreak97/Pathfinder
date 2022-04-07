@@ -1,6 +1,10 @@
 import { updateVisibilityMap } from "./Actions/updateVisibilityMap";
 import { getVisibilityMap, extractID } from "../../Algorithms/Common/VisibilityMap/VisibilityMap";
 import { BFS } from "../../Algorithms/BFS";
+import { DFS } from "../../Algorithms/DFS";
+import { ID } from "../../Algorithms/ID";
+import { UniformCost } from "../../Algorithms/UniformCost";
+import { AStar } from "../../Algorithms/AStar";
 import { toVertex } from "../../GUIElements/Types/Shapes/Point";
 import { updateSolution } from "./Actions/UpdateSolution";
 
@@ -13,9 +17,7 @@ import { Polygon } from "../../GUIElements/Types/Shapes/Polygon";
 import { PointInfo } from "../../GUIElements/Types/Shapes/PointInfo";
 import { Action } from "../../Algorithms/Common/Problem/Types/Action";
 import { Vertex } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
-import { DFS } from "../../Algorithms/DFS";
-import { ID } from "../../Algorithms/ID";
-import { UniformCost } from "../../Algorithms/UniformCost";
+
 
 const makeProblem = (): Problem => {
     const startPoint: PointInfo = store.getState().startPoint!;
@@ -78,5 +80,13 @@ export const runAlgorithms = (selected: SelectedAlgorithms) => {
                         ).catch(
                             ()=> console.log("No path between the given points")
                         )
+                        else
+                            if( selected[Algorithms.AStart] )
+                                AStar( problem ).then(
+                                    ( solution: Action[] | null ) => store.dispatch( updateSolution(solution as Vertex[]) )
+                                ).catch(
+                                    ()=> console.log("No path between the given points")
+                                )
+
 
 }
