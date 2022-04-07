@@ -11,11 +11,11 @@ import { Problem } from "./Common/Problem/Types/Problem";
 import { Node } from "./Common/Problem/Types/Node";
 import { toString } from "./Common/Problem/Types/State";
 
-const _UniformCost = ( problem: Problem ): Action[] | null => {
+export const _UniformCost = ( problem: Problem, priority: ( node: Node ) => number ): Action[] | null => {
     const dispatch = store.dispatch;
     const state: () => ReduxState = store.getState;
 
-    dispatch( setFrontier(new MinPQFrontier( (node: Node) => node.cost || 0 ) ) );
+    dispatch( setFrontier(new MinPQFrontier( priority )) );
     const initialNode: Node = {
         state: problem.initialState,
         parent: null, 
@@ -59,7 +59,7 @@ const _UniformCost = ( problem: Problem ): Action[] | null => {
 
 export const UniformCost = ( problem: Problem ) => {
     return new Promise<Action[] | null>( (resolve, reject)=>{
-        const solution: Action[] | null = _UniformCost(problem);
+        const solution: Action[] | null = _UniformCost(problem, (node: Node) => node.cost || 0 ) ;
         if( solution )
             resolve(solution);
         else
