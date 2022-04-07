@@ -12,6 +12,7 @@ export const AStar = ( problem: Problem ) => {
         const result: Action[] | null = _UniformCost(
             problem,
             ( node: Node ) => 
+                node.cost + 
                 ( (node.state.value[1][0]-destPoint.coordinates.x! )*(node.state.value[1][0]-destPoint.coordinates.x! ) +
                   (node.state.value[1][1]-destPoint.coordinates.y! )*(node.state.value[1][1]-destPoint.coordinates.y! ) )
         )
