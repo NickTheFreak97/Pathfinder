@@ -1,5 +1,6 @@
 import { Frontier } from "../Types/Problem";
 import { Node, compareNodes } from "../Types/Node";
+import { compareStates, State } from "../Types/State";
 /**
  * An adaptation of the following code: 
  * https://www.davideaversa.it/blog/typescript-binary-heap/
@@ -39,6 +40,33 @@ import { Node, compareNodes } from "../Types/Node";
 
     contains = (node: Node) : boolean => {
         return this.queue.findIndex( (element: Node) => compareNodes( element, node ) ) !== -1;
+    }
+
+    containsState = ( state: State ) => {
+        return this.queue.findIndex( (element: Node) => compareStates( state, element.state ) ) !== -1;
+    }
+
+    replaceIfBetter = ( node: Node ) => {
+        const index: number = this.queue.findIndex( (element: Node) => compareStates( node.state, element.state ) );
+        if( index !== -1 && this.priority( node ) < this.priority( this.queue[index] )) {
+            this.remove( this.queue[index] );
+            this.queue.push( node );
+        }
+    } 
+
+    private remove(node: Node) {
+        let length = this.queue.length;
+        for (var i = 0; i < length; i++) {
+            if (this.queue[i].state != node.state) 
+                continue;
+            let end = this.queue.pop();
+            if (i == length - 1) 
+                break;
+            this.queue[i] = end!;
+            this.bubbleUp(i);
+            this.sinkDown(i);
+            break;
+        }
     }
 
     private bubbleUp(n: number) {
