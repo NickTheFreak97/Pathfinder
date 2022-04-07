@@ -3,7 +3,21 @@ import { UPDATE_RUNNING_OPTIONS } from "../../../Redux/Actions/ActionTypes";
 
 export interface RunningOptions {
     computeEFB: boolean,
-    verbose: boolean,
+    verbose: {
+        show: {
+            frontier: boolean,
+            explored: boolean,
+            visibility: boolean,
+            solution: boolean, 
+        }
+
+        opacity: {
+            frontier: number,
+            explored: number,
+            visibility: number,
+            solution: number, 
+        }
+    },
     log: boolean
 }
 

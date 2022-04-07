@@ -22,7 +22,21 @@ const initialState = {
 
     options: {
         computeEFB: false,
-        verbose: false,
+        verbose: {
+            show: {
+                frontier: false,
+                explored: false,
+                visibility: false,
+                solution: true,
+            }, 
+            
+            opacity: {
+                frontier: 30,
+                explored: 15,
+                visibility: 100,
+                solution: 100,
+            }
+        },
         log: false
     },
 

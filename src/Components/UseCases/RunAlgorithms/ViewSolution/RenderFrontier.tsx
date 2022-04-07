@@ -23,7 +23,7 @@ interface RenderFrontierProps {
 const RenderFrontierProps: React.FC<RenderFrontierProps> = ({ frontier, options }) => {
     return (
         <React.Fragment>
-            {(options.verbose && !!frontier) &&
+            {(options.verbose.show.frontier && !!frontier) &&
                 frontier.queue.map(
                     ( n: Node, index: number, _: Node[] ) => 
                     !!n.parent &&
@@ -32,8 +32,8 @@ const RenderFrontierProps: React.FC<RenderFrontierProps> = ({ frontier, options 
                                 [ n.parent.action[0], n.parent.action[1], n.action[0], n.action[1] ]
                             }
                             strokeWidth={1}
-                            fill="rgba(0,0,255, .3)"
-                            stroke="rgba(0,0,255, .3)"
+                            fill={`rgba(0,0,255, ${options.verbose.opacity.frontier/100})`}
+                            stroke={`rgba(0,0,255, ${options.verbose.opacity.frontier/100})`}
                             lineCap="round"
                             lineJoin="round"
                             key={`${extractID(n.parent.action!)}->${extractID(n.action)}`}

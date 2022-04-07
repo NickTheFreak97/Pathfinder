@@ -20,7 +20,7 @@ interface RenderExploredProps {
 const RenderExplored: React.FC<RenderExploredProps> = ({ explored, options }) => {
     return <React.Fragment>
         {
-            ( !!explored && options.verbose ) &&
+            ( !!explored && options.verbose.show.explored ) &&
             Object.keys( explored ).map(
                 (stateID: string) =>{
 
@@ -32,8 +32,8 @@ const RenderExplored: React.FC<RenderExploredProps> = ({ explored, options }) =>
                                     .map( (coordinate: string) : number => parseFloat(coordinate) )
 
                     return <Arrow points={pt}
-                            fill="rgba(0,128,128, .15)"
-                            stroke="rgba(0,128,128, .15)"
+                            fill={`rgba(0,128,128,${options.verbose.opacity.explored/100})`}
+                            stroke={`rgba(0,128,128,${options.verbose.opacity.explored/100})`}
                             strokeWidth={1}
                             tension={1}
                             lineCap="round"

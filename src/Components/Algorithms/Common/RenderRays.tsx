@@ -14,12 +14,14 @@ import { ThreeOrMoreVertices } from "../../GUIElements/Types/Shapes/PolygonGUIPr
 import { Point as Point_t } from "../../GUIElements/Types/Shapes/Point";
 import { Segment } from "../../UseCases/InputPolygon/Common/Geometry";
 import { Vertex } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
+import { RunningOptions } from "../../UseCases/RunAlgorithms/Types/RunningOptions";
 
 const mapStateToProps = (state: State) => {
     return {
         polygons: state.polygons,
         startPoint: state.startPoint,
         destinationPoint: state.destinationPoint,
+        options: state.options,
     }
 }
 
@@ -27,9 +29,10 @@ interface RenderRaysProps {
     polygons: Polygon[],
     startPoint: PointInfo | null | undefined,
     destinationPoint: PointInfo | null | undefined,
+    options: RunningOptions,
 }
 
-const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinationPoint}) => {
+const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinationPoint, options}) => {
 
     const obstacles: Segment[] = 
         _.flatten(
@@ -49,7 +52,7 @@ const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinatio
     const visibilityMap: VisibilityMap = getVisibilityMap( polygons, startPoint, destinationPoint );
     console.log( visibilityMap );
 
-    if( !startPoint || !destinationPoint )
+    if( !startPoint || !destinationPoint || !options.verbose.show.visibility)
         return null;
     else
         return <React.Fragment>
@@ -64,8 +67,8 @@ const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinatio
                         <Point
                             x={intersectionPt.x!}
                             y={intersectionPt.y!}
-                            innerFill="#FF9933"
-                            outerFill="rgba(255,153,51,0.25)"
+                            innerFill={`rgb(255, 153, 51, ${options.verbose.opacity.visibility/100})`}
+                            outerFill={`rgba(255, 153, 51, ${options.verbose.opacity.visibility*0.25/100} )`}
                             name={uuidv4()}
                             key={`(${intersectionPt.x}, ${intersectionPt.y})`}
                         />
@@ -83,8 +86,8 @@ const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinatio
                         
                         return visibilityMap[pointID].map( (endPoint: Vertex) => 
                             <Arrow points={ [ start[0], start[1], endPoint[0], endPoint[1] ] }
-                                fill="#CCC"
-                                stroke="rgba(97,97,97, 0.3)"
+                                fill={`rgb(204, 204, 204, ${options.verbose.opacity.visibility/100})`}
+                                stroke={`rgba(97,97,97, ${options.verbose.opacity.visibility*0.3/100})`}
                                 strokeWidth={1}
                                 tension={1}
                                 lineCap="round"
@@ -100,8 +103,8 @@ const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinatio
                 <Line 
                     points={[startPoint.coordinates.x!, startPoint.coordinates.y!, destinationPoint.coordinates.x!, destinationPoint.coordinates.y!]}
                     strokeWidth={1}
-                    fill="#FF9933"
-                    stroke="#FF9933"
+                    fill={`rgb(255, 153, 51, ${options.verbose.opacity.visibility/100})`}
+                    stroke={`rgb(255, 153, 51, ${options.verbose.opacity.visibility/100})`}
                     lineCap="round"
                     lineJoin="round"
                     />

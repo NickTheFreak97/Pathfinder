@@ -35,6 +35,7 @@ export const _UniformCost = ( problem: Problem, priority: ( node: Node ) => numb
                 theSolution.splice(0, 0, prevNode.action);
                 prevNode = prevNode.parent;
             }
+
             return theSolution;
 
         } else {

@@ -1,7 +1,8 @@
-import React, { useState, Dispatch } from 'react';
-import { MultiSelect, Stack, Checkbox, Button } from '@mantine/core';
+import React, { Dispatch, useState } from 'react';
+import { MultiSelect, Stack, Checkbox, Button, Accordion, Slider, Title, Group, Text, ScrollArea } from '@mantine/core';
 import { connect } from 'react-redux';
 import { runAlgorithms } from './onRun';
+import { store } from '../../Redux/Store/store';
 
 import { State } from '../../GUIElements/Types/Redux/State';
 import { InteractionMode } from '../../Utils/interactionMode';
@@ -48,6 +49,43 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
     
     const [ selectedAlgorithms, setSelectedAlgorithms ] = useState<SelectedAlgorithms>(makeEmptySelectedAlgorithms());
 
+    const updateChecked = ( key: "frontier" | "explored" | "solution" | "visibility", checked: boolean ) => {
+        const currentOptions: RunningOptions = store.getState().options;
+        const newOptions: RunningOptions = {
+            ...currentOptions, 
+            verbose: {
+                show: { 
+                    ...currentOptions.verbose.show, 
+                    [key]: checked 
+                },
+
+                opacity: {
+                    ...currentOptions.verbose.opacity,
+                }
+            } 
+        }
+
+        updateOptions(newOptions);
+    } 
+
+    const updateOpacity = ( key: "frontier" | "explored" | "solution" | "visibility", opacity: number ) => {
+        const currentOptions: RunningOptions = store.getState().options;
+        const newOptions: RunningOptions = {
+            ...currentOptions, 
+            verbose: { 
+                show: {
+                    ...currentOptions.verbose.show,
+                }, 
+
+                opacity: {
+                    ...currentOptions.verbose.opacity, 
+                    [key]: opacity
+                } 
+            } 
+        }
+        updateOptions( newOptions );
+    }
+
     const updateSelectedAlgorithms = (selected: string[]) : SelectedAlgorithms=> {
         const newAlgorithms: SelectedAlgorithms = makeEmptySelectedAlgorithms();
 
@@ -64,7 +102,14 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
         return null;
     else
         return (
-            <React.Fragment>
+            <ScrollArea style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                flexBasis: "77%",
+                flexGrow: 0,
+                maxWidth: '250px',
+              }}>
                 <MultiSelect
                     style={{
                         marginTop: '0.75rem'
@@ -75,7 +120,7 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                     placeholder="Pick the algorithms to run"
                 />
 
-                <Stack justify="flex-start" spacing="xs" style={{ height: 300, marginTop: '1.25rem' }}>
+                <Stack justify="flex-start" spacing="xs" style={{ marginTop: '1.25rem' }}>
                     <Checkbox
                         label="Compute effective branching factor"
                         color="dark"
@@ -85,16 +130,6 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                         onChange={(event: React.ChangeEvent<Element & { checked: boolean }>) => {
                             updateOptions( {...options, computeEFB: event.currentTarget.checked} )
                         }} 
-                        />
-                    
-                    <Checkbox
-                        label="Verbose mode"
-                        color="dark"
-                        radius="xs"
-                        checked={options.verbose}
-                        onChange={(event: React.ChangeEvent<Element & { checked: boolean }>) => {
-                            updateOptions( {...options, verbose: event.currentTarget.checked} )
-                        }}
                         />
 
                     <Checkbox
@@ -107,6 +142,106 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                         }}
                         />
 
+                    <Accordion iconPosition="right">
+                        <Accordion.Item label="Visibility">
+                        <Stack justify="flex-start" spacing="xs" >
+                            <Checkbox
+                                label="Show frontier"
+                                color="dark"
+                                radius="xs"
+                                checked={options.verbose.show.frontier}
+                                onChange={(event: React.ChangeEvent<Element & { checked: boolean }>) => updateChecked("frontier", event.currentTarget.checked )}
+                                />
+
+                                <Checkbox
+                                    label="Show explored"
+                                    color="dark"
+                                    radius="xs"
+                                    checked={options.verbose.show.explored}
+                                    onChange={(event: React.ChangeEvent<Element & { checked: boolean }>) => updateChecked("explored", event.currentTarget.checked )}
+                                />
+
+                                <Checkbox
+                                    label="Show visibility map"
+                                    color="dark"
+                                    radius="xs"
+                                    checked={options.verbose.show.visibility}
+                                    onChange={(event: React.ChangeEvent<Element & { checked: boolean }>) => updateChecked("visibility", event.currentTarget.checked ) }
+                                />
+
+                                <Stack>
+                                    <Checkbox
+                                        label="Show solution"
+                                        color="dark"
+                                        radius="xs"
+                                        checked={options.verbose.show.solution}
+                                        onChange={(event: React.ChangeEvent<Element & { checked: boolean }>) => updateChecked("solution", event.currentTarget.checked )}
+                                    />
+                                        
+                                    <Title order={6}>
+                                        Opacities
+                                    </Title>
+
+                                    <Group style={{width: "100%"}}>
+                                        <Text weight={500}>
+                                            Frontier:
+                                        </Text>
+                                        <Slider style={{width: "60%", marginLeft: "auto"}}
+                                            color="blue"
+                                            size="sm"
+                                            radius="xs"
+                                            value={options.verbose.opacity.frontier}
+                                            onChange={ (newOpacity: number) => updateOpacity("frontier", newOpacity) }
+                                            />
+                                    </Group>
+
+                                    <Group style={{width: "100%"}}>
+                                        <Text weight={500}>
+                                            Explored:
+                                        </Text>
+                                        <Slider style={{width: "60%", marginLeft: "auto"}}
+                                            color="cyan"
+                                            size="sm"
+                                            radius="xs"
+                                            value={options.verbose.opacity.explored}
+                                            onChange={ (newOpacity: number) => 
+                                                updateOpacity("explored", newOpacity) }
+                                            />
+                                    </Group>
+
+
+                                    <Group style={{width: "100%"}}>
+                                        <Text weight={500}>
+                                            Solution:
+                                        </Text>
+                                        <Slider style={{width: "60%", marginLeft: "auto"  }}
+                                            color="red"
+                                            size="sm"
+                                            radius="xs"
+                                            value={options.verbose.opacity.solution}
+                                            onChange={ (newOpacity: number) => updateOpacity("solution", newOpacity) }
+                                            />
+                                    </Group>
+
+                                    <Group style={{width: "100%"}}>
+                                    <Text weight={500}>
+                                        Visibility:
+                                    </Text>
+                                    <Slider style={{width: "60%", marginLeft: "auto"}}
+                                        color="gray"
+                                        size="sm"
+                                        radius="xs"
+                                        value={options.verbose.opacity.visibility}
+                                        onChange={ (newOpacity: number) => updateOpacity("visibility", newOpacity) }
+                                        />
+                                    </Group>
+
+                                </Stack>
+
+                            </Stack>
+                        </Accordion.Item>
+                    </Accordion>
+
                     <Button color="dark" style={{marginTop: "0.5rem", alignSelf: "flex-start"}}
                         disabled={  polygons.length <= 0 || !startPoint || !destinationPoint ||
                                     polygons.reduce( ( currentVal: boolean, polygon: Polygon ) => currentVal || !polygon.isConvex , false) ||
@@ -117,7 +252,7 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                     </Button>
                 </Stack>
                 
-            </React.Fragment>
+            </ScrollArea>
         );
         
 }
