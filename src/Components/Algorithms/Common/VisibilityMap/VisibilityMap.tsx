@@ -1,5 +1,8 @@
+import Konva from "konva";
 import { validate } from "uuid";
 import { anyVisibleObstacle } from "../Raycasting";
+import { toPoint } from "../../../GUIElements/Types/Shapes/PolygonGUIProps";
+import { toVertex } from "../../../GUIElements/Types/Shapes/Point";
 import { polygonsToObstacleSegments, polygonsToAllVertices } from "./utils";
 import { Vertex } from "../../../GUIElements/Types/Shapes/PolygonGUIProps";
 import { Polygon } from "../../../GUIElements/Types/Shapes/Polygon";
@@ -20,6 +23,21 @@ export const extractPoint = ( pointID: string ) : Vertex => {
     return [ parseFloat(coordinates[0]), parseFloat(coordinates[1].replace(')', '')) ];
 }
 
+const extractTransformedID = ( polygon: Polygon, vertex: Vertex ) : string => {
+    return extractID( 
+        toVertex(
+            ( polygon.transform as Konva.Transform)
+                .point( 
+                    toPoint(vertex) as Konva.Vector2d 
+                ) 
+            ) 
+        ) ;
+}
+
+const extractTransformedVertex = (polygon: Polygon, vertex: Vertex) : Vertex => {
+    return toVertex((polygon.transform as Konva.Transform).point( toPoint(vertex) as Konva.Vector2d)) 
+}
+
 export const getVisibilityMap = (polygons: Polygon[], startPoint: PointInfo | null | undefined, destinationPoint: PointInfo | null | undefined) : VisibilityMap => {
     const visibilityMap: VisibilityMap = {};
     const obstacles: Segment[] = polygonsToObstacleSegments( polygons );
@@ -29,30 +47,30 @@ export const getVisibilityMap = (polygons: Polygon[], startPoint: PointInfo | nu
 
             for( let p:number=0; p < polygons[i].vertices.length; p++ ) {
                 const PiVerticesCount: number = polygons[i].vertices.length;
-                const pointID: string = extractID(polygons[i].vertices[p]);
+                const pointID: string = extractTransformedID( polygons[i], polygons[i].vertices[p] );
                 
                 if( !( pointID in visibilityMap ) )
                     Object.assign( visibilityMap, { [pointID]: [] } );
 
                 if( k==0 ) {
-                    visibilityMap[pointID].push(polygons[i].vertices[(p+1) % PiVerticesCount]);
-                    visibilityMap[pointID].push(polygons[i].vertices[(p-1+PiVerticesCount) % PiVerticesCount]);
+                    visibilityMap[pointID].push( extractTransformedVertex( polygons[i], polygons[i].vertices[(p+1) % PiVerticesCount] ) ) ;
+                    visibilityMap[pointID].push( extractTransformedVertex( polygons[i], polygons[i].vertices[(p-1+PiVerticesCount) % PiVerticesCount] ) );
                 }
 
                 if( polygons[i].id === polygons[k].id )
                     continue;
 
-                const startVertex: Point = { 
+                const startVertex: Point = (polygons[i].transform as Konva.Transform).point({
                     x: polygons[i].vertices[p][0],
                     y: polygons[i].vertices[p][1]
-                }
+                } as Konva.Vector2d);
 
                 for( let q:number=0; q < polygons[k].vertices.length; q++ ) {
 
-                    const destinationVertex: Point = {
+                    const destinationVertex: Point = (polygons[k].transform as Konva.Transform).point({
                         x: polygons[k].vertices[q][0],
                         y: polygons[k].vertices[q][1]
-                    }
+                    } as Konva.Vector2d);
 
                     if( !anyVisibleObstacle( startVertex, obstacles, destinationVertex ) )
                         visibilityMap[pointID].push([ destinationVertex.x!, destinationVertex.y!]);
@@ -64,9 +82,12 @@ export const getVisibilityMap = (polygons: Polygon[], startPoint: PointInfo | nu
 
             const startID = extractID([startPoint.coordinates.x!, startPoint.coordinates.y!]);
             visibilityMap[ startID ] = getStartPointVisibilityMap( startPoint, polygons, obstacles );
-
+            
+            
             visibilityMap[ startID ].forEach( (vertex: Vertex) => {
                 const vertexID: string = extractID(vertex);
+                if( !visibilityMap[vertexID] )
+                    visibilityMap[vertexID] = [];
                 visibilityMap[ vertexID ].push( [startPoint.coordinates.x!, startPoint.coordinates.y!] );
             } )
         }
@@ -78,6 +99,8 @@ export const getVisibilityMap = (polygons: Polygon[], startPoint: PointInfo | nu
 
             visibilityMap[ destinationID ].forEach( (vertex: Vertex) => {
                 const vertexID: string = extractID(vertex);
+                if( !visibilityMap[vertexID] )
+                    visibilityMap[vertexID] = [];
                 visibilityMap[ vertexID ].push( [destinationPoint.coordinates.x!, destinationPoint.coordinates.y!] );
             } )
         }

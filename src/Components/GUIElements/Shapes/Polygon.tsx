@@ -1,10 +1,12 @@
-import React, { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, Dispatch } from "react";
 import Konva from "konva";
 import { Shape, Group } from "react-konva";
 import _ from 'lodash';
+import { connect } from "react-redux";
 
 import Point from "./Point";
 import { PolygonGUIProps, Vertex } from "../Types/Shapes/PolygonGUIProps";
+import { updateTransform } from "../../UseCases/TransformPolygon/UpdateTransform";
 
 interface AABB {
   x: number,
@@ -13,12 +15,25 @@ interface AABB {
   height: number,
 }
 
+const mapDispatchToProps = ( dispatch: Dispatch<any> ) => {
+  return {
+    setTransform: ( polygonID: string, transform: Konva.Transform ) => dispatch( updateTransform(polygonID, transform) )
+  }
+}
+
 const Polygon = (props: PolygonGUIProps) => {
   const shapeRef = useRef< { getSelfRect: ()=> AABB } & Konva.Shape >(null);
   const groupRef = useRef< { getSelfRect: ()=> AABB } & Konva.Group >(null);
 
   const [scaleX, updateScaleX] = useState<number>(1);
   const [scaleY, updateScaleY] = useState<number>(1);
+
+  useEffect(
+    ()=>{
+      if( !!groupRef?.current )
+        props.setTransform( props.name, groupRef.current.getTransform() );
+    }, [groupRef?.current?.getTransform()]
+  )
 
   useEffect(() => {
     /**
@@ -61,9 +76,12 @@ const Polygon = (props: PolygonGUIProps) => {
       name={props.name}
       onTransformEnd={_.debounce(() => { 
         updateScaleX(groupRef?.current?.scaleX() || 1);
-        updateScaleY( groupRef?.current?.scaleY() || 1) 
+        updateScaleY( groupRef?.current?.scaleY() || 1);
+        props.setTransform( props.name, groupRef!.current!.getTransform() );
       }, 500)}
-      onDragEnd={() => {}}
+      onDragEnd={() => {
+        props.setTransform( props.name, groupRef!.current!.getTransform() );
+      }}
       draggable
     >
       <Shape
@@ -118,4 +136,4 @@ Polygon.defaultProps = {
   },
 };
 
-export default Polygon;
+export default connect(null, mapDispatchToProps)(Polygon);

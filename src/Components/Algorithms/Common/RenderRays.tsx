@@ -1,3 +1,4 @@
+import Konva from "konva";
 import React from "react";
 import { Line, Arrow } from "react-konva";
 import { connect } from 'react-redux';
@@ -10,11 +11,13 @@ import Point from "../../GUIElements/Shapes/Point";
 import { State } from "../../GUIElements/Types/Redux/State";
 import { PointInfo } from "../../GUIElements/Types/Shapes/PointInfo";
 import { Polygon } from "../../GUIElements/Types/Shapes/Polygon";
-import { ThreeOrMoreVertices } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
-import { Point as Point_t } from "../../GUIElements/Types/Shapes/Point";
+import { ThreeOrMoreVertices, toPoint } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
+import { Point as Point_t, toVertex } from "../../GUIElements/Types/Shapes/Point";
 import { Segment } from "../../UseCases/InputPolygon/Common/Geometry";
 import { Vertex } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
 import { RunningOptions } from "../../UseCases/RunAlgorithms/Types/RunningOptions";
+
+import { store } from "../../Redux/Store/store";
 
 const mapStateToProps = (state: State) => {
     return {
@@ -33,10 +36,18 @@ interface RenderRaysProps {
 }
 
 const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinationPoint, options}) => {
+    const state: ()=> State = store.getState;
 
     const obstacles: Segment[] = 
         _.flatten(
-            polygons.map( (polygon: Polygon): ThreeOrMoreVertices => polygon.vertices )
+            state().polygons.map( (polygon: Polygon): ThreeOrMoreVertices => ( polygon.vertices.map(
+                ( vertex: Vertex ) => {
+                    if( !!polygon.transform )
+                        return toVertex( polygon.transform.point( toPoint(vertex) as Konva.Vector2d ) )
+                    else
+                        return vertex;
+                }
+            ) ) as ThreeOrMoreVertices)
             .map( (vertices: ThreeOrMoreVertices)  => 
                 vertices.map( (vertex: Vertex, i): Segment => 
                     [[vertex[0], vertex[1]], vertices[(i+1) % vertices.length ]] 
@@ -49,8 +60,7 @@ const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinatio
             raycast(startPoint.coordinates, obstacles, destinationPoint.coordinates )
         
 
-    const visibilityMap: VisibilityMap = getVisibilityMap( polygons, startPoint, destinationPoint );
-    console.log( visibilityMap );
+    const visibilityMap: VisibilityMap = getVisibilityMap( state().polygons, startPoint, destinationPoint );
 
     if( !startPoint || !destinationPoint || !options.verbose.show.visibility)
         return null;

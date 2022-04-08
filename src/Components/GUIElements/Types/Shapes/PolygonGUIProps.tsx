@@ -1,3 +1,4 @@
+import Konva from "konva";
 import { Point } from "./Point";
 
 export type Vertex = [number, number];
@@ -17,7 +18,8 @@ export interface PolygonGUIProps {
     stroke?: string,
     strokeWidth?: number,
     isDraggable?: boolean,
-    onPointSelected?: (pointID: string, pointX: number, pointY: number) => void;
+    onPointSelected?: (pointID: string, pointX: number, pointY: number) => void,
+    setTransform: (polygonID: string, transform: Konva.Transform) => void,
     error?: boolean,
 }
 
