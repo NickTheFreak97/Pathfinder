@@ -43,12 +43,13 @@ import { compareStates, State } from "../Types/State";
     }
 
     containsState = ( state: State ) => {
-        return this.queue.findIndex( (element: Node) => compareStates( state, element.state ) ) !== -1;
+        return this.queue.filter( (element: Node) => compareStates( state, element.state ) === true  ).length > 0;
     }
 
     replaceIfBetter = ( node: Node ) => {
         const index: number = this.queue.findIndex( (element: Node) => compareStates( node.state, element.state ) );
         if( index !== -1 && this.priority( node ) < this.priority( this.queue[index] )) {
+
             this.remove( this.queue[index] );
             this.queue.push( node );
         }

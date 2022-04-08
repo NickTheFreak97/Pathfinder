@@ -13,8 +13,8 @@ export const AStar = ( problem: Problem ) => {
             problem,
             ( node: Node ) => 
                 node.cost + 
-                ( (node.state.value[1][0]-destPoint.coordinates.x! )*(node.state.value[1][0]-destPoint.coordinates.x! ) +
-                  (node.state.value[1][1]-destPoint.coordinates.y! )*(node.state.value[1][1]-destPoint.coordinates.y! ) )
+                Math.sqrt(( (node.action[0]-destPoint.coordinates.x! )*(node.action[0]-destPoint.coordinates.x! ) +
+                  (node.action[1]-destPoint.coordinates.y! )*(node.action[1]-destPoint.coordinates.y! ) ))
         )
 
         if( !!result )

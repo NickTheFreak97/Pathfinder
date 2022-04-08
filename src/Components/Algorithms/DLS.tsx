@@ -47,11 +47,6 @@ function recursiveDLS( node: Node, problem: Problem, limit: number ) : Action[] 
         if( limit === 0 )
             return false;
         else {
-            const dispatch = store.dispatch;
-            const state: ()=> State = store.getState;
-
-            dispatch( pushToExplored( toString( node.state ) ) );
-
             let cutoff: boolean = false;
             let result: Action[] | false | null = null; 
             const availableActions = problem.actions( node.state );
@@ -59,14 +54,12 @@ function recursiveDLS( node: Node, problem: Problem, limit: number ) : Action[] 
             for( let i=0; i < availableActions.length; i++ ) {
                 let vertex: Action = availableActions[i];
                 const nextNode = makeNode( problem, node, vertex );
-                        if( state().explored![ toString( nextNode.state ) ] === undefined ) {
-                            result = recursiveDLS( nextNode, problem, limit-1 );
-                            if( !result )
-                                cutoff = true;
-                            else
-                                if( !!result )
-                                    return result;
-                        }
+                result = recursiveDLS( nextNode, problem, limit-1 );
+                if( !result )
+                    cutoff = true;
+                else
+                    if( !!result )
+                        return result;
             }
 
             if( cutoff )
