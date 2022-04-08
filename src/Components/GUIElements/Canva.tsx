@@ -131,10 +131,10 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, options, update
         </Layer>
         <Layer>
           { options.verbose && <RenderRays /> }
-          <RenderStartDest />
           <RenderFrontier />
           <RenderExplored />
           <ViewSolution />
+          <RenderStartDest />
         </Layer>
       </Provider>
     </Stage>

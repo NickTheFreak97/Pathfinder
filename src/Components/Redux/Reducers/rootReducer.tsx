@@ -1,7 +1,7 @@
 
 import { CHANGE_INTERACTION_MODE, POLYGON_ADDED, SET_CURRENT_POINT, UPDATE_NEW_POLY_VERTICES, SET_SELECTED_POLYGON_ID, 
          DELETE_POLYGON, SET_START_POINT, SET_DESTINATION_POINT, SET_FRONTIER, SET_EXPLORED, PUSH_FRONTIER, UPDATE_RUNNING_OPTIONS, UPDATE_VISIBILITY_MAP,
-         POP_FRONTIER, PUSH_EXPLORED, UPDATE_SOLUTION} from '../Actions/ActionTypes';
+         POP_FRONTIER, PUSH_EXPLORED, UPDATE_SOLUTION, UPDATE_POLYGON_TRANSFORM} from '../Actions/ActionTypes';
 import { InteractionMode } from '../../Utils/interactionMode';
 import { Action } from '../../GUIElements/Types/Redux/Action';
 import { State } from '../../GUIElements/Types/Redux/State';
@@ -155,6 +155,13 @@ const rootReducer = ( state : State = initialState, action: Action ) => {
             return {
                 ...state, 
                 solution: action.payload.solution
+            }
+        }
+
+        case UPDATE_POLYGON_TRANSFORM: {
+            return {
+                ...state,
+                polygons: action.payload.polygons
             }
         }
         
