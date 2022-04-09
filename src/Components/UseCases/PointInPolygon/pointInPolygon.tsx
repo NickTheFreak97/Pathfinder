@@ -12,8 +12,6 @@ import { Point } from "../../GUIElements/Types/Shapes/Point";
 export const pointInPolygon = ( point: Point, polygon: Polygon ) : boolean => {
     const verticesCount: number = polygon.vertices.length;
 
-    console.log("Producing point in polygon");
-
     const obstacles: Segment[] = 
         polygon.vertices.map(
             (vertex: Vertex, i: number): Segment => {
@@ -41,7 +39,6 @@ export const pointInPolygon = ( point: Point, polygon: Polygon ) : boolean => {
                     x: (obstacle[0][0]+obstacle[1][0])/2,
                     y: (obstacle[0][1]+obstacle[1][1])/2,
                 } );
-                console.log(obstaclesIntersections);
 
                 pointInside = pointInside && 
                                obstaclesIntersections!.length <= 1;

@@ -1,4 +1,5 @@
 import Konva from "konva";
+import { validate } from "uuid";
 
 import { UPDATE_POLYGON_TRANSFORM } from "../../Redux/Actions/ActionTypes";
 
@@ -9,10 +10,13 @@ import { updateSolution } from "../RunAlgorithms/Actions/UpdateSolution";
 import { updateVisibilityMap } from "../RunAlgorithms/Actions/updateVisibilityMap";
 import { setFrontier } from "../SetDataStructures/setFrontier";
 import { setExplored } from "../SetDataStructures/setExplored";
+import { toPoint } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
 
 import { Polygon } from "../../GUIElements/Types/Shapes/Polygon";
 import { Action } from "../../GUIElements/Types/Redux/Action";
 import { PointInfo } from "../../GUIElements/Types/Shapes/PointInfo";
+import { _setStartPoint } from "../SelectStartDest/selectStart";
+import { _setDestinationPoint } from "../SelectStartDest/selectDestination";
 
 
 
@@ -40,15 +44,38 @@ export const updateTransform = ( polygonID: string, transform: Konva.Transform )
         }
         const newPoly: Polygon[] = [ ...currentPolygons ];
         
+
         let pointInside: boolean = false;
-        if( !!startPoint )
+        if( !!startPoint && validate(startPoint.id) )
             pointInside = pointInside || pointInPolygon( startPoint.coordinates, thisPoly );
 
-        if( !!destinationPoint )
+        if( !!destinationPoint && validate(destinationPoint.id) )
             pointInside = pointInside || pointInPolygon( destinationPoint.coordinates, thisPoly );
         
         Object.assign( thisPoly, { pointInside: pointInside } );
+
+        if( !!startPoint && startPoint.id.includes( polygonID ) ) {
+            const vertexNumber: number = parseInt( startPoint.id.substring(39, startPoint.id.length) );
+
+            dispatch(
+                _setStartPoint({
+                    ...startPoint,
+                    coordinates: transform.point( toPoint(currentPolygons[polyIndex].vertices[vertexNumber]) as Konva.Vector2d) 
+                })
+            )
+        }
         
+        if( !!destinationPoint && destinationPoint.id.includes( polygonID ) ) {
+            const vertexNumber: number = parseInt( destinationPoint.id.substring(39, destinationPoint.id.length) );
+
+            dispatch(
+                _setDestinationPoint({
+                    ...destinationPoint,
+                    coordinates: transform.point( toPoint(currentPolygons[polyIndex].vertices[vertexNumber]) as Konva.Vector2d )
+                })
+            )
+        }
+
         newPoly.splice( polyIndex, 1, thisPoly );
 
         dispatch( _updateTransform( newPoly ) );
