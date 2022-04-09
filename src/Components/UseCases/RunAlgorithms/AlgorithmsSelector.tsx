@@ -244,7 +244,7 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
 
                     <Button color="dark" style={{marginTop: "0.5rem", alignSelf: "flex-start"}}
                         disabled={  polygons.length <= 0 || !startPoint || !destinationPoint ||
-                                    polygons.reduce( ( currentVal: boolean, polygon: Polygon ) => currentVal || !polygon.isConvex , false) ||
+                                    polygons.reduce( ( currentVal: boolean, polygon: Polygon ) => currentVal || !polygon.isConvex || !!polygon.pointInside, false) ||
                                     !Object.keys(selectedAlgorithms).reduce( (currentVal: boolean, algo: string) => currentVal || selectedAlgorithms[algo as Algorithms], false )
                                 }
                         onClick={ ()=> runAlgorithms(selectedAlgorithms) }>
