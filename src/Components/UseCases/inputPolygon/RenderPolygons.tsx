@@ -15,7 +15,7 @@ const RenderPolygons: React.FC<{ polygons: Polygon_T[] }> = ({ polygons }) => {
   return (
     <React.Fragment>
       {polygons.map((polygon: Polygon_T) => (
-        <Polygon points={polygon.vertices} name={polygon.id} key={polygon.id} error={polygon.isConvex === false}/>
+        <Polygon points={polygon.vertices} name={polygon.id} key={polygon.id} error={!polygon.isConvex || !!polygon.pointInside}/>
       ))}
     </React.Fragment>
   );

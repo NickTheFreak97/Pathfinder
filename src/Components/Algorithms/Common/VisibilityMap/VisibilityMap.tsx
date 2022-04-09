@@ -38,6 +38,10 @@ const extractTransformedVertex = (polygon: Polygon, vertex: Vertex) : Vertex => 
     return toVertex((polygon.transform as Konva.Transform).point( toPoint(vertex) as Konva.Vector2d)) 
 }
 
+/**
+ * @fixme When the starting or destination point matches the vertex of a polygon and it got transformed
+ *        or moved, the corresponding visibility graph won't get updated. 
+ */
 export const getVisibilityMap = (polygons: Polygon[], startPoint: PointInfo | null | undefined, destinationPoint: PointInfo | null | undefined) : VisibilityMap => {
     const visibilityMap: VisibilityMap = {};
     const obstacles: Segment[] = polygonsToObstacleSegments( polygons );
