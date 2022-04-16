@@ -30,7 +30,7 @@ const RenderHitboxes: React.FC<RenderHitboxesProps> = ({options, tree, polygons}
     )
 
     return <React.Fragment>
-        {
+        {   options.verbose.show.hitboxes && 
             tree.AllNodes.map(
                 (node: Node) => 
                     <Line
@@ -45,10 +45,10 @@ const RenderHitboxes: React.FC<RenderHitboxesProps> = ({options, tree, polygons}
                         
                         stroke={!!node.entity ? 
                             tree.queryRegion(node.aabb).length <= 1? 
-                                "orange":
-                                "red"
+                                `rgba(255, 153, 51, ${options.verbose.opacity.hitboxes/100})`:
+                                `rgba(255, 0, 0, ${options.verbose.opacity.hitboxes/100})`
                                 :
-                            "blue"}
+                                `rgba(32, 201, 151, ${options.verbose.opacity.hitboxes/100})`}
                     />
             )
         }

@@ -49,7 +49,7 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
     
     const [ selectedAlgorithms, setSelectedAlgorithms ] = useState<SelectedAlgorithms>(makeEmptySelectedAlgorithms());
 
-    const updateChecked = ( key: "frontier" | "explored" | "solution" | "visibility", checked: boolean ) => {
+    const updateChecked = ( key: "frontier" | "explored" | "solution" | "visibility" | "hitboxes", checked: boolean ) => {
         const currentOptions: RunningOptions = store.getState().options;
         const newOptions: RunningOptions = {
             ...currentOptions, 
@@ -68,7 +68,7 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
         updateOptions(newOptions);
     } 
 
-    const updateOpacity = ( key: "frontier" | "explored" | "solution" | "visibility", opacity: number ) => {
+    const updateOpacity = ( key: "frontier" | "explored" | "solution" | "visibility" | "hitboxes", opacity: number ) => {
         const currentOptions: RunningOptions = store.getState().options;
         const newOptions: RunningOptions = {
             ...currentOptions, 
@@ -169,6 +169,14 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                                     onChange={(event: React.ChangeEvent<Element & { checked: boolean }>) => updateChecked("visibility", event.currentTarget.checked ) }
                                 />
 
+                                <Checkbox
+                                    label="Show hitboxes"
+                                    color="dark"
+                                    radius="xs"
+                                    checked={options.verbose.show.hitboxes}
+                                    onChange={(event: React.ChangeEvent<Element & { checked: boolean }>) => updateChecked("hitboxes", event.currentTarget.checked ) }
+                                />
+
                                 <Stack>
                                     <Checkbox
                                         label="Show solution"
@@ -224,16 +232,29 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                                     </Group>
 
                                     <Group style={{width: "100%"}}>
-                                    <Text weight={500}>
-                                        Visibility:
-                                    </Text>
-                                    <Slider style={{width: "60%", marginLeft: "auto"}}
-                                        color="gray"
-                                        size="sm"
-                                        radius="xs"
-                                        value={options.verbose.opacity.visibility}
-                                        onChange={ (newOpacity: number) => updateOpacity("visibility", newOpacity) }
-                                        />
+                                        <Text weight={500}>
+                                            Visibility:
+                                        </Text>
+                                        <Slider style={{width: "60%", marginLeft: "auto"}}
+                                            color="gray"
+                                            size="sm"
+                                            radius="xs"
+                                            value={options.verbose.opacity.visibility}
+                                            onChange={ (newOpacity: number) => updateOpacity("visibility", newOpacity) }
+                                            />
+                                    </Group>
+
+                                    <Group style={{width: "100%"}}>
+                                        <Text weight={500}>
+                                            Hitboxes:
+                                        </Text>
+                                        <Slider style={{width: "60%", marginLeft: "auto"}}
+                                            color="teal"
+                                            size="sm"
+                                            radius="xs"
+                                            value={options.verbose.opacity.hitboxes}
+                                            onChange={ (newOpacity: number) => updateOpacity("hitboxes", newOpacity) }
+                                            />
                                     </Group>
 
                                 </Stack>

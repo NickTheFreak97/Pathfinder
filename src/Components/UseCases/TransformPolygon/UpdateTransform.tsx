@@ -10,16 +10,20 @@ import { updateSolution } from "../RunAlgorithms/Actions/UpdateSolution";
 import { updateVisibilityMap } from "../RunAlgorithms/Actions/updateVisibilityMap";
 import { setFrontier } from "../SetDataStructures/setFrontier";
 import { setExplored } from "../SetDataStructures/setExplored";
-import { toPoint } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
-import { P2BAdapter } from "../../Utils/AABBTree/Adapters/Poly2BoxAdapter";
+import { ThreeOrMoreVertices, toPoint, Vertex } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
+import { P2BAdapter, computeAABB } from "../../Utils/AABBTree/Adapters/Poly2BoxAdapter";
+import { toAABB } from "../../Utils/AABBTree/aabb";
+import { toVertex } from "../../GUIElements/Types/Shapes/Point";
 
+import { Point } from "../../GUIElements/Types/Shapes/Point";
 import { Polygon } from "../../GUIElements/Types/Shapes/Polygon";
 import { Action } from "../../GUIElements/Types/Redux/Action";
 import { PointInfo } from "../../GUIElements/Types/Shapes/PointInfo";
 import { _setStartPoint } from "../SelectStartDest/selectStart";
 import { _setDestinationPoint } from "../SelectStartDest/selectDestination";
-
-
+import { Node } from "../../Utils/AABBTree/aabbtree";
+import { Box } from "../../Utils/AABBTree/box";
+import { AABB, union } from "../../Utils/AABBTree/aabb";
 
 const _updateTransform = ( polygons: Polygon[] ) : Action=> {
     return {
@@ -39,9 +43,15 @@ export const updateTransform = ( polygonID: string, transform: Konva.Transform )
     const polyIndex: number = currentPolygons.findIndex( (polygon: Polygon) => polygon.id === polygonID );
     if( polyIndex !== -1 ) {
         
+        console.log(currentPolygons[polyIndex].transform === transform);
+
         const thisPoly: Polygon = {
             ...currentPolygons[ polyIndex ], 
-            transform
+            transform,
+            transformedVertices: [...currentPolygons[ polyIndex ].vertices.map( 
+                    (vertex: Vertex) : Vertex =>
+                        toVertex(transform.point( toPoint(vertex) as Konva.Vector2d ) as Point)
+                ) ] as ThreeOrMoreVertices
         }
         const newPoly: Polygon[] = [ ...currentPolygons ];
         
@@ -78,6 +88,15 @@ export const updateTransform = ( polygonID: string, transform: Konva.Transform )
         }
 
         newPoly.splice( polyIndex, 1, thisPoly );
+            
+        //@FIXME: If the polygon is moved too fast the hitbox doesn't get removed for whatever reason 
+        const area: AABB = union( computeAABB(currentPolygons[polyIndex].transformedVertices), computeAABB(thisPoly.transformedVertices) )
+        const nodesToRemove: Node[] = getState().AABBTree.queryRegion( area ).filter(
+            (n: Node) => !!n.entity && (n.entity as Box).id === thisPoly.id
+        );
+
+        nodesToRemove.forEach( (n: Node) => getState().AABBTree.remove(n) );
+
         getState().AABBTree.add( P2BAdapter(thisPoly) );
 
         dispatch( _updateTransform( newPoly ) );
