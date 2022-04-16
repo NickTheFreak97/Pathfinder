@@ -55,5 +55,7 @@ export const anyVisibleObstacle = ( startPoint: Point, obstacles: Segment[], des
             ) 
         );
 
+    console.log( "obstacles between ", startPoint, " and ", destinationPoint, ": ", visibleObstacles );
+
     return !( !visibleObstacles || visibleObstacles.length <= 0 );
 }

@@ -18,6 +18,7 @@ import { Vertex } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
 import { RunningOptions } from "../../UseCases/RunAlgorithms/Types/RunningOptions";
 
 import { store } from "../../Redux/Store/store";
+import { polygonsToObstacleSegments } from "./VisibilityMap/utils";
 
 const mapStateToProps = (state: State) => {
     return {
@@ -25,6 +26,8 @@ const mapStateToProps = (state: State) => {
         startPoint: state.startPoint,
         destinationPoint: state.destinationPoint,
         options: state.options,
+        visibilityMap: state.visibilityMap,
+        currentPoint: state.currentPoint,
     }
 }
 
@@ -33,36 +36,21 @@ interface RenderRaysProps {
     startPoint: PointInfo | null | undefined,
     destinationPoint: PointInfo | null | undefined,
     options: RunningOptions,
+    visibilityMap: VisibilityMap | null | undefined,
+    currentPoint: Vertex | null | undefined,
 }
 
-const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinationPoint, options}) => {
-    const state: ()=> State = store.getState;
+const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinationPoint, options, visibilityMap}) => {
 
     const obstacles: Segment[] = 
-        _.flatten(
-            state().polygons.map( (polygon: Polygon): ThreeOrMoreVertices => ( polygon.vertices.map(
-                ( vertex: Vertex ) => {
-                    if( !!polygon.transform )
-                        return toVertex( polygon.transform.point( toPoint(vertex) as Konva.Vector2d ) )
-                    else
-                        return vertex;
-                }
-            ) ) as ThreeOrMoreVertices)
-            .map( (vertices: ThreeOrMoreVertices)  => 
-                vertices.map( (vertex: Vertex, i): Segment => 
-                    [[vertex[0], vertex[1]], vertices[(i+1) % vertices.length ]] 
-                ) 
-            )
-        )
+        polygonsToObstacleSegments(polygons);
     
     const pt: Point_t[] | null | false = 
         (!!startPoint && !!destinationPoint) &&
             raycast(startPoint.coordinates, obstacles, destinationPoint.coordinates )
         
 
-    const visibilityMap: VisibilityMap = getVisibilityMap( state().polygons, startPoint, destinationPoint );
-
-    if( !startPoint || !destinationPoint || !options.verbose.show.visibility)
+    if( !startPoint || !destinationPoint || !visibilityMap || !options.verbose.show.visibility)
         return null;
     else
         return <React.Fragment>
@@ -70,10 +58,10 @@ const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinatio
                 !!pt &&
                 pt.map(
                     (intersectionPt: Point_t ) => 
-                        ( (intersectionPt.x !== startPoint.coordinates.x && 
-                            intersectionPt.y !== startPoint.coordinates.y) &&
-                            (intersectionPt.x !== destinationPoint.coordinates.x && 
-                                intersectionPt.y !== destinationPoint.coordinates.y) ) && 
+                    (
+                        extractID(toVertex(intersectionPt)) !== extractID( toVertex(startPoint.coordinates) ) &&
+                        extractID(toVertex(intersectionPt)) !== extractID( toVertex(destinationPoint.coordinates) ) 
+                    )  && 
                         <Point
                             x={intersectionPt.x!}
                             y={intersectionPt.y!}
@@ -84,9 +72,10 @@ const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinatio
                         />
                 )
             }
+
             {
                 _.flatten(
-                    Object.keys(visibilityMap).map( (pointID: string) => { 
+                    Object.keys(visibilityMap!).map( (pointID: string) => { 
                         const start: Vertex = !validate(pointID) ?
                             extractPoint(pointID) :
                                 ( pointID === startPoint.id ) ?
@@ -94,7 +83,7 @@ const RenderRays: React.FC<RenderRaysProps> = ({polygons, startPoint, destinatio
                                         :
                                     [ destinationPoint.coordinates.x!, destinationPoint.coordinates.y! ]
                         
-                        return visibilityMap[pointID].map( (endPoint: Vertex) => 
+                        return visibilityMap![pointID].map( (endPoint: Vertex) => 
                             <Arrow points={ [ start[0], start[1], endPoint[0], endPoint[1] ] }
                                 fill={`rgb(204, 204, 204, ${options.verbose.opacity.visibility/100})`}
                                 stroke={`rgba(97,97,97, ${options.verbose.opacity.visibility*0.3/100})`}
