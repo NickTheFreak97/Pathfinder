@@ -11,6 +11,7 @@ import { updateVisibilityMap } from "../RunAlgorithms/Actions/updateVisibilityMa
 import { setFrontier } from "../SetDataStructures/setFrontier";
 import { setExplored } from "../SetDataStructures/setExplored";
 import { toPoint } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
+import { P2BAdapter } from "../../Utils/AABBTree/Adapters/Poly2BoxAdapter";
 
 import { Polygon } from "../../GUIElements/Types/Shapes/Polygon";
 import { Action } from "../../GUIElements/Types/Redux/Action";
@@ -77,6 +78,7 @@ export const updateTransform = ( polygonID: string, transform: Konva.Transform )
         }
 
         newPoly.splice( polyIndex, 1, thisPoly );
+        getState().AABBTree.add( P2BAdapter(thisPoly) );
 
         dispatch( _updateTransform( newPoly ) );
 

@@ -6,6 +6,7 @@ import { InteractionMode } from '../../Utils/interactionMode';
 import { Action } from '../../GUIElements/Types/Redux/Action';
 import { State } from '../../GUIElements/Types/Redux/State';
 import { Polygon } from '../../GUIElements/Types/Shapes/Polygon';
+import { AABBTree } from '../../Utils/AABBTree/aabbtree';
 
 const initialState = {
     polygons: [], 
@@ -28,6 +29,7 @@ const initialState = {
                 explored: false,
                 visibility: false,
                 solution: true,
+                hitboxes: true,
             }, 
             
             opacity: {
@@ -35,12 +37,14 @@ const initialState = {
                 explored: 15,
                 visibility: 100,
                 solution: 100,
+                hitboxes: 100,
             }
         },
         log: false
     },
 
     solution: null,
+    AABBTree: new AABBTree()
 }
 
 const rootReducer = ( state : State = initialState, action: Action ) => {

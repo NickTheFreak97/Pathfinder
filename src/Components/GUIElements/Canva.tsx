@@ -25,6 +25,7 @@ import { State } from "./Types/Redux/State";
 import { RunningOptions } from "../UseCases/RunAlgorithms/Types/RunningOptions";
 import RenderFrontier from "../UseCases/RunAlgorithms/ViewSolution/RenderFrontier";
 import RenderExplored from "../UseCases/RunAlgorithms/ViewSolution/RenderExplored";
+import RenderHitboxes from "../Utils/AABBTree/RenderHitboxes";
 
 const mapStateToProps = (state: State) => {
   return {
@@ -122,6 +123,7 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, options, update
           height={height ? height * 0.75 : window.innerHeight}
         />
         <Layer>
+          <RenderHitboxes />
           <RenderPolygons />
           {
               usageMode === InteractionMode.DRAW_POLYGON &&
