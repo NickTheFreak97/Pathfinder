@@ -2,6 +2,37 @@ import { Point } from "../../GUIElements/Types/Shapes/Point"
 import { Segment } from "../../UseCases/InputPolygon/Common/Geometry"
 import { extractID } from "./VisibilityMap/VisibilityMap";
 import { toVertex } from "../../GUIElements/Types/Shapes/Point";
+import { toPoint } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
+
+type Range_t = [number, number];
+
+/** Tests if the two ranges passed as parameter do overlap */
+export const doRangesOverlap = ( rangeA: Range_t, rangeB: Range_t ) => {   
+    if(Math.max(rangeA[1], rangeB[1]) - Math.min(rangeA[0], rangeB[0]) < (rangeA[1] - rangeA[0]) + (rangeB[1] - rangeB[0]))
+        return true;
+    else 
+        return false;
+}
+
+/* Tests if the given point falls within the specified segment */
+export const isBetween = (segment: Segment, point: Point): boolean => {
+
+    const crossProd: number = (point.y! - segment[0][0]) * (segment[1][0] - segment[0][0]) - (point.x! - segment[0][0]) * (segment[1][1] - segment[0][1])
+    if( crossProd > Math.sqrt(Number.EPSILON) )
+        return false;
+
+    const dotProd: number = (point.x! - segment[0][0]) * (segment[1][0] - segment[0][0]) + (point.y! - segment[0][1])*(segment[1][1] - segment[0][1])
+
+    if( dotProd <  0 )
+        return false;
+
+    const squaredlengthBA: number = (segment[1][0] - segment[0][0])*(segment[1][0] - segment[0][0]) + (segment[1][1] - segment[0][1])*(segment[1][1] - segment[0][1]); 
+    if (dotProd > squaredlengthBA)
+        return false
+
+    return true
+}  
+
 /**
  * An implementation of the strategy for testing line segments intersection described here: 
  * https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line_segment
@@ -18,7 +49,15 @@ const lineSegmentsIntersection = ( S1: Segment, S2: Segment ) : Point | null => 
 
     const denominator = (x1-x2)*(y3-y4) - (y1-y2)*(x3-x4);
     if( denominator === 0)
-        return null;
+        if( doRangesOverlap( [S1[0][0], S1[1][0]], [S2[0][0], S2[1][0]] ) 
+            && doRangesOverlap( [S1[0][1], S1[1][1]], [S2[0][1], S2[1][1]]) ) 
+            if( isBetween(S1, {
+                x: S2[0][0],
+                y: S2[0][1]
+            }) )
+                return toPoint(S2[0])
+            else
+                return toPoint(S1[0])
 
     const t = ((x1-x3)*(y3-y4) - (y1-y3)*(x3-x4))/denominator;
     const u = ((x1-x3)*(y1-y2) - (y1-y3)*(x1-x2))/denominator;
