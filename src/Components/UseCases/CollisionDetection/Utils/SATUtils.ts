@@ -18,9 +18,15 @@ export const getSides = ( polygon: Polygon ) : Vector2D[] => {
 export const getNormals = ( polygon: Polygon, sides?: Vector2D[] ) : Vector2D[] => {
     const polySides: Vector2D[] = !!sides? sides : getSides(polygon); 
 
-    return polySides.map(
-        (side: Vector2D): Vector2D => side.normal()!.normalize()!
+    const axes: Vector2D[] = [];
+    polySides.forEach(
+        (side: Vector2D) => {
+            if( axes.findIndex( (s: Vector2D)=> side.normal()!.normalize()!.crossProduct(s).eq(0) ) === -1 ) 
+                axes.push(side.normal()!.normalize()!);
+        }
     );
+
+    return axes;
 }
 
 export const projectOntoAxis = (shape: Polygon, axis: Vector2D, sides?: Vector2D[]): MinMax => {

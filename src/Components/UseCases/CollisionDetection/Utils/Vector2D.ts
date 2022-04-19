@@ -19,13 +19,13 @@ export class Vector2D {
             return null;
         else {
             const len: Big =  this.x.mul(this.x).add( this.y.mul(this.y) ).sqrt();
-            return new Vector2D( this.x.div(this.length()), this.y.div(this.length()), this.applicationPt );
+            return new Vector2D( this.x.div(len), this.y.div(len), this.applicationPt );
         }
         
     }
 
     public normal = (): Vector2D | null => {
-        if( this.x === this.y )
+        if( this.x.eq(0) && this.y.eq(0) )
             return null;
         else 
             return new Vector2D(this.y, -this.x, new Vector2D(0,0));
@@ -51,6 +51,10 @@ export class Vector2D {
 
     public getApplicationPt = (): Vector2D | undefined => {
         return this.applicationPt;
+    }
+
+    public crossProduct = (other: Vector2D): Big => {
+        return this.x.mul(other.y).sub( this.y.mul(other.x) )
     }
 
 }

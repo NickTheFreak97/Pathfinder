@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { Polygon } from "../../GUIElements/Types/Shapes/Polygon";
 import { SATCollisionTest } from "../../UseCases/CollisionDetection/SAT";
+import { getNormals } from "../../UseCases/CollisionDetection/Utils/SATUtils";
 import { ThreeOrMoreVertices } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
 import { Vector2D } from "../../UseCases/CollisionDetection/Utils/Vector2D";
 import { getSides } from "../../UseCases/CollisionDetection/Utils/SATUtils";
@@ -54,6 +55,30 @@ test('Polygon sides are correctly generated', ()=>{
 
 })
 
+test('Parallel axes aren\'t repeated', ()=>{
+  const rectangle: Polygon = {
+    id: uuidv4(),
+
+    vertices: [
+      [0, 0],
+      [0, 1],
+      [1, 2],
+      [0, 2]
+    ], 
+
+    transformedVertices: [
+      [0, 0],
+      [1, 0],
+      [1, 2],
+      [0, 2]
+    ]
+  }
+
+  const axes: Vector2D[] = getNormals(rectangle);
+  expect(axes.length).toBe(2);
+  
+})
+
 test('Collision is properly detected', ()=>{
     const polyA: Polygon = {
         id: uuidv4(),
@@ -101,3 +126,132 @@ test('Collision is properly detected', ()=>{
       expect(SATCollisionTest(polyA, polyB)).toBe(false);
       expect(SATCollisionTest(polyA, polyC)).toBe(true);
     })
+
+test('Collision between complex polygons', ()=>{
+  const polyA: Polygon = {
+    id: "9550420f-e588-4f1b-860c-053274d7f5c8",
+    vertices: [
+      [225, 43],
+      [274, 54],
+      [288, 71],
+      [297, 125],
+      [294, 148],
+      [277, 171],
+      [258, 189],
+      [230, 199],
+      [194, 198],
+      [156, 181],
+      [138, 161],
+      [128, 134],
+      [134, 103],
+      [143, 83],
+      [170, 60],
+      [198, 50],
+    ],
+    transformedVertices: [
+      [225, 43],
+      [274, 54],
+      [288, 71],
+      [297, 125],
+      [294, 148],
+      [277, 171],
+      [258, 189],
+      [230, 199],
+      [194, 198],
+      [156, 181],
+      [138, 161],
+      [128, 134],
+      [134, 103],
+      [143, 83],
+      [170, 60],
+      [198, 50],
+    ],
+  };
+
+  const polyB: Polygon = {
+    id: "dc351682-2748-4ac4-bba0-9a1f8a9382ce",
+    vertices: [
+      [686, 98],
+      [697, 101],
+      [736, 122],
+      [746, 135],
+      [755, 152],
+      [754, 175],
+      [745, 199],
+      [735, 218],
+      [706, 243],
+      [676, 251],
+      [625, 248],
+      [587, 229],
+      [559, 193],
+      [555, 155],
+      [576, 120],
+      [601, 99],
+      [638, 97],
+    ],
+    transformedVertices: [
+      [377, 145],
+      [388, 148],
+      [427, 169],
+      [437, 182],
+      [446, 199],
+      [445, 222],
+      [436, 246],
+      [426, 265],
+      [397, 290],
+      [367, 298],
+      [316, 295],
+      [278, 276],
+      [250, 240],
+      [246, 202],
+      [267, 167],
+      [292, 146],
+      [329, 144],
+    ]
+  };
+
+  const polyC: Polygon = {
+    id: "dc351682-2748-4ac4-bba0-9a1f8a9382ce",
+    vertices: [
+      [686, 98],
+      [697, 101],
+      [736, 122],
+      [746, 135],
+      [755, 152],
+      [754, 175],
+      [745, 199],
+      [735, 218],
+      [706, 243],
+      [676, 251],
+      [625, 248],
+      [587, 229],
+      [559, 193],
+      [555, 155],
+      [576, 120],
+      [601, 99],
+      [638, 97],
+    ],
+    transformedVertices: [
+      [686, 98],
+      [697, 101],
+      [736, 122],
+      [746, 135],
+      [755, 152],
+      [754, 175],
+      [745, 199],
+      [735, 218],
+      [706, 243],
+      [676, 251],
+      [625, 248],
+      [587, 229],
+      [559, 193],
+      [555, 155],
+      [576, 120],
+      [601, 99],
+      [638, 97],
+    ]
+  }
+
+  expect(SATCollisionTest(polyA, polyB)).toBe(true);
+  expect(SATCollisionTest(polyA, polyC)).toBe(false);
+})
