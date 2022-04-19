@@ -15,12 +15,13 @@ import { Polygon } from "../../GUIElements/Types/Shapes/Polygon";
 import { AABBTree, Node } from "../../Utils/AABBTree/aabbtree";
 import { Box } from "../../Utils/AABBTree/box";
 
-const _deletePolygon = (polygonID: string) : Action => {
+const _deletePolygon = (polygonID: string, overlappingPolys: string[]) : Action => {
     return {
         type: DELETE_POLYGON,
 
         payload: {
-            polygonID
+            polygonID, 
+            overlappingPolys,
         }
     }
 }
@@ -35,17 +36,30 @@ export const deletePolygon = (event: Konva.KonvaEventObject<MouseEvent>) => (dis
         const AABBTree: AABBTree = state().AABBTree;
 
         const thisPolygon = state().polygons.find( (p: Polygon) => p.id === selectedShape );
+        let broadlyOverlappedPolys: string[] = [];
+        
         if( !!thisPolygon ) {
-            AABBTree.queryRegion( computeAABB( thisPolygon.transformedVertices ) ).filter(
+            const overlappingShapes: Node[] = AABBTree.queryRegion( computeAABB( thisPolygon.transformedVertices ) );
+
+            broadlyOverlappedPolys = overlappingShapes.filter(
+                (n: Node) => !!n.entity && (n.entity as Box).id !== selectedShape
+            ).map(
+                (n: Node) => (<Box>n.entity).id!
+            )
+
+            overlappingShapes.filter(
                 (n: Node) => !!n.entity && (n.entity as Box).id === selectedShape
             ).forEach(
-                (n: Node) => AABBTree.remove(n)
+                (n: Node) => {
+                    AABBTree.remove(n);
+                }
             )
+
         }
         
         if( !!selectedShape && validate(selectedShape) ) {
-            dispatch(_deletePolygon(selectedShape));
-
+            
+            dispatch(_deletePolygon(selectedShape, broadlyOverlappedPolys) );
 
             if( selectedPolygonID === selectedShape ) 
                 dispatch(setPolygonID(null));

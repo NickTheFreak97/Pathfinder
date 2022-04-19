@@ -7,5 +7,6 @@ export interface Polygon {
     transformedVertices: ThreeOrMoreVertices,
     isConvex?: boolean,
     pointInside?: boolean,
+    overlappingPolygonsID: string[],
     transform?: Konva.Transform | null,
 }

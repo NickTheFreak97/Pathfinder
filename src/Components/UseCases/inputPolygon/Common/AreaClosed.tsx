@@ -21,6 +21,7 @@ export const onAreaClosed = () => {
       vertices: vertices as ThreeOrMoreVertices,
       transformedVertices: vertices as ThreeOrMoreVertices,
       isConvex: isConvex(vertices),
+      overlappingPolygonsID: []
     })
   );
 };

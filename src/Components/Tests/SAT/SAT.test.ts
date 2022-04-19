@@ -46,6 +46,8 @@ test('Polygon sides are correctly generated', ()=>{
       [719,184],
       [759,357],   
     ], 
+
+    overlappingPolygonsID: [],
   }
 
   const sides: Vector2D[] = getSides(triangle);
@@ -71,7 +73,9 @@ test('Parallel axes aren\'t repeated', ()=>{
       [1, 0],
       [1, 2],
       [0, 2]
-    ]
+    ], 
+
+    overlappingPolygonsID: [],
   }
 
   const axes: Vector2D[] = getNormals(rectangle);
@@ -93,6 +97,7 @@ test('Collision is properly detected', ()=>{
           [8, 2],
       ] as ThreeOrMoreVertices,
         isConvex: true,
+        overlappingPolygonsID: [],
       };
       
       const polyB: Polygon = {
@@ -107,6 +112,7 @@ test('Collision is properly detected', ()=>{
           [9, 9],
           [12, 7]
         ],
+        overlappingPolygonsID: [],
       };
 
       const polyC: Polygon = {
@@ -121,6 +127,7 @@ test('Collision is properly detected', ()=>{
           [8, 8],
           [11, 5]
         ],
+        overlappingPolygonsID: [],
       };
       
       expect(SATCollisionTest(polyA, polyB)).toBe(false);
@@ -166,6 +173,7 @@ test('Collision between complex polygons', ()=>{
       [170, 60],
       [198, 50],
     ],
+    overlappingPolygonsID: [],
   };
 
   const polyB: Polygon = {
@@ -207,7 +215,9 @@ test('Collision between complex polygons', ()=>{
       [267, 167],
       [292, 146],
       [329, 144],
-    ]
+    ], 
+
+    overlappingPolygonsID: [],
   };
 
   const polyC: Polygon = {
@@ -249,7 +259,9 @@ test('Collision between complex polygons', ()=>{
       [576, 120],
       [601, 99],
       [638, 97],
-    ]
+    ], 
+
+    overlappingPolygonsID: [],
   }
 
   expect(SATCollisionTest(polyA, polyB)).toBe(true);
