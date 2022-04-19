@@ -15,27 +15,12 @@ export interface VisibilityMap {
 }
 
 export const extractID = ( vertex: Vertex ) : string => {
-    return `(${vertex[0]},${vertex[1]})`;
+    return `(${vertex[0].toFixed(5)},${vertex[1].toFixed(5)})`;
 }
 
 export const extractPoint = ( pointID: string ) : Vertex => {
     const coordinates: string[] = pointID.replace('(', '').split(',');
     return [ parseFloat(coordinates[0]), parseFloat(coordinates[1].replace(')', '')) ];
-}
-
-const extractTransformedID = ( polygon: Polygon, vertex: Vertex ) : string => {
-    return extractID( 
-        toVertex(
-            ( polygon.transform as Konva.Transform)
-                .point( 
-                    toPoint(vertex) as Konva.Vector2d 
-                ) 
-            ) 
-        ) ;
-}
-
-const extractTransformedVertex = (polygon: Polygon, vertex: Vertex) : Vertex => {
-    return toVertex((polygon.transform as Konva.Transform).point( toPoint(vertex) as Konva.Vector2d)) 
 }
 
 /**
@@ -44,94 +29,84 @@ const extractTransformedVertex = (polygon: Polygon, vertex: Vertex) : Vertex => 
  */
 export const getVisibilityMap = (polygons: Polygon[], startPoint: PointInfo | null | undefined, destinationPoint: PointInfo | null | undefined) : VisibilityMap => {
     const visibilityMap: VisibilityMap = {};
-    const obstacles: Segment[] = polygonsToObstacleSegments( polygons );
+    const obstacles: Segment[] = polygonsToObstacleSegments(polygons);
     
-    for( let i:number =0; i < polygons.length; i++ )
-        for( let k:number=0; k < polygons.length; k++ ) {
+    for( let i=0; i < polygons.length; i++ ) {
+        const pVerticesCount: number = polygons[i].transformedVertices.length;
 
-            for( let p:number=0; p < polygons[i].vertices.length; p++ ) {
-                const PiVerticesCount: number = polygons[i].vertices.length;
-                const pointID: string = extractTransformedID( polygons[i], polygons[i].vertices[p] );
-                
-                if( !( pointID in visibilityMap ) )
-                    Object.assign( visibilityMap, { [pointID]: [] } );
+        for( let j=0; j < polygons.length; j++ ) {
 
-                if( k==0 ) {
-                    visibilityMap[pointID].push( extractTransformedVertex( polygons[i], polygons[i].vertices[(p+1) % PiVerticesCount] ) ) ;
-                    visibilityMap[pointID].push( extractTransformedVertex( polygons[i], polygons[i].vertices[(p-1+PiVerticesCount) % PiVerticesCount] ) );
+            for( let p=0; p < polygons[i].transformedVertices.length; p++ ) {
+
+                /** The first time you find a vertex you'll add the two adjacent points to its visibility set */
+                const pID: string = extractID(polygons[i].transformedVertices[p]);
+
+                if( !(pID in visibilityMap) ) {
+                    Object.assign( visibilityMap, { [pID]: [] } );
+                    visibilityMap[pID].push( polygons[i].transformedVertices[(p+1)% pVerticesCount] );
+                    visibilityMap[pID].push( polygons[i].transformedVertices[(p-1+pVerticesCount)% pVerticesCount] );
                 }
 
-                if( polygons[i].id === polygons[k].id )
+                if( i == j )
                     continue;
 
-                const startVertex: Point = (polygons[i].transform as Konva.Transform).point({
-                    x: polygons[i].vertices[p][0],
-                    y: polygons[i].vertices[p][1]
-                } as Konva.Vector2d);
-
-                for( let q:number=0; q < polygons[k].vertices.length; q++ ) {
-
-                    const destinationVertex: Point = (polygons[k].transform as Konva.Transform).point({
-                        x: polygons[k].vertices[q][0],
-                        y: polygons[k].vertices[q][1]
-                    } as Konva.Vector2d);
-
-                    if( !anyVisibleObstacle( startVertex, obstacles, destinationVertex ) )
-                        visibilityMap[pointID].push([ destinationVertex.x!, destinationVertex.y!]);
+                for( let q=0; q < polygons[j].transformedVertices.length; q++ ) {
+                    if( !anyVisibleObstacle( toPoint(polygons[i].transformedVertices[p]), obstacles, toPoint(polygons[j].transformedVertices[q]) ) )
+                        visibilityMap[pID].push( polygons[j].transformedVertices[q] );
                 }
             }
-        }    
 
-        if( !!startPoint && validate(startPoint.id) ) {
-
-            const startID = extractID([startPoint.coordinates.x!, startPoint.coordinates.y!]);
-            visibilityMap[ startID ] = getStartPointVisibilityMap( startPoint, polygons, obstacles );
-            
-            
-            visibilityMap[ startID ].forEach( (vertex: Vertex) => {
-                const vertexID: string = extractID(vertex);
-                if( !visibilityMap[vertexID] )
-                    visibilityMap[vertexID] = [];
-                visibilityMap[ vertexID ].push( [startPoint.coordinates.x!, startPoint.coordinates.y!] );
-            } )
         }
+    }
 
-        if( !!destinationPoint && validate(destinationPoint.id) ) {
-            
-            const destinationID = extractID( [destinationPoint.coordinates.x!, destinationPoint.coordinates.y!] )
-            visibilityMap[ destinationID ] = getStartPointVisibilityMap( destinationPoint, polygons, obstacles ); 
+    if( !!startPoint && validate(startPoint.id) ) {
+        const startPtID: string = extractID( toVertex(startPoint.coordinates) );
+        if( !( startPtID in visibilityMap ) )
+            Object.assign( visibilityMap, { [startPtID]: [] } );
 
-            visibilityMap[ destinationID ].forEach( (vertex: Vertex) => {
-                const vertexID: string = extractID(vertex);
-                if( !visibilityMap[vertexID] )
-                    visibilityMap[vertexID] = [];
-                visibilityMap[ vertexID ].push( [destinationPoint.coordinates.x!, destinationPoint.coordinates.y!] );
-            } )
-        }
+        const visibleVertices: Vertex[] = getStartPointVisibilityMap( startPoint, polygons, obstacles );
+        visibleVertices.forEach(
+            (v: Vertex) => {
+                const vertexID: string = extractID( v );
+                visibilityMap[startPtID].push(v);
+                visibilityMap[vertexID].push( toVertex(startPoint.coordinates) );
+            }
+        )
+    }
 
-        if( !!startPoint && validate(startPoint.id) && !!destinationPoint && validate(destinationPoint.id) ) {
-            const startID = extractID([startPoint.coordinates.x!, startPoint.coordinates.y!]);
-            if( !anyVisibleObstacle( startPoint.coordinates, obstacles, destinationPoint.coordinates ) )
-                visibilityMap[ startID ].push([destinationPoint.coordinates.x!, destinationPoint.coordinates.y!]);
-        }
+    if( !!destinationPoint && validate(destinationPoint.id) ) {
+        const destPtID: string = extractID( toVertex(destinationPoint.coordinates) );
+        if( !( destPtID in visibilityMap ) )
+            Object.assign( visibilityMap, { [destPtID]: [] } );
 
-        return visibilityMap;
+        const visibleVertices: Vertex[] = getStartPointVisibilityMap( destinationPoint, polygons, obstacles );
+        visibleVertices.forEach(
+            (v: Vertex) => {
+                const vertexID: string = extractID( v );
+                visibilityMap[destPtID].push(v);
+                visibilityMap[vertexID].push( toVertex(destinationPoint.coordinates) );
+            }
+        )
+    }
+
+    return visibilityMap;
 }
 
 const getStartPointVisibilityMap = ( startPoint: PointInfo, polygons: Polygon[], obstacles: Segment[] ): Vertex[] => {
-        const allVertices: Vertex[] = polygonsToAllVertices( polygons );
+        const allVertices: Vertex[] = polygonsToAllVertices(polygons);
         const visibleVertices: Vertex[] = [];
-    
-        for( let i:number=0; i < allVertices.length; i++ ) {
-            const destinationVertex: Point = {
-                x: allVertices[i][0],
-                y: allVertices[i][1]
-            }
 
-            if( !anyVisibleObstacle( startPoint.coordinates, obstacles, destinationVertex ) )
-                visibleVertices.push([destinationVertex.x!, destinationVertex.y!]);
+        if( !!startPoint && validate(startPoint.id) ) {
 
-        }
+            allVertices.forEach(
+                (vertex: Vertex) => {
+                    if( !anyVisibleObstacle(startPoint.coordinates, obstacles, toPoint(vertex)) )
+                        visibleVertices.push(vertex);
+                }
+            )
 
-        return visibleVertices;
+            return visibleVertices;
+
+        } else 
+            return [];
 }

@@ -6,6 +6,7 @@ import { Explored, Frontier } from "../../../Algorithms/Common/Problem/Types/Pro
 import { RunningOptions } from "../../../UseCases/RunAlgorithms/Types/RunningOptions";
 import { VisibilityMap } from "../../../Algorithms/Common/VisibilityMap/VisibilityMap";
 import { Action } from "../../../Algorithms/Common/Problem/Types/Action";
+import { AABBTree } from "../../../Utils/AABBTree/aabbtree";
 
 export interface State {
     polygons: Polygon[],
@@ -21,4 +22,5 @@ export interface State {
     options: RunningOptions,
     visibilityMap: VisibilityMap | null | undefined,
     solution: Action[] | null | undefined,
+    AABBTree: AABBTree,
 }

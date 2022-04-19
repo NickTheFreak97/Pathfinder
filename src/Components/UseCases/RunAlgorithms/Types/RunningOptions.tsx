@@ -9,6 +9,7 @@ export interface RunningOptions {
             explored: boolean,
             visibility: boolean,
             solution: boolean, 
+            hitboxes: boolean,
         }
 
         opacity: {
@@ -16,6 +17,7 @@ export interface RunningOptions {
             explored: number,
             visibility: number,
             solution: number, 
+            hitboxes: number,
         }
     },
     log: boolean
