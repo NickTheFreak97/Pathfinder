@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import { Line } from "react-konva";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
@@ -6,6 +7,7 @@ import { Polygon } from "../../GUIElements/Types/Shapes/Polygon";
 import { RunningOptions } from "../../UseCases/RunAlgorithms/Types/RunningOptions";
 import { AABBTree, Node } from "./aabbtree";
 import { AABB } from "./aabb";
+import { Box } from "./box";
 
 interface RenderHitboxesProps {
     options: RunningOptions,
@@ -49,6 +51,7 @@ const RenderHitboxes: React.FC<RenderHitboxesProps> = ({options, tree, polygons}
                                 `rgba(255, 0, 0, ${options.verbose.opacity.hitboxes/100})`
                                 :
                                 `rgba(32, 201, 151, ${options.verbose.opacity.hitboxes/100})`}
+                                key={(!!node.entity) ? (node.entity as Box).id : uuidv4() }
                     />
             )
         }

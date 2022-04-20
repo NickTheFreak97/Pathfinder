@@ -7,6 +7,7 @@ import { RunningOptions } from "../../../UseCases/RunAlgorithms/Types/RunningOpt
 import { VisibilityMap } from "../../../Algorithms/Common/VisibilityMap/VisibilityMap";
 import { Action } from "../../../Algorithms/Common/Problem/Types/Action";
 import { AABBTree } from "../../../Utils/AABBTree/aabbtree";
+import { Analytics } from "../../../Algorithms/Common/Problem/Types/Analytics";
 
 export interface State {
     polygons: Polygon[],
@@ -22,5 +23,6 @@ export interface State {
     options: RunningOptions,
     visibilityMap: VisibilityMap | null | undefined,
     solution: Action[] | null | undefined,
+    solutionAnalytics: Analytics
     AABBTree: AABBTree,
 }

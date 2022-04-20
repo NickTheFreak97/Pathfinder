@@ -126,7 +126,7 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                         color="dark"
                         radius="xs"
                         checked={options.computeEFB}
-                        disabled={!selectedAlgorithms.BFS}
+                        disabled={!selectedAlgorithms.AStar}
                         onChange={(event: React.ChangeEvent<Element & { checked: boolean }>) => {
                             updateOptions( {...options, computeEFB: event.currentTarget.checked} )
                         }} 

@@ -26,6 +26,7 @@ import { RunningOptions } from "../UseCases/RunAlgorithms/Types/RunningOptions";
 import RenderFrontier from "../UseCases/RunAlgorithms/ViewSolution/RenderFrontier";
 import RenderExplored from "../UseCases/RunAlgorithms/ViewSolution/RenderExplored";
 import RenderHitboxes from "../Utils/AABBTree/RenderHitboxes";
+import RenderLog from "../UseCases/RunAlgorithms/ViewSolution/RenderLog";
 
 const mapStateToProps = (state: State) => {
   return {
@@ -132,11 +133,12 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, options, update
           <PolygonTransformer />
         </Layer>
         <Layer>
-          { options.verbose && <RenderRays /> }
+          { options.verbose.show.hitboxes && <RenderRays /> }
           <RenderFrontier />
           <RenderExplored />
           <ViewSolution />
           <RenderStartDest />
+          <RenderLog stageWidth={width || 0} stageHeight={height || 0}/>
         </Layer>
       </Provider>
     </Stage>

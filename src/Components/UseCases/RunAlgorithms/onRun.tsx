@@ -17,6 +17,9 @@ import { Polygon } from "../../GUIElements/Types/Shapes/Polygon";
 import { PointInfo } from "../../GUIElements/Types/Shapes/PointInfo";
 import { Action } from "../../Algorithms/Common/Problem/Types/Action";
 import { Vertex } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
+import { SolutionAndLog } from "../../Algorithms/Common/Problem/Types/ResultAndLog";
+import { updateAnalytics } from "../../Algorithms/Common/Analytics/Utils/UpdateAnalytics";
+import { makeEmptyAnalytics } from "../../Algorithms/Common/Problem/Types/Analytics";
 
 
 const makeProblem = (): Problem => {
@@ -76,14 +79,17 @@ export const runAlgorithms = (selected: SelectedAlgorithms) => {
                 else
                     if( selected[Algorithms.UC] )
                         UniformCost( problem ).then(
-                            ( solution: Action[] | null ) => store.dispatch( updateSolution(solution as Vertex[]) )
+                            ( report: SolutionAndLog | null ) => store.dispatch( updateSolution(report!.solution as Vertex[]) )
                         ).catch(
                             ()=> console.log("No path between the given points")
                         )
                         else
                             if( selected[Algorithms.AStart] )
-                                AStar( problem ).then(
-                                    ( solution: Action[] | null ) => store.dispatch( updateSolution(solution as Vertex[]) )
+                                AStar( problem, options.computeEFB ).then(
+                                    ( report: SolutionAndLog | null ) => {
+                                        store.dispatch( updateSolution(report!.solution as Vertex[]) );
+                                        store.dispatch( updateAnalytics( report!.log || makeEmptyAnalytics() ) );
+                                    }
                                 ).catch(
                                     ()=> console.log("No path between the given points")
                                 )
