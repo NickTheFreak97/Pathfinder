@@ -18,6 +18,8 @@ import { PointInfo } from "../../GUIElements/Types/Shapes/PointInfo";
 import { Action } from "../../Algorithms/Common/Problem/Types/Action";
 import { Vertex } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
 import { SolutionAndLog } from "../../Algorithms/Common/Problem/Types/ResultAndLog";
+import { updateAnalytics } from "../../Algorithms/Common/Analytics/Utils/UpdateAnalytics";
+import { makeEmptyAnalytics } from "../../Algorithms/Common/Problem/Types/Analytics";
 
 
 const makeProblem = (): Problem => {
@@ -86,7 +88,7 @@ export const runAlgorithms = (selected: SelectedAlgorithms) => {
                                 AStar( problem, options.computeEFB ).then(
                                     ( report: SolutionAndLog | null ) => {
                                         store.dispatch( updateSolution(report!.solution as Vertex[]) );
-                                        console.log("I received the following solution: ", report);
+                                        store.dispatch( updateAnalytics( report!.log || makeEmptyAnalytics() ) );
                                     }
                                 ).catch(
                                     ()=> console.log("No path between the given points")

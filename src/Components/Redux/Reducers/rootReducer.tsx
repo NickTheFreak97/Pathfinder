@@ -16,12 +16,14 @@ import {
   PUSH_EXPLORED,
   UPDATE_SOLUTION,
   UPDATE_POLYGON_TRANSFORM,
+  UPDATE_SOLUTION_ANALYTICS,
 } from "../Actions/ActionTypes";
 import { InteractionMode } from "../../Utils/interactionMode";
 import { Action } from "../../GUIElements/Types/Redux/Action";
 import { State } from "../../GUIElements/Types/Redux/State";
 import { Polygon } from "../../GUIElements/Types/Shapes/Polygon";
 import { AABBTree } from "../../Utils/AABBTree/aabbtree";
+import { makeEmptyAnalytics } from "../../Algorithms/Common/Problem/Types/Analytics";
 
 const initialState = {
   polygons: [],
@@ -59,6 +61,7 @@ const initialState = {
   },
 
   solution: null,
+  solutionAnalytics: makeEmptyAnalytics(),
   AABBTree: new AABBTree(),
 };
 
@@ -191,6 +194,13 @@ const rootReducer = (state: State = initialState, action: Action) => {
         ...state,
         solution: action.payload.solution,
       };
+    }
+
+    case UPDATE_SOLUTION_ANALYTICS: {
+      return {
+        ...state,
+        solutionAnalytics: action.payload.analytics,
+      }
     }
 
     case UPDATE_POLYGON_TRANSFORM: {
