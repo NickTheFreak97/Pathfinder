@@ -133,7 +133,7 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, options, update
           <PolygonTransformer />
         </Layer>
         <Layer>
-          { options.verbose.show.hitboxes && <RenderRays /> }
+          { options.verbose.show.visibility && <RenderRays /> }
           <RenderFrontier />
           <RenderExplored />
           <ViewSolution />

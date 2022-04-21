@@ -13,7 +13,6 @@ test('Effective branching factor definition\'s polynomial', ()=>{
 
 test('Effective branching factor definition\'s polynomial\'s derivative', ()=>{
     const res: Big = EBFPolynomialDerivative(4, 2);
-    console.log(res.toString());
     expect(res.eq(49)).toBe(true);
 } )
 
