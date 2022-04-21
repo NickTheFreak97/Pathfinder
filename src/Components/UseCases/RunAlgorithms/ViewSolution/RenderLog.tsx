@@ -20,11 +20,13 @@ const mapStateToProps = (state: State) => {
 
 const RenderLogs: React.FC< RenderLogProps > = ({stageHeight, stageWidth, log}) => {
     return <React.Fragment>
-        {   log.branchingFactor >= 1 &&
+        {   !!log &&
             <Text
                 width={stageWidth}
                 height={stageHeight}
-                text={`Effective Branching Factor: ${findRoot(log.solutionDepth, log.generatedNodes).toString()}\nMemory usage: ${log.memory} Bytes`}
+                text={ ((log.branchingFactor >= 1) ? `Effective Branching Factor: ${findRoot(log.solutionDepth, log.generatedNodes).toString()}\n` : ``) +
+                        `Memory usage: ${log.memory} Bytes
+                        Completion time: ${log.completionTime/1000} sec`}
                 x={0}
                 y={0}
                 fontSize={16}

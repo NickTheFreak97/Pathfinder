@@ -3,6 +3,7 @@ export interface Analytics {
     solutionDepth: number,
     branchingFactor: number, 
     memory: number,
+    completionTime: number,
 }
 
 export const makeEmptyAnalytics = ():Analytics => {
@@ -11,5 +12,6 @@ export const makeEmptyAnalytics = ():Analytics => {
         solutionDepth: 0,
         branchingFactor: 0,
         memory: 0,
+        completionTime: 0,
     }
 }

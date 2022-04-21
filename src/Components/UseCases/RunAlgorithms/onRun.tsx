@@ -84,15 +84,18 @@ export const runAlgorithms = (selected: SelectedAlgorithms) => {
                             ()=> console.log("No path between the given points")
                         )
                         else
-                            if( selected[Algorithms.AStart] )
+                            if( selected[Algorithms.AStart] ) {
+                                const startTime = Date.now();
                                 AStar( problem, options.computeEFB ).then(
                                     ( report: SolutionAndLog | null ) => {
+                                        const endTime = Date.now();
                                         store.dispatch( updateSolution(report!.solution as Vertex[]) );
-                                        store.dispatch( updateAnalytics( report!.log || makeEmptyAnalytics() ) );
+                                        store.dispatch( updateAnalytics( report!.log || makeEmptyAnalytics(), endTime - startTime ) );
                                     }
                                 ).catch(
                                     ()=> console.log("No path between the given points")
                                 )
+                            }
 
 
 }
