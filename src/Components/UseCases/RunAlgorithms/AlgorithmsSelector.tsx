@@ -1,5 +1,5 @@
 import React, { Dispatch, useState } from 'react';
-import { MultiSelect, Stack, Checkbox, Button, Accordion, Slider, Title, Group, Text, ScrollArea } from '@mantine/core';
+import { MultiSelect, Stack, Checkbox, Button, Accordion, Slider, Title, Group, Text, ScrollArea, NativeSelect } from '@mantine/core';
 import { connect } from 'react-redux';
 import { runAlgorithms } from './onRun';
 import { store } from '../../Redux/Store/store';
@@ -110,14 +110,16 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                 flexGrow: 0,
                 maxWidth: '250px',
               }}>
-                <MultiSelect
+                <NativeSelect
                     style={{
                         marginTop: '0.75rem'
                     }}
                     data={data}
-                    onChange={ ( selected: string[] ) => setSelectedAlgorithms( updateSelectedAlgorithms(selected) ) }
-                    label="Select algorithms to run"
+                    radius="md"
+                    onChange={ ( selected: React.ChangeEvent<HTMLSelectElement> ) => setSelectedAlgorithms( updateSelectedAlgorithms([selected.currentTarget.value]) ) }
+                    label="Pick from this list"
                     placeholder="Pick the algorithms to run"
+                    required
                 />
 
                 <Stack justify="flex-start" spacing="xs" style={{ marginTop: '1.25rem' }}>

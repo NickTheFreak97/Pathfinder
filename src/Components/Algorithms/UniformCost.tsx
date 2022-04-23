@@ -12,7 +12,6 @@ import { Node } from "./Common/Problem/Types/Node";
 import { toString } from "./Common/Problem/Types/State";
 import { Analytics, makeEmptyAnalytics } from "./Common/Problem/Types/Analytics";
 import { makeSolutionAndLog, SolutionAndLog } from "./Common/Problem/Types/ResultAndLog";
-import { VisibilityMap } from "./Common/VisibilityMap/VisibilityMap";
 import { computeBranchingFactor } from "./Common/Analytics/BranchingFactor";
 
 export const _UniformCost = ( problem: Problem, priority: ( node: Node ) => number, analytics?: Analytics ): Action[] | null => {

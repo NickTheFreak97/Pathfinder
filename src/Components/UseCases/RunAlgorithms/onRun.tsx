@@ -20,6 +20,8 @@ import { Vertex } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
 import { SolutionAndLog } from "../../Algorithms/Common/Problem/Types/ResultAndLog";
 import { updateAnalytics } from "../../Algorithms/Common/Analytics/Utils/UpdateAnalytics";
 import { makeEmptyAnalytics } from "../../Algorithms/Common/Problem/Types/Analytics";
+import { setFrontier } from "../SetDataStructures/setFrontier";
+import { setExplored } from "../SetDataStructures/setExplored";
 
 
 const makeProblem = (): Problem => {
@@ -54,45 +56,75 @@ export const runAlgorithms = (selected: SelectedAlgorithms) => {
     const options: RunningOptions = store.getState().options;
     const problem: Problem = makeProblem();
 
+    store.dispatch(updateSolution(null));
+    store.dispatch(setFrontier(null));
+    store.dispatch(setExplored(null));
+    store.dispatch(updateAnalytics(makeEmptyAnalytics(), -1));
+    store.dispatch(updateVisibilityMap(getVisibilityMap(store.getState().polygons, store.getState().startPoint, store.getState().destinationPoint)))
+
     if( selected[Algorithms.BFS] ) {
+        const startTime: number = Date.now();
         BFS(problem).then(
-            (actions) => {
-                store.dispatch(updateSolution(actions));
+            (solution: SolutionAndLog | undefined) => {
+                store.dispatch(updateSolution(solution?.solution));
+                const endTime: number = Date.now();
+                store.dispatch( updateAnalytics(solution!.log!, endTime-startTime ) )
             }
         ).catch(
             () => console.log("No path between the given points")
         )
     } else 
-        if( selected[Algorithms.DFS] )
+        if( selected[Algorithms.DFS] ) {
+            const startTime: number = Date.now();
             DFS(problem).then(
-                (solution: Action[] | undefined ) =>  store.dispatch( updateSolution(solution as Action[]) )
+                (solution: SolutionAndLog | undefined ) => {
+                    const endTime: number = Date.now();
+                    store.dispatch( updateSolution(solution?.solution as Action[]) )
+                    store.dispatch( updateAnalytics( solution!.log!, endTime-startTime ) );
+                }
             ).catch(
                 () => console.log("No path between the given points")
             )
+        }
         else
-            if( selected[Algorithms.ID] )
+            if( selected[Algorithms.ID] ) {
+                const startTime: number = Date.now();
                 ID( problem ).then(
-                    (solution: Action[] | false) =>  store.dispatch( updateSolution(solution as Vertex[]) )
+                    (report: SolutionAndLog | false) => {
+                        const endTime: number = Date.now();
+                        store.dispatch( updateSolution((report as SolutionAndLog).solution! as Vertex[]) );
+                        store.dispatch( updateAnalytics((report as SolutionAndLog).log!, endTime-startTime) )
+                    }
                 ).catch(
                     () => console.log("No path between the given points")
                 ) 
+            }
                 else
-                    if( selected[Algorithms.UC] )
-                        UniformCost( problem ).then(
-                            ( report: SolutionAndLog | null ) => store.dispatch( updateSolution(report!.solution as Vertex[]) )
+                    if( selected[Algorithms.UC] ){
+                        const startTime: number = Date.now();
+                        UniformCost( problem, true ).then(
+                            ( report: SolutionAndLog | null ) => {
+                                const endTime: number = Date.now();
+                                store.dispatch( updateSolution(report!.solution as Vertex[]) )
+                                store.dispatch( updateAnalytics(report!.log!, endTime-startTime ) )
+                            }
                         ).catch(
                             ()=> console.log("No path between the given points")
                         )
+                    }
                         else
-                            if( selected[Algorithms.AStart] )
+                            if( selected[Algorithms.AStart] ) {
+                                const startTime = Date.now();
                                 AStar( problem, options.computeEFB ).then(
                                     ( report: SolutionAndLog | null ) => {
+                                        const endTime = Date.now();
                                         store.dispatch( updateSolution(report!.solution as Vertex[]) );
-                                        store.dispatch( updateAnalytics( report!.log || makeEmptyAnalytics() ) );
+                                        store.dispatch( updateAnalytics( report!.log || makeEmptyAnalytics(), endTime - startTime ) );
                                     }
                                 ).catch(
                                     ()=> console.log("No path between the given points")
                                 )
+                            }
 
 
 }

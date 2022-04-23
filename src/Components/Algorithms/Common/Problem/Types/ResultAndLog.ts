@@ -3,7 +3,7 @@ import { Analytics } from "./Analytics";
 
 export interface SolutionAndLog {
     solution: Action[] | null,
-    log?: Analytics
+    log?: Analytics,
 }
 
 export const makeSolutionAndLog = ( solution: Action[] | null, log?: Analytics ): SolutionAndLog => {
