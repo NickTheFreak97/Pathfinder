@@ -8,8 +8,10 @@ import { store } from "../Redux/Store/store";
 import { setFrontier } from "../UseCases/SetDataStructures/setFrontier";
 import { setExplored } from "../UseCases/SetDataStructures/setExplored";
 import { pushToFrontier, popFrontier } from "./Common/Problem/Types/Problem";
+import { Analytics, makeEmptyAnalytics } from "./Common/Problem/Types/Analytics";
+import { makeSolutionAndLog, SolutionAndLog } from "./Common/Problem/Types/ResultAndLog";
 
-const _BFS = ( problem: Problem ) : Action[] | undefined => {
+const _BFS = ( problem: Problem, analytics: Analytics | undefined ) : Action[] | undefined => {
     store.dispatch( setFrontier(new FIFOFrontier()) );
     store.dispatch( setExplored({}) );
 
@@ -27,6 +29,9 @@ const _BFS = ( problem: Problem ) : Action[] | undefined => {
         pushToFrontier( initialNode )
     )
 
+    if( !!analytics )
+        analytics.generatedNodes = 0;
+
     while( store.getState().frontier!.queue.length > 0 ) {
             const poppedNode = store.dispatch(popFrontier()!)
             store.dispatch(pushToExplored(toString(poppedNode.state)))
@@ -42,15 +47,21 @@ const _BFS = ( problem: Problem ) : Action[] | undefined => {
 
                         if( problem.goalTest( nextNode.state ) ) {
     
+                            if( !!analytics )
+                                analytics.solutionDepth = 0;
                             const solution: Action[] = [];
                             let theNode: Node | null | undefined = nextNode;
                             while( theNode !== null ) {
                                 solution.splice( 0, 0, theNode!.action );
                                 theNode = theNode!.parent;
+                                if( !!analytics )
+                                    analytics.solutionDepth++;
                             }
                             
                             foundSolution = solution;
                         } else {
+                            if( !!analytics )
+                                analytics.generatedNodes++;
                             store.dispatch(pushToFrontier( nextNode ));
                         }
                     } 
@@ -65,10 +76,11 @@ const _BFS = ( problem: Problem ) : Action[] | undefined => {
 }
 
 export const BFS = (problem: Problem) => {
-    return new Promise<Action[] | undefined>((resolve, reject) => {
-        const solution = _BFS(problem);
+    return new Promise<SolutionAndLog | undefined>((resolve, reject) => {
+        const analytics = makeEmptyAnalytics();
+        const solution = _BFS(problem, analytics);
         if( !!solution ) 
-            resolve(solution);
+            resolve(makeSolutionAndLog(solution, analytics));
         else    
             reject(undefined);
     } )

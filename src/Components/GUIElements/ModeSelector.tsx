@@ -40,7 +40,7 @@ const ModeSelector: React.FC<{ mode: InteractionMode, changeMode: (mode: Interac
         changeMode(newMode);
       }}
       
-      style={{width: '250px', flexBasis: '23%', flexShrink: '0'}}
+      style={{width: '250px', flexBasis: '27%', flexShrink: '0'}}
 
       orientation="vertical"
       data={[

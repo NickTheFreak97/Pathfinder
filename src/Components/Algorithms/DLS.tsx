@@ -1,23 +1,19 @@
-import { LIFOFrontier } from "./Common/Problem/Structures/LIFOFrontier";
 import { store } from "../Redux/Store/store";
-import { setFrontier } from "../UseCases/SetDataStructures/setFrontier";
 import { setExplored } from "../UseCases/SetDataStructures/setExplored";
 import { makeNode } from "./Common/Problem/Types/Node";
-import { pushToExplored, pushToFrontier } from "./Common/Problem/Types/Problem";
-import { popFrontier } from "./Common/Problem/Types/Problem";
 
 import { Action } from "./Common/Problem/Types/Action";
 import { Problem } from "./Common/Problem/Types/Problem";
-import { State } from "../GUIElements/Types/Redux/State";
 import { Node } from "./Common/Problem/Types/Node";
-import { toString } from "./Common/Problem/Types/State";
+import { Analytics, makeEmptyAnalytics } from "./Common/Problem/Types/Analytics";
+import { makeSolutionAndLog, SolutionAndLog } from "./Common/Problem/Types/ResultAndLog";
 
 /**
  *  @returns [ Action[] ]: the sequence of actions if a solution is found
  *           [ null ]: if no solution is found
  *           [ false ]: if cutoff happened
  */
-export const DLS = (problem: Problem, limit: number): Action[] | null | false => {
+export const DLS = (problem: Problem, limit: number): SolutionAndLog | null | false => {
     const rootNode: Node = {
         state: problem.initialState,
         parent: null, 
@@ -26,20 +22,30 @@ export const DLS = (problem: Problem, limit: number): Action[] | null | false =>
     }
     
     store.dispatch( setExplored({}) );
+    const analytics: Analytics = makeEmptyAnalytics();
+    analytics.generatedNodes = 1;
 
-    return recursiveDLS( rootNode, problem, limit );
+    const solution: Action[] | null | false = recursiveDLS( rootNode, problem, limit, analytics );
+    if( !!solution )
+        return makeSolutionAndLog(solution, analytics);
+    else
+        return solution;
 }
 
-function recursiveDLS( node: Node, problem: Problem, limit: number ) : Action[] | null | false {
+function recursiveDLS( node: Node, problem: Problem, limit: number, analytics: Analytics | undefined ) : Action[] | null | false {
 
     if( problem.goalTest( node.state ) ) {
 
         const solution: Action[] = [];
         let theNode: Node | null | undefined = node;
+        if( !!analytics )
+            analytics.solutionDepth = 0;
 
         while( !!theNode ) {
             solution.splice( 0, 0, theNode.action );
             theNode = theNode.parent;
+            if( !!analytics )
+                analytics.solutionDepth++;
         }
 
         return solution;
@@ -50,11 +56,14 @@ function recursiveDLS( node: Node, problem: Problem, limit: number ) : Action[] 
             let cutoff: boolean = false;
             let result: Action[] | false | null = null; 
             const availableActions = problem.actions( node.state );
+            if( !!analytics )
+                analytics.generatedNodes++;
 
             for( let i=0; i < availableActions.length; i++ ) {
                 let vertex: Action = availableActions[i];
                 const nextNode = makeNode( problem, node, vertex );
-                result = recursiveDLS( nextNode, problem, limit-1 );
+                result = recursiveDLS( nextNode, problem, limit-1, analytics );
+                
                 if( !result )
                     cutoff = true;
                 else

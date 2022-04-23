@@ -11,8 +11,10 @@ import { Problem } from "./Common/Problem/Types/Problem";
 import { State } from "../GUIElements/Types/Redux/State";
 import { Node } from "./Common/Problem/Types/Node";
 import { toString } from "./Common/Problem/Types/State";
+import { Analytics, makeEmptyAnalytics } from "./Common/Problem/Types/Analytics";
+import { makeSolutionAndLog, SolutionAndLog } from "./Common/Problem/Types/ResultAndLog";
 
-const _DFS = ( problem: Problem ) : Action[] | undefined => {
+const _DFS = ( problem: Problem, analytics: Analytics | undefined ) : Action[] | undefined => {
     const dispatch = store.dispatch;
     const state: ()=> State = store.getState;
 
@@ -26,17 +28,23 @@ const _DFS = ( problem: Problem ) : Action[] | undefined => {
         cost: 0,
     } ) );
 
+    if( !!analytics )
+        analytics.generatedNodes = 1;
+
     while( !state().frontier?.isEmpty() ) {
         const poppedNode: Node = dispatch(popFrontier());
         dispatch( pushToExplored( toString( poppedNode.state ) ) );
 
         const foundSolution: Action[] = [];
         if( problem.goalTest( poppedNode.state ) ) {
-
+            if( !!analytics )
+                analytics.solutionDepth = 0;
             let theNode: Node | null | undefined = poppedNode;
             while( !!theNode ) {
                 foundSolution.splice(0, 0, theNode.action );
                 theNode = theNode.parent;
+                if( !!analytics )
+                    analytics.solutionDepth++;
             }
 
             return foundSolution;
@@ -45,9 +53,11 @@ const _DFS = ( problem: Problem ) : Action[] | undefined => {
                 (action: Action)=>{
                     const nextNode = makeNode(problem, poppedNode, action);
                     if( state().explored![ toString( nextNode.state ) ] === undefined &&
-                        !state().frontier!.contains( nextNode ) )
+                        !state().frontier!.contains( nextNode ) ) {
                             dispatch( pushToFrontier( nextNode ) );
-
+                            if( !!analytics )
+                                analytics.generatedNodes++;
+                        }
                 }
             )
         }
@@ -58,10 +68,11 @@ const _DFS = ( problem: Problem ) : Action[] | undefined => {
 }
 
 export const DFS = ( problem: Problem ) => {
-    return new Promise<Action[] | undefined>((resolve, reject) => {
-        const solution = _DFS(problem);
+    return new Promise<SolutionAndLog | undefined>((resolve, reject) => {
+        const analytics: Analytics = makeEmptyAnalytics();
+        const solution = _DFS(problem, analytics);
         if( !!solution ) 
-            resolve(solution);
+            resolve(makeSolutionAndLog(solution, analytics));
         else    
             reject(undefined);
     } )
