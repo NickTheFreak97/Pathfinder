@@ -127,7 +127,7 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, options, update
         <Layer>
           <RenderSamples width={width}
             height={height ? height * 0.75 : window.innerHeight } 
-            samplesCnt={10}  
+            samplesCnt={30}  
           />
             
           <RenderHitboxes />
