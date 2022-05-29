@@ -9,4 +9,5 @@ export interface Polygon {
     pointInside?: boolean,
     overlappingPolygonsID: string[],
     transform?: Konva.Transform | null,
+    isRandom?: boolean,
 }

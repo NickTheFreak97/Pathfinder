@@ -125,11 +125,7 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, options, update
           height={height ? height * 0.75 : window.innerHeight}
         />
         <Layer>
-          <RenderSamples width={width}
-            height={height ? height * 0.75 : window.innerHeight } 
-            samplesCnt={75}  
-            maxVertices={20}
-          />
+            <RenderSamples />
             
           <RenderHitboxes />
           <RenderPolygons />

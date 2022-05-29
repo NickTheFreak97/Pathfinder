@@ -8,7 +8,6 @@ import { isConvex } from "./ConvexityTest";
 
 import { ThreeOrMoreVertices } from "../../../GUIElements/Types/Shapes/PolygonGUIProps";
 import { Vertex } from "../../../GUIElements/Types/Shapes/PolygonGUIProps";
-import { Polygon } from "../../../GUIElements/Types/Shapes/Polygon";
 
 export const onAreaClosed = () => {
   const vertices: Vertex[] = store.getState().newPolygonVertices;

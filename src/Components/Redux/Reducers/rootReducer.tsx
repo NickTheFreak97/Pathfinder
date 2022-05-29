@@ -17,6 +17,8 @@ import {
   UPDATE_SOLUTION,
   UPDATE_POLYGON_TRANSFORM,
   UPDATE_SOLUTION_ANALYTICS,
+  UPDATE_SCENE_RECT,
+  ADD_RANDOM_POLYGON_CIRCLE,
 } from "../Actions/ActionTypes";
 import { InteractionMode } from "../../Utils/interactionMode";
 import { Action } from "../../GUIElements/Types/Redux/Action";
@@ -37,6 +39,11 @@ const initialState = {
   visibilityMap: undefined,
   frontier: undefined,
   explored: undefined,
+
+  sceneRect: {
+    width: -1,
+    height: -1,
+  }, 
 
   options: {
     computeEFB: false,
@@ -63,6 +70,8 @@ const initialState = {
   solution: null,
   solutionAnalytics: makeEmptyAnalytics(),
   AABBTree: new AABBTree(),
+
+  randomPolyCircles: {},
 };
 
 const rootReducer = (state: State = initialState, action: Action) => {
@@ -208,6 +217,20 @@ const rootReducer = (state: State = initialState, action: Action) => {
         ...state,
         polygons: action.payload.polygons,
       };
+    }
+
+    case UPDATE_SCENE_RECT: {
+      return {
+        ...state,
+        sceneRect: action.payload.sceneRect,
+      }
+    }
+
+    case ADD_RANDOM_POLYGON_CIRCLE: {
+      return {
+        ...state,
+        randomPolyCircles: {...state.randomPolyCircles, [action.payload.randomPolyCircle.id]: action.payload.randomPolyCircle}
+      }
     }
 
     default:

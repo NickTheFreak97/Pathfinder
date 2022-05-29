@@ -1,11 +1,24 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, Dispatch } from 'react';
 import { Container } from '@mantine/core';
+import { connect } from 'react-redux';
 
+import { updateSceneRect } from '../UseCases/RandomScene/updateSceneRect';
+import { SceneRect } from '../UseCases/RandomScene/updateSceneRect';
 import Canva from './Canva';
 import Legend from './Legend';
+import { Action } from './Types/Redux/Action';
 
+const mapDispatchToProps = (dispatch: Dispatch<Action>)  => {
+    return {
+        updateSceneRect: (rect: SceneRect) => dispatch(updateSceneRect(rect)),
+    }
+}
 
-const Main = ()=>{
+interface MainProps {
+    updateSceneRect: (rect: SceneRect) => void
+}
+
+const Main: React.FC<MainProps> = ({updateSceneRect})=>{
     const containerRef = useRef<HTMLDivElement>(null);
     const [theWidth, setTheWidth] = useState<number | undefined>(-1);
     const [theHeight, setTheHeight] = useState<number | undefined>(-1);
@@ -14,6 +27,18 @@ const Main = ()=>{
         setTheWidth(containerRef?.current?.clientWidth);
         setTheHeight(containerRef?.current?.clientHeight);
     }, []);
+
+    useEffect(
+        ()=>{
+            if( theHeight && theWidth )
+                if( theWidth > 0 && theHeight > 0 )
+                    updateSceneRect({
+                        width: theWidth,
+                        height: theHeight,
+                    })
+
+        }, [theWidth, theHeight]
+    )
 
     return (
         <Container
@@ -32,4 +57,4 @@ const Main = ()=>{
     )
 }
 
-export default Main;
+export default connect(null, mapDispatchToProps)(Main);
