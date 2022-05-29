@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   };
 };
 
-interface PointProps extends PointGUIProps{
+interface PointProps extends PointGUIProps {
   startPoint?: PointInfo | null | undefined,
   destinationPoint?: PointInfo | null | undefined,
   usageMode?: InteractionMode,
@@ -68,7 +68,7 @@ const Point = (props: PointProps)=> {
         <Circle
           x={props.x}
           y={props.y}
-          radius={5}
+          radius={props.innerRadius}
           fill={props.error ? props.errorInnerFill : 
               ( props.startPoint?.id === props.name ) ? 
                   props.startInnerFill : 
@@ -83,7 +83,7 @@ const Point = (props: PointProps)=> {
         <Circle
           x={props.x}
           y={props.y}
-          radius={11}
+          radius={props.outerRadius}
           strokeScaleEnabled={false}
           fill={props.error ? props.errorOuterFill : 
             ( props.startPoint?.id === props.name ) ? 
@@ -108,6 +108,8 @@ Point.defaultProps = {
   errorInnerFill: "#680000",
   errorOuterFill: "rgba(255,82,82,0.5)",
   innerFill: "#006699",
+  innerRadius: 5,
+  outerRadius: 11,
   error: false,
   outerFill: "rgba(0,102,153,0.25)",
   innerStroke: "black",

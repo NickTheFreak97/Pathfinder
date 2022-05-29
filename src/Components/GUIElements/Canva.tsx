@@ -27,6 +27,7 @@ import RenderFrontier from "../UseCases/RunAlgorithms/ViewSolution/RenderFrontie
 import RenderExplored from "../UseCases/RunAlgorithms/ViewSolution/RenderExplored";
 import RenderHitboxes from "../Utils/AABBTree/RenderHitboxes";
 import RenderLog from "../UseCases/RunAlgorithms/ViewSolution/RenderLog";
+import RenderSamples from "../UseCases/RandomScene/RenderSamples";
 
 const mapStateToProps = (state: State) => {
   return {
@@ -124,6 +125,11 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, options, update
           height={height ? height * 0.75 : window.innerHeight}
         />
         <Layer>
+          <RenderSamples width={width}
+            height={height ? height * 0.75 : window.innerHeight } 
+            samplesCnt={10}  
+          />
+            
           <RenderHitboxes />
           <RenderPolygons />
           {
