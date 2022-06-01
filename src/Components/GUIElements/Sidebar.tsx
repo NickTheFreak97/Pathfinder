@@ -19,8 +19,8 @@ const Sidebar : React.FC<{ usageMode: InteractionMode }>  = ({ usageMode }) => {
     return (
       <Navbar
         style={{
-          height: "100vh",
-          maxHeight: '100vh',
+          height: "fit-content",
+          minHeight: '100vh',
           overflow: 'hidden',
           width: "fit-content",
           padding: "1rem",

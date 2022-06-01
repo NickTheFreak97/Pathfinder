@@ -31,7 +31,7 @@ const RenderSamples : React.FC<RenderSamplesProps> = ({randomCircles, scene}) =>
             Object.values(randomCircles).map(
                 circle => 
                     <React.Fragment key={extractID(circle.circumCenter)}>
-                        {/* <Circle
+                        <Circle
                             x={circle.circumCenter[0]}
                             y={circle.circumCenter[1]}
                             radius={circle.outerRadius}
@@ -50,7 +50,7 @@ const RenderSamples : React.FC<RenderSamplesProps> = ({randomCircles, scene}) =>
                             x={circle.circumCenter[0]}
                             y={circle.circumCenter[1]}
                             name={extractID(circle.circumCenter)}
-                        /> */}
+                        />
                     </React.Fragment>
             )
         }

@@ -142,7 +142,7 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                             onClick={ () => {
                                 makeRandomScene({
                                     polyCount: 30,
-                                    minCircumcenterDist: 20,
+                                    minCircumcenterDist: 50,
                                     maxVertices: 7,
                                 })  
                             }}>
