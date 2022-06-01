@@ -1,6 +1,7 @@
 import PoissonDiskSampling from 'poisson-disk-sampling';
 import { KDTree } from 'mnemonist';
 import { v4 as uuidv4 } from 'uuid';
+import Big from 'big.js';
 
 import { addPolygon } from '../InputPolygon/Actions/addPolygon';
 import { extractID } from '../../Algorithms/Common/VisibilityMap/VisibilityMap';
@@ -85,7 +86,7 @@ const makePoints = (samples: number[][], tree: KDTree<string>, width: number, he
                     )
 
             const radius = adjustRadius(sample, d, width, height, props);
-            const innerR = Math.random()*(radius-10)+10;
+            const innerR = makeRandomRadiusInAnnulus(10, radius).toNumber();
 
             let polygonVerticesCnt: number =
             Math.max(Math.floor(Math.random()*(maxVertices-2))+3, 3);
@@ -152,4 +153,43 @@ const makePointsFromAngles = (circumCenter: number[], radius: number, angles: nu
                 circumCenter[1]+radius*Math.sin(angle),
             ]
     )
+}
+
+/**
+ * 
+ * @param r the inner radius in the annulus
+ * @param R the outer radius in the annulus
+ * @description: A lambda parameter for an exponential distribution such that
+ *               the probability that a sample falls in the first alpha % of (r-R) interval
+ *               is at least beta. In the initial implementation lambda is such that at least 75%
+ *               of the distribution falls within 0 and (R-r)/2. 
+ * 
+ *               After lambda is generated, a point is sampled from a variant of the exponential
+ *               distribution scaled and shifted in a way that P( r<X<R ) = 1, via the 
+ *               inverse transform sampling technique described here:
+ *               https://en.wikipedia.org/wiki/Inverse_transform_sampling 
+ *
+ */
+const makeRandomRadiusInAnnulus = (r: number, R: number): Big => {
+    const beta: number = 0.75;
+    const alpha: number = 0.5;
+    const lambda: Big = Big(1).div( Big(alpha).mul(r-R) ).mul( Big(Math.log(1/(1-beta))) );
+
+    let u: number = 0;
+    while( u == 0 || u == 1 )
+        u = Math.random();
+
+    let randomRadius: Big = (Big(-1).div(lambda))
+            .mul( 
+                Big( Math.log(
+                            Math.exp(-1*lambda.toNumber()*r) - 
+                            u*(
+                                Math.exp(-1*lambda.toNumber()*r) -
+                                Math.exp(-1*lambda.toNumber()*R)
+                            ) 
+                        ) 
+                    ) 
+            );
+
+    return randomRadius;
 }
