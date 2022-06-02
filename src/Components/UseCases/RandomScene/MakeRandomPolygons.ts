@@ -12,6 +12,17 @@ import { Dispatch } from 'react';
 import { Action } from '../../GUIElements/Types/Redux/Action';
 import { State } from '../../GUIElements/Types/Redux/State';
 import { addRandomPolyCircle } from './addRandonPolygonCircle';
+import { resetPolygons } from './Actions/resetPolygon';
+import { setPolygonID as setSelectedPolygonID } from '../SelectPolygon/setPolygonID';
+import { setFrontier } from '../SetDataStructures/setFrontier';
+import { setExplored } from '../SetDataStructures/setExplored';
+import { updateSolution } from '../RunAlgorithms/Actions/UpdateSolution';
+import { _setStartPoint } from '../SelectStartDest/selectStart';
+import { _setDestinationPoint } from '../SelectStartDest/selectDestination';
+import { updateVisibilityMap } from '../RunAlgorithms/Actions/updateVisibilityMap';
+import { resetAABBTree } from './Actions/resetAABBTree';
+import { resetRandomPolygonCircles } from './Actions/resetRandomPolyCircles';
+import { setRandomizationStatus } from './Actions/setRandomizationState';
 
 export interface RandomSceneProps {
     polyCount: number,
@@ -20,10 +31,25 @@ export interface RandomSceneProps {
     forceMax?: boolean,
 }
 
+export const reset = (dispatch: Dispatch<Action>) => {
+    dispatch(setSelectedPolygonID(undefined));
+    dispatch(setFrontier(undefined));
+    dispatch(setExplored(undefined));
+    dispatch(updateSolution(undefined));
+    dispatch(_setStartPoint(undefined));
+    dispatch(_setDestinationPoint(undefined));
+    dispatch(updateVisibilityMap(undefined));
+    dispatch(resetRandomPolygonCircles());
+    dispatch(resetPolygons());
+    dispatch(resetAABBTree());
+}
+
 export const makeRandomScene = (props: RandomSceneProps) => (dispatch: Dispatch<Action>, state: () => State ) => {
     const { polyCount, minCircumcenterDist } = props;
     const { width, height } = state().sceneRect;
     
+    reset(dispatch);
+
     const samples: number[][] = 
         new PoissonDiskSampling({
             shape: 
@@ -55,7 +81,7 @@ export const makeRandomScene = (props: RandomSceneProps) => (dispatch: Dispatch<
                 addPolygon({
                     vertices: polygonPts.vertices as ThreeOrMoreVertices,
                     transformedVertices: polygonPts.vertices as ThreeOrMoreVertices,
-                    id: uuidv4(),
+                    id: polygonPts.id,
                     overlappingPolygonsID: [],
                     isConvex: true,
                     isRandom: true,
@@ -63,6 +89,34 @@ export const makeRandomScene = (props: RandomSceneProps) => (dispatch: Dispatch<
             )
         }
     )
+    
+    let polygonIndices = Array.from({length: points.length}, (_, i) => i);
+
+    for( let i=0; i < 2; i++ ) {
+        let randomPoly: number = polygonIndices[Math.floor(Math.random()*(polygonIndices.length-1))];
+        let randomPt: number = Math.floor(Math.random()*(points[randomPoly].vertices.length-1));
+
+        if( i === 0 )
+            dispatch(_setStartPoint({
+                id: `${points[randomPoly].id}_p_${randomPt}`,
+                coordinates: {
+                    x: points[randomPoly].vertices[randomPt][0],
+                    y: points[randomPoly].vertices[randomPt][1],
+                }
+            }))
+        else
+            dispatch(_setDestinationPoint({
+                id: `${points[randomPoly].id}_p_${randomPt}`,
+                coordinates: {
+                    x: points[randomPoly].vertices[randomPt][0],
+                    y: points[randomPoly].vertices[randomPt][1],
+                }
+            }))
+
+        polygonIndices.splice(randomPoly, 1);
+    }
+
+    dispatch(setRandomizationStatus('DONE'));
 
 }
 
@@ -176,7 +230,7 @@ const makeRandomRadiusInAnnulus = (r: number, R: number): Big => {
     const lambda: Big = Big(1).div( Big(alpha).mul(r-R) ).mul( Big(Math.log(1/(1-beta))) );
 
     let u: number = 0;
-    while( u == 0 || u == 1 )
+    while( u === 0 || u === 1 )
         u = Math.random();
 
     let randomRadius: Big = (Big(-1).div(lambda))

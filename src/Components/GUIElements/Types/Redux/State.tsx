@@ -30,9 +30,11 @@ export interface State {
     sceneRect: {
         width: number, 
         height: number,
-    }
+    },
     
     randomPolyCircles: {
         [key: string]: RandomPolyCircleItem
-    }
+    },
+
+    randomizationState?: 'DONE' | 'PENDING',
 }

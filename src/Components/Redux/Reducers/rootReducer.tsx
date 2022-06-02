@@ -19,6 +19,10 @@ import {
   UPDATE_SOLUTION_ANALYTICS,
   UPDATE_SCENE_RECT,
   ADD_RANDOM_POLYGON_CIRCLE,
+  RESET_POLYGONS,
+  RESET_AABB_TREE,
+  RESET_RANDOM_POLYGON_CIRCLES,
+  SET_RANDOMIZATION_STATUS,
 } from "../Actions/ActionTypes";
 import { InteractionMode } from "../../Utils/interactionMode";
 import { Action } from "../../GUIElements/Types/Redux/Action";
@@ -72,6 +76,7 @@ const initialState = {
   AABBTree: new AABBTree(),
 
   randomPolyCircles: {},
+  randomizationState: undefined,
 };
 
 const rootReducer = (state: State = initialState, action: Action) => {
@@ -230,6 +235,34 @@ const rootReducer = (state: State = initialState, action: Action) => {
       return {
         ...state,
         randomPolyCircles: {...state.randomPolyCircles, [action.payload.randomPolyCircle.id]: action.payload.randomPolyCircle}
+      }
+    }
+
+    case RESET_POLYGONS: {
+      return {
+        ...state,
+        polygons: []
+      }
+    }
+
+    case RESET_AABB_TREE: {
+      return {
+        ...state,
+        AABBTree: new AABBTree()
+      }
+    }
+
+    case RESET_RANDOM_POLYGON_CIRCLES: {
+      return {
+        ...state,
+        randomPolyCircles: {}
+      }
+    }
+
+    case SET_RANDOMIZATION_STATUS: {
+      return {
+        ...state,
+        randomizationState: action.payload.randomizationState,
       }
     }
 

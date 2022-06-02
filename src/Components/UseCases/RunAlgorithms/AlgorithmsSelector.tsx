@@ -1,10 +1,11 @@
-import React, { Dispatch, useState, useEffect, useRef } from 'react';
+import React, { Dispatch, useState, useRef } from 'react';
 import { Stack, Checkbox, Button, Accordion, Slider, Title, Group, Text, ScrollArea, NativeSelect } from '@mantine/core';
 import { connect } from 'react-redux';
 import { runAlgorithms } from './onRun';
 import { store } from '../../Redux/Store/store';
 
 import { makeRandomScene, RandomSceneProps } from '../RandomScene/MakeRandomPolygons';
+import { setRandomizationStatus } from '../RandomScene/Actions/setRandomizationState';
 import { State } from '../../GUIElements/Types/Redux/State';
 import { InteractionMode } from '../../Utils/interactionMode';
 import { Polygon } from '../../GUIElements/Types/Shapes/Polygon';
@@ -19,13 +20,15 @@ const mapStateToProps = (state: State) => {
         options: state.options,
         startPoint: state.startPoint,
         destinationPoint: state.destinationPoint,
+        randomizationStatus: state.randomizationState,
     }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => {
     return {
         updateOptions: ( options: RunningOptions ) : void => dispatch( updateRunningOptions(options) ), 
-        makeRandomScene: ( props: RandomSceneProps ) : void => dispatch( makeRandomScene(props) )
+        makeRandomScene: ( props: RandomSceneProps ) : void => dispatch( makeRandomScene(props) ),
+        setRandomizationStatus: ( props: 'DONE' | 'PENDING' | undefined ): void => dispatch( setRandomizationStatus(props) ),
     }
 }
 
@@ -37,6 +40,8 @@ interface AlgorithmsSelectorProps {
     destinationPoint: PointInfo | null | undefined,
     updateOptions: (options: RunningOptions) => void,
     makeRandomScene: (props: RandomSceneProps) => void,
+    setRandomizationStatus: (props: 'DONE' | 'PENDING' | undefined) => void,
+    randomizationStatus?: "DONE" | "PENDING" | undefined,
 }
 
 const data = [
@@ -47,7 +52,7 @@ const data = [
     { value: Algorithms.AStart, label: 'A*' },
   ];
 
-const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, polygons, options, startPoint, destinationPoint, updateOptions, makeRandomScene }) => {
+const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, polygons, options, startPoint, destinationPoint, randomizationStatus, updateOptions, makeRandomScene, setRandomizationStatus }) => {
     
     const containerRef = useRef<HTMLDivElement>(null);
     const [ selectedAlgorithms, setSelectedAlgorithms ] = useState<SelectedAlgorithms>(makeEmptySelectedAlgorithms());
@@ -140,12 +145,17 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
 
                         <Button radius="sm" mt={2} mb={2}
                             onClick={ () => {
+                                setRandomizationStatus('PENDING');
                                 makeRandomScene({
-                                    polyCount: 30,
+                                    polyCount: 20,
                                     minCircumcenterDist: 50,
-                                    maxVertices: 7,
+                                    maxVertices: 14,
+                                    forceMax: true,
                                 })  
-                            }}>
+                            }}
+                            
+                            loading={randomizationStatus === 'PENDING'}
+                            >
                             Randomize
                         </Button>
 
