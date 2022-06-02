@@ -1,21 +1,25 @@
 import { Frontier } from "../Types/Problem";
 import { Node, compareNodes } from "../Types/Node";
 import { compareStates, State } from "../Types/State";
+import { toString } from "../Types/State";
 /**
  * An adaptation of the following code: 
  * https://www.davideaversa.it/blog/typescript-binary-heap/
  */
  export class MinPQFrontier implements Frontier {
     queue: Array<Node>;
+    statesMap: Map<String, number>;
     priority: (node: Node) => number;
 
     constructor(priority: (node: Node) => number) {
         this.queue = [];
+        this.statesMap = new Map<String, number>();
         this.priority = priority;
     }
 
     push = (node: Node) : Array<Node> => {
         this.queue.push(node);
+        this.statesMap.set(toString(node.state), this.queue.length-1);
         this.bubbleUp(this.queue.length - 1);
         return this.queue;
     }
@@ -23,10 +27,13 @@ import { compareStates, State } from "../Types/State";
     getFirst = () : Node | undefined => {
         let result = this.queue[0];
         let end = this.queue.pop();
+
         if (this.queue.length > 0) {
             this.queue[0] = end!;
             this.sinkDown(0);
         }
+
+        this.statesMap.delete(toString(result.state));
         return result;
     }
 
@@ -36,6 +43,7 @@ import { compareStates, State } from "../Types/State";
 
     clear = (): void => {
         this.queue = [];
+        this.statesMap.clear();
     }
 
     contains = (node: Node) : boolean => {
@@ -43,13 +51,12 @@ import { compareStates, State } from "../Types/State";
     }
 
     containsState = ( state: State ) => {
-        return this.queue.filter( (element: Node) => compareStates( state, element.state ) === true  ).length > 0;
+        return this.statesMap.has(toString(state));
     }
 
     replaceIfBetter = ( node: Node ) => {
-        const index: number = this.queue.findIndex( (element: Node) => compareStates( node.state, element.state ) );
-        if( index !== -1 && this.priority( node ) < this.priority( this.queue[index] )) {
-
+        const index: number | undefined = this.statesMap.get(toString(node.state));
+        if( index && this.priority( node ) < this.priority( this.queue[index] )) {
             this.remove( this.queue[index] );
             this.queue.push( node );
         }
@@ -60,7 +67,11 @@ import { compareStates, State } from "../Types/State";
         for (var i = 0; i < length; i++) {
             if (this.queue[i].state != node.state) 
                 continue;
+            
             let end = this.queue.pop();
+            /* if( end )
+                this.statesMap.delete(toString(end.state))
+ */
             if (i == length - 1) 
                 break;
             this.queue[i] = end!;
@@ -80,12 +91,18 @@ import { compareStates, State } from "../Types/State";
 
             this.queue[parentN] = element;
             this.queue[n] = parent;
+
+            this.statesMap.set(toString(element.state), parentN);
+            this.statesMap.set(toString(parent.state), n);
+
             n = parentN;
         }
     }
 
     private sinkDown(n: number) {
-        var length = this.queue.length, element = this.queue[n], elemScore = this.priority(element);
+        var length = this.queue.length, 
+            element = this.queue[n], 
+            elemScore = this.priority(element);
 
         while (true) {
             var child2N = (n + 1) * 2, child1N = child2N - 1;
@@ -108,6 +125,10 @@ import { compareStates, State } from "../Types/State";
 
             this.queue[n] = this.queue[swap];
             this.queue[swap] = element;
+
+            this.statesMap.set(toString(this.queue[swap].state), n);
+            this.statesMap.set(toString(element.state), swap);
+
             n = swap;
         }
     }
