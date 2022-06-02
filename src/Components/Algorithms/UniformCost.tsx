@@ -59,9 +59,9 @@ export const _UniformCost = ( problem: Problem, priority: ( node: Node ) => numb
                         if( !!analytics ) 
                             analytics.generatedNodes++;
                     }
-                    /* else
-                        if( ( state().frontier as MinPQFrontier )?.containsState( nextNode.state ) )
-                            ( state().frontier as MinPQFrontier ).replaceIfBetter( nextNode ); */
+                    else
+                        if( ( state().frontier as MinPQFrontier )?.containsState( poppedNode.state ) )
+                            ( state().frontier as MinPQFrontier ).replaceIfBetter( nextNode );
                 }
             )
 

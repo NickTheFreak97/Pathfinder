@@ -58,26 +58,17 @@ import { toString } from "../Types/State";
         const index: number | undefined = this.statesMap.get(toString(node.state));
         if( index && this.priority( node ) < this.priority( this.queue[index] )) {
             this.remove( this.queue[index] );
-            this.queue.push( node );
+            this.push( node );
         }
     } 
 
     private remove(node: Node) {
-        let length = this.queue.length;
-        for (var i = 0; i < length; i++) {
-            if (this.queue[i].state != node.state) 
-                continue;
-            
+        const index: number | undefined = this.statesMap.get(toString(node.state));
+        if( index ) {
             let end = this.queue.pop();
-            /* if( end )
-                this.statesMap.delete(toString(end.state))
- */
-            if (i == length - 1) 
-                break;
-            this.queue[i] = end!;
-            this.bubbleUp(i);
-            this.sinkDown(i);
-            break;
+            this.queue[index] = end!;
+            this.bubbleUp(index);
+            this.sinkDown(index);
         }
     }
 
