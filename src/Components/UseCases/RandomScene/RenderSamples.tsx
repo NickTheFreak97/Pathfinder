@@ -15,19 +15,23 @@ const mapStateToProps = (state: State) => {
     return {
         randomCircles: state.randomPolyCircles, 
         polygons: state.polygons,
+        visible: state.options.verbose.show.randomPolygonCircles,
+        opacity: state.options.verbose.opacity.randomPolygonCircles
     }
 }
 
 interface RenderSamplesProps {
     randomCircles?: RandomPolyCircleItem[],
     polygons?: Polygon[],
+    visible?: boolean,
+    opacity?: number,
 }
 
-const RenderSamples : React.FC<RenderSamplesProps> = ({randomCircles, polygons}) => {
+const RenderSamples : React.FC<RenderSamplesProps> = ({randomCircles, polygons, visible, opacity}) => {
 
     return <>
         {
-            randomCircles && 
+            (randomCircles && visible) && 
             Object.values(randomCircles).map(
                 circle => {
 
@@ -55,7 +59,7 @@ const RenderSamples : React.FC<RenderSamplesProps> = ({randomCircles, polygons})
                                 y={circumCenterCoord[1]}
                                 radius={circle.outerRadius}
                                 strokeWidth={1}
-                                stroke={'rgba(0,0,0, .2)'}
+                                stroke={`rgba(0,0,0,${0.2*opacity!/100})`}
                             />
 
                             <Circle
@@ -63,8 +67,9 @@ const RenderSamples : React.FC<RenderSamplesProps> = ({randomCircles, polygons})
                                 y={circumCenterCoord[1]}
                                 radius={circle.innerRadius}
                                 strokeWidth={1}
-                                stroke={'#FF0043'}
+                                stroke={`rgba(221,107,32,${opacity!/100})`}
                             />
+
                             <Point
                                 x={circumCenterCoord[0]}
                                 y={circumCenterCoord[1]}

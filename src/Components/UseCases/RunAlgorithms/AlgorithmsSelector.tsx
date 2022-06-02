@@ -1,5 +1,6 @@
-import React, { Dispatch, useState, useRef } from 'react';
-import { Stack, Checkbox, Button, Accordion, Slider, Title, Group, Text, ScrollArea, NativeSelect } from '@mantine/core';
+import React, { Dispatch, useState } from 'react';
+import { Stack, Checkbox, Button, Modal, Accordion, Slider, Title, Group, Text, ScrollArea, NativeSelect, NumberInput } from '@mantine/core';
+import { InputWrapper, Input } from '@mantine/core';
 import { connect } from 'react-redux';
 import { runAlgorithms } from './onRun';
 import { store } from '../../Redux/Store/store';
@@ -54,10 +55,15 @@ const data = [
 
 const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, polygons, options, startPoint, destinationPoint, randomizationStatus, updateOptions, makeRandomScene, setRandomizationStatus }) => {
     
-    const containerRef = useRef<HTMLDivElement>(null);
     const [ selectedAlgorithms, setSelectedAlgorithms ] = useState<SelectedAlgorithms>(makeEmptySelectedAlgorithms());
+    const [ randomPolygonsCnt, setRandomPolygonsCnt ] = useState<number>(2);
+    const [ minRandPolyCentersDist, setMinRandPolyCentersDist ] = useState<number>(21);
+    const [ maxVerticesCnt, setMaxVerticesCnt ] = useState<number>(3);
+    const [ forceMaxVertices, setForceMaxVertices ] = useState<boolean>(false);
 
-    const updateChecked = ( key: "frontier" | "explored" | "solution" | "visibility" | "hitboxes", checked: boolean ) => {
+    const [ isModalOpen, setModalOpen] = useState<boolean>(false);
+
+    const updateChecked = ( key: "frontier" | "explored" | "solution" | "visibility" | "hitboxes" | "randomPolygonCircles", checked: boolean ) => {
         const currentOptions: RunningOptions = store.getState().options;
         const newOptions: RunningOptions = {
             ...currentOptions, 
@@ -76,7 +82,7 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
         updateOptions(newOptions);
     } 
 
-    const updateOpacity = ( key: "frontier" | "explored" | "solution" | "visibility" | "hitboxes", opacity: number ) => {
+    const updateOpacity = ( key: "frontier" | "explored" | "solution" | "visibility" | "hitboxes" | "randomPolygonCircles", opacity: number ) => {
         const currentOptions: RunningOptions = store.getState().options;
         const newOptions: RunningOptions = {
             ...currentOptions, 
@@ -110,7 +116,7 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
         return null;
     else
         return (
-            <div ref={containerRef}>
+            <>
                 <ScrollArea style={{
                     display: "flex",
                     flexDirection: "column",
@@ -132,6 +138,16 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                     />
 
                     <Stack justify="flex-start" spacing="xs" style={{ marginTop: '1.25rem' }}>
+
+                        <Button color="dark" style={{alignSelf: "flex-start"}}
+                            disabled={  polygons.length <= 0 || !startPoint || !destinationPoint ||
+                                        polygons.reduce( ( currentVal: boolean, polygon: Polygon ) => currentVal || !polygon.isConvex || !!polygon.pointInside || polygon.overlappingPolygonsID.length > 0, false) ||
+                                        !Object.keys(selectedAlgorithms).reduce( (currentVal: boolean, algo: string) => currentVal || selectedAlgorithms[algo as Algorithms], false )
+                                    }
+                            onClick={ ()=> runAlgorithms(selectedAlgorithms) }>
+                            Find path
+                        </Button>
+
                         <Checkbox
                             label="Compute effective branching factor"
                             color="dark"
@@ -146,12 +162,7 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                         <Button radius="sm" mt={2} mb={2}
                             onClick={ () => {
                                 setRandomizationStatus('PENDING');
-                                makeRandomScene({
-                                    polyCount: 50,
-                                    minCircumcenterDist: 50,
-                                    maxVertices: 14,
-                                    forceMax: true,
-                                })  
+                                setModalOpen(true);
                             }}
                             
                             loading={randomizationStatus === 'PENDING'}
@@ -194,14 +205,23 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                                         onChange={(event: React.ChangeEvent<Element & { checked: boolean }>) => updateChecked("hitboxes", event.currentTarget.checked ) }
                                     />
 
+                                    <Checkbox
+                                        label="Show solution"
+                                        color="dark"
+                                        radius="xs"
+                                        checked={options.verbose.show.solution}
+                                        onChange={(event: React.ChangeEvent<Element & { checked: boolean }>) => updateChecked("solution", event.currentTarget.checked )}
+                                    />
+
+                                    <Checkbox
+                                        label="Show random circles"
+                                        color="dark"
+                                        radius="xs"
+                                        checked={options.verbose.show.randomPolygonCircles}
+                                        onChange={(event: React.ChangeEvent<Element & { checked: boolean }>) => updateChecked("randomPolygonCircles", event.currentTarget.checked )}
+                                    />
+
                                     <Stack>
-                                        <Checkbox
-                                            label="Show solution"
-                                            color="dark"
-                                            radius="xs"
-                                            checked={options.verbose.show.solution}
-                                            onChange={(event: React.ChangeEvent<Element & { checked: boolean }>) => updateChecked("solution", event.currentTarget.checked )}
-                                        />
                                             
                                         <Title order={6}>
                                             Opacities
@@ -274,24 +294,103 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                                                 />
                                         </Group>
 
+                                        <Group style={{width: "100%"}}>
+                                            <Text weight={500}>
+                                                Circles:
+                                            </Text>
+                                            <Slider style={{width: "60%", marginLeft: "auto"}}
+                                                color="orange"
+                                                size="sm"
+                                                radius="xs"
+                                                value={options.verbose.opacity.randomPolygonCircles}
+                                                onChange={ (newOpacity: number) => updateOpacity("randomPolygonCircles", newOpacity) }
+                                                />
+                                        </Group>
+
                                     </Stack>
 
                                 </Stack>
                             </Accordion.Item>
                         </Accordion>
-
-                        <Button color="dark" style={{marginTop: "0.5rem", alignSelf: "flex-start"}}
-                            disabled={  polygons.length <= 0 || !startPoint || !destinationPoint ||
-                                        polygons.reduce( ( currentVal: boolean, polygon: Polygon ) => currentVal || !polygon.isConvex || !!polygon.pointInside || polygon.overlappingPolygonsID.length > 0, false) ||
-                                        !Object.keys(selectedAlgorithms).reduce( (currentVal: boolean, algo: string) => currentVal || selectedAlgorithms[algo as Algorithms], false )
-                                    }
-                            onClick={ ()=> runAlgorithms(selectedAlgorithms) }>
-                            Find path
-                        </Button>
+                        
                     </Stack>
                     
                 </ScrollArea>
-            </div>
+                <Modal
+                    opened={isModalOpen}
+                    onClose={() => setModalOpen(false)}
+                    title="Select random scene options"
+                >
+                    <Stack>
+                        <InputWrapper
+                            required
+                            label="Polygon number"
+                            description="We'll try to generate the specified amount of random polygons if possible,
+                                depending on the value of the other parameters."
+                        >
+                            <NumberInput placeholder="How many polygons should I generate?" min={2}
+                                value={randomPolygonsCnt} 
+                                onChange={(value) => setRandomPolygonsCnt(value || 2)}
+                            />
+                            
+                        </InputWrapper>
+
+                        <InputWrapper
+                            required
+                            label="Maximum vertices"
+                            description="We'll generate polygons with at most the specified amount of vertices."
+                        >
+                            <NumberInput placeholder="How many polygons should I generate?" min={3}
+                                value={maxVerticesCnt} 
+                                onChange={(value) => setMaxVerticesCnt(value || 3)}
+                            />
+                        </InputWrapper>
+
+                        <InputWrapper
+                            required
+                            label="Minimum circumcenters distance"
+                            description="To generate random polygons we generate random circles first.
+                                You can control the minimum distance between the
+                                centers of such circles. Smaller circles means smaller polygons on average (min: 10)."
+                        >
+                            <NumberInput placeholder="How many polygons should I generate?" min={21}
+                                value={minRandPolyCentersDist} 
+                                onChange={(value) => setMinRandPolyCentersDist(value || 21)}
+                            />
+                        </InputWrapper>
+
+                        <InputWrapper
+                            required
+                            description="If checked, this guarantees that at least one polygon with the specified
+                                maximum amount of vertices is generated"
+                        >
+                            <Checkbox
+                                label="Force maximum vertices"
+                                checked={forceMaxVertices} onChange={(event)=> setForceMaxVertices(event.currentTarget.checked)}
+                            />
+                        </InputWrapper>
+                        
+                        <Group style={{borderTop: '1px solid rgba(0,0,0, 0.05)', paddingTop: '0.5rem'}}>
+                            <Button color="grape" size="md" style={{marginLeft: 'auto'}}
+                                disabled={randomPolygonsCnt < 2 || maxVerticesCnt < 3 || minRandPolyCentersDist < 21 }
+                                onClick={() => {
+                                    setModalOpen(false)
+                                    makeRandomScene({
+                                        polyCount: randomPolygonsCnt,
+                                        minCircumcenterDist: minRandPolyCentersDist,
+                                        maxVertices: maxVerticesCnt,
+                                        forceMax: forceMaxVertices,
+                                    })
+                                }}
+                                >
+                                Confirm
+                            </Button>
+                        </Group>
+                    </Stack>
+
+                </Modal>
+
+            </>
         );
         
 }

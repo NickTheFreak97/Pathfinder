@@ -59,6 +59,7 @@ const initialState = {
         visibility: false,
         solution: true,
         hitboxes: false,
+        randomPolygonCircles: false,
       },
 
       opacity: {
@@ -67,6 +68,7 @@ const initialState = {
         visibility: 100,
         solution: 100,
         hitboxes: 100,
+        randomPolygonCircles: 100,
       },
     },
     log: false,
