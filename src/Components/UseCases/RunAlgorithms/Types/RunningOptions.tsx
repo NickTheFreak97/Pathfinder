@@ -10,6 +10,7 @@ export interface RunningOptions {
             visibility: boolean,
             solution: boolean, 
             hitboxes: boolean,
+            randomPolygonCircles: boolean,
         }
 
         opacity: {
@@ -18,6 +19,7 @@ export interface RunningOptions {
             visibility: number,
             solution: number, 
             hitboxes: number,
+            randomPolygonCircles: number,
         }
     },
     log: boolean

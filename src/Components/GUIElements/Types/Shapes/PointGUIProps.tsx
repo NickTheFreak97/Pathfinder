@@ -1,9 +1,11 @@
 export interface PointGUIProps {
-  x: number;
-  y: number;
-  name: string;
-  error?: boolean;
-  stroke?: string;
+  x: number,
+  y: number,
+  name: string,
+  error?: boolean,
+  stroke?: string,
+  innerRadius?: number,
+  outerRadius?: number,
   startInnerFill?: string,
   startOuterFill?: string,
   destInnerFill?: string,

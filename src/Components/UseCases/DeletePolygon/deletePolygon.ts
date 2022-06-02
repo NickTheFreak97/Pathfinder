@@ -14,6 +14,7 @@ import { computeAABB } from "../../Utils/AABBTree/Adapters/Poly2BoxAdapter";
 import { Polygon } from "../../GUIElements/Types/Shapes/Polygon";
 import { AABBTree, Node } from "../../Utils/AABBTree/aabbtree";
 import { Box } from "../../Utils/AABBTree/box";
+import { removeRandomPolygonCircle } from "../RandomScene/Actions/removeRandomCircle";
 
 const _deletePolygon = (polygonID: string, overlappingPolys: string[]) : Action => {
     return {
@@ -60,6 +61,7 @@ export const deletePolygon = (event: Konva.KonvaEventObject<MouseEvent>) => (dis
         if( !!selectedShape && validate(selectedShape) ) {
             
             dispatch(_deletePolygon(selectedShape, broadlyOverlappedPolys) );
+            dispatch(removeRandomPolygonCircle(selectedShape));
 
             if( selectedPolygonID === selectedShape ) 
                 dispatch(setPolygonID(null));

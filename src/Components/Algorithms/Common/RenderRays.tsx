@@ -6,18 +6,16 @@ import _ from "lodash";
 import { v4 as uuidv4, validate } from "uuid";
 
 import { raycast } from "./Raycasting";
-import { getVisibilityMap, VisibilityMap, extractPoint, extractID } from "./VisibilityMap/VisibilityMap";
+import { VisibilityMap, extractPoint, extractID } from "./VisibilityMap/VisibilityMap";
 import Point from "../../GUIElements/Shapes/Point";
 import { State } from "../../GUIElements/Types/Redux/State";
 import { PointInfo } from "../../GUIElements/Types/Shapes/PointInfo";
 import { Polygon } from "../../GUIElements/Types/Shapes/Polygon";
-import { ThreeOrMoreVertices, toPoint } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
 import { Point as Point_t, toVertex } from "../../GUIElements/Types/Shapes/Point";
 import { Segment } from "../../UseCases/InputPolygon/Common/Geometry";
 import { Vertex } from "../../GUIElements/Types/Shapes/PolygonGUIProps";
 import { RunningOptions } from "../../UseCases/RunAlgorithms/Types/RunningOptions";
 
-import { store } from "../../Redux/Store/store";
 import { polygonsToObstacleSegments } from "./VisibilityMap/utils";
 
 const mapStateToProps = (state: State) => {

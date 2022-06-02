@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import Point from "./Point";
 import { PolygonGUIProps, Vertex } from "../Types/Shapes/PolygonGUIProps";
 import { updateTransform } from "../../UseCases/TransformPolygon/UpdateTransform";
+import { State } from "../Types/Redux/State";
 
 interface AABB {
   x: number,
@@ -15,13 +16,19 @@ interface AABB {
   height: number,
 }
 
+const mapStateToProps = (state: State) => {
+  return {
+    randomPolygonsInfo: state.randomPolyCircles,
+  }
+}
+
 const mapDispatchToProps = ( dispatch: Dispatch<any> ) => {
   return {
     setTransform: ( polygonID: string, transform: Konva.Transform ) => dispatch( updateTransform(polygonID, transform) )
   }
 }
 
-const Polygon = (props: PolygonGUIProps) => {
+const Polygon: React.FC<PolygonGUIProps> = (props) => {
   const shapeRef = useRef< { getSelfRect: ()=> AABB } & Konva.Shape >(null);
   const groupRef = useRef< { getSelfRect: ()=> AABB } & Konva.Group >(null);
 
@@ -114,6 +121,8 @@ const Polygon = (props: PolygonGUIProps) => {
             y={vertex[1]}
             scaleX={ groupRef?.current && 1 / scaleX || undefined }
             scaleY={ groupRef?.current && 1 / scaleY || undefined }
+            outerRadius={ props.isRandom ? 6: 11 }
+            innerRadius={ props.isRandom ? 2: 5 }
             name={props.name + "_p_" + i}
             onPointSelected={props.onPointSelected}
             key={props.name + '_p_' + i}
@@ -134,6 +143,7 @@ Polygon.defaultProps = {
   onPointSelected: (pointID: string, pointX: number, pointY: number) => {
     console.log("Clicked point ", pointID, " at ", { x: pointX, y: pointY });
   },
+  randomPolygonsInfo: {},
 };
 
-export default connect(null, mapDispatchToProps)(Polygon);
+export default connect(mapStateToProps, mapDispatchToProps)(Polygon);

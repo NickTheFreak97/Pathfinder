@@ -8,6 +8,7 @@ import { VisibilityMap } from "../../../Algorithms/Common/VisibilityMap/Visibili
 import { Action } from "../../../Algorithms/Common/Problem/Types/Action";
 import { AABBTree } from "../../../Utils/AABBTree/aabbtree";
 import { Analytics } from "../../../Algorithms/Common/Problem/Types/Analytics";
+import { RandomPolyCircleItem } from "../../../UseCases/RandomScene/addRandonPolygonCircle";
 
 export interface State {
     polygons: Polygon[],
@@ -25,4 +26,15 @@ export interface State {
     solution: Action[] | null | undefined,
     solutionAnalytics: Analytics
     AABBTree: AABBTree,
+
+    sceneRect: {
+        width: number, 
+        height: number,
+    },
+    
+    randomPolyCircles: {
+        [key: string]: RandomPolyCircleItem
+    },
+
+    randomizationState?: 'DONE' | 'PENDING',
 }

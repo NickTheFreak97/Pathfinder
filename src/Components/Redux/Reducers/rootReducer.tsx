@@ -17,6 +17,13 @@ import {
   UPDATE_SOLUTION,
   UPDATE_POLYGON_TRANSFORM,
   UPDATE_SOLUTION_ANALYTICS,
+  UPDATE_SCENE_RECT,
+  ADD_RANDOM_POLYGON_CIRCLE,
+  RESET_POLYGONS,
+  RESET_AABB_TREE,
+  RESET_RANDOM_POLYGON_CIRCLES,
+  SET_RANDOMIZATION_STATUS,
+  REMOVE_RANDOM_POLYGON_CIRCLE,
 } from "../Actions/ActionTypes";
 import { InteractionMode } from "../../Utils/interactionMode";
 import { Action } from "../../GUIElements/Types/Redux/Action";
@@ -38,6 +45,11 @@ const initialState = {
   frontier: undefined,
   explored: undefined,
 
+  sceneRect: {
+    width: -1,
+    height: -1,
+  }, 
+
   options: {
     computeEFB: false,
     verbose: {
@@ -47,6 +59,7 @@ const initialState = {
         visibility: false,
         solution: true,
         hitboxes: false,
+        randomPolygonCircles: false,
       },
 
       opacity: {
@@ -55,6 +68,7 @@ const initialState = {
         visibility: 100,
         solution: 100,
         hitboxes: 100,
+        randomPolygonCircles: 100,
       },
     },
     log: false,
@@ -63,6 +77,9 @@ const initialState = {
   solution: null,
   solutionAnalytics: makeEmptyAnalytics(),
   AABBTree: new AABBTree(),
+
+  randomPolyCircles: {},
+  randomizationState: undefined,
 };
 
 const rootReducer = (state: State = initialState, action: Action) => {
@@ -208,6 +225,58 @@ const rootReducer = (state: State = initialState, action: Action) => {
         ...state,
         polygons: action.payload.polygons,
       };
+    }
+
+    case UPDATE_SCENE_RECT: {
+      return {
+        ...state,
+        sceneRect: action.payload.sceneRect,
+      }
+    }
+
+    case ADD_RANDOM_POLYGON_CIRCLE: {
+      return {
+        ...state,
+        randomPolyCircles: {...state.randomPolyCircles, [action.payload.randomPolyCircle.id]: action.payload.randomPolyCircle}
+      }
+    }
+
+    case RESET_POLYGONS: {
+      return {
+        ...state,
+        polygons: []
+      }
+    }
+
+    case RESET_AABB_TREE: {
+      return {
+        ...state,
+        AABBTree: new AABBTree()
+      }
+    }
+
+    case RESET_RANDOM_POLYGON_CIRCLES: {
+      return {
+        ...state,
+        randomPolyCircles: {}
+      }
+    }
+
+    case SET_RANDOMIZATION_STATUS: {
+      return {
+        ...state,
+        randomizationState: action.payload.randomizationState,
+      }
+    }
+
+    case REMOVE_RANDOM_POLYGON_CIRCLE: {
+      const randomCircles = {...state.randomPolyCircles};
+      delete randomCircles[action.payload.id];
+
+      return {
+        ...state,
+        randomPolyCircles: randomCircles
+      }
     }
 
     default:

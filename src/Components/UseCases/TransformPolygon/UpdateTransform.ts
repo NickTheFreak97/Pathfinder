@@ -1,5 +1,4 @@
 import Konva from "konva";
-import { validate } from "uuid";
 
 import { UPDATE_POLYGON_TRANSFORM } from "../../Redux/Actions/ActionTypes";
 
@@ -18,8 +17,6 @@ import { Point } from "../../GUIElements/Types/Shapes/Point";
 import { Polygon } from "../../GUIElements/Types/Shapes/Polygon";
 import { Action } from "../../GUIElements/Types/Redux/Action";
 import { PointInfo } from "../../GUIElements/Types/Shapes/PointInfo";
-import { _setStartPoint } from "../SelectStartDest/selectStart";
-import { _setDestinationPoint } from "../SelectStartDest/selectDestination";
 import { AABB } from "../../Utils/AABBTree/aabb";
 
 const _updateTransform = ( polygons: Polygon[] ) : Action=> {
@@ -31,7 +28,6 @@ const _updateTransform = ( polygons: Polygon[] ) : Action=> {
         }
     }
 }
-
 
 export const updateTransform = ( polygonID: string, transform: Konva.Transform ) => (dispatch: Dispatch<Action>, getState: () => State) => {
     const currentPolygons: Polygon[] = getState().polygons;
@@ -58,6 +54,7 @@ export const updateTransform = ( polygonID: string, transform: Konva.Transform )
         Utils.handleTransformPoints(thisPoly, dispatch, transform, startPoint, destinationPoint);
         Utils.handleUpdateOverlaps(thisPoly, newPoly, getState().AABBTree, prevAABB, nextAABB);
         Utils.handleUpdateTree( getState().AABBTree, prevAABB, nextAABB, thisPoly );
+
         
         newPoly.splice( polyIndex, 1, thisPoly );
     
