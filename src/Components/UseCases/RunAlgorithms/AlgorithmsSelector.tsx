@@ -147,7 +147,7 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                             onClick={ () => {
                                 setRandomizationStatus('PENDING');
                                 makeRandomScene({
-                                    polyCount: 20,
+                                    polyCount: 50,
                                     minCircumcenterDist: 50,
                                     maxVertices: 14,
                                     forceMax: true,

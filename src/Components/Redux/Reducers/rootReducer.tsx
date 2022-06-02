@@ -23,6 +23,7 @@ import {
   RESET_AABB_TREE,
   RESET_RANDOM_POLYGON_CIRCLES,
   SET_RANDOMIZATION_STATUS,
+  REMOVE_RANDOM_POLYGON_CIRCLE,
 } from "../Actions/ActionTypes";
 import { InteractionMode } from "../../Utils/interactionMode";
 import { Action } from "../../GUIElements/Types/Redux/Action";
@@ -263,6 +264,16 @@ const rootReducer = (state: State = initialState, action: Action) => {
       return {
         ...state,
         randomizationState: action.payload.randomizationState,
+      }
+    }
+
+    case REMOVE_RANDOM_POLYGON_CIRCLE: {
+      const randomCircles = {...state.randomPolyCircles};
+      delete randomCircles[action.payload.id];
+
+      return {
+        ...state,
+        randomPolyCircles: randomCircles
       }
     }
 
