@@ -30,7 +30,6 @@ const TransformerComponent: React.FC<TransformerProps> = ({
 
   const checkNode = () => {
     const stage = transformerNode?.getStage();
-    console.log(stage, selectedPolygonID, transformerNode);
     
     if (!!stage && !!transformerNode) {
       const selectedNode = stage.findOne("." + selectedPolygonID);

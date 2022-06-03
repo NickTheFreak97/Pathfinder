@@ -69,7 +69,7 @@ export const popFrontier = () => ( dispatch: Dispatch<ReduxAction>, getState: ()
         }
 }
 
-export const pushToExplored = ( stateID: string ) => (dispatch: Dispatch<ReduxAction>, getState: ()=> ReduxState) => {
+export const pushToExplored = ( stateID: string ) => (dispatch: Dispatch<ReduxAction>, _: ()=> ReduxState) => {
     dispatch({
         type: PUSH_EXPLORED, 
 

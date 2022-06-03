@@ -41,10 +41,8 @@ export const makeEmptyAnalytics = (algorithmName?: string) : Analytics => {
 export const autoComputeAnalytics = (analytics: Analytics, solutionDepth: number, computeEBF: boolean): void  => {
     const state: () => State = store.getState;
 
-    console.log("Autocomputing analytics");
-
     analytics.frontierSize = state().frontier!.size();
-    analytics.exploredSize = Object.keys(state().frontier!).length;
+    analytics.exploredSize = Object.keys(state().explored!).length;
     analytics.polygonCount = state().polygons.length;
 
     let maxVertices = 0;

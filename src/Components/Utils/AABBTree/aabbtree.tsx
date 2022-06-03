@@ -191,11 +191,9 @@ export class AABBTree
 
         if (costDiffs[bestDiffIndex] < 0.0)
         {
-            console.log("Tree rotation: tpye " + bestDiffIndex);
             switch (bestDiffIndex)
             {
                 case 0:
-                    // this.swap(sibling, node.child2!);
 
                     if (parent.child1 == sibling)
                         parent.child1 = node.child2;

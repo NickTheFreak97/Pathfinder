@@ -29,7 +29,7 @@ const RenderLogs: React.FC< RenderLogProps > = ({log}) => {
         log.cost.toFixed(precision),
         log.memory,
         log.completionTime,
-        log.EBF?.toFixed(precision) || 'N.A',
+        (log.EBF && log.EBF > 0) ? log.EBF?.toFixed(precision) : 'N.A',
         log.frontierSize,
         log.exploredSize,
     ]
@@ -58,8 +58,8 @@ const RenderLogs: React.FC< RenderLogProps > = ({log}) => {
                     <tr>
                         {
                             logTxt.map(
-                                txt => 
-                                    <td>
+                                (txt, i) => 
+                                    <td key={i} >
                                         {txt}
                                     </td>
                             )

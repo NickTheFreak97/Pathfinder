@@ -12,8 +12,6 @@ import { Node } from "./Common/Problem/Types/Node";
 import { toString } from "./Common/Problem/Types/State";
 import { Analytics, autoComputeAnalytics, makeEmptyAnalytics } from "./Common/Problem/Types/Analytics";
 import { makeSolutionAndLog, SolutionAndLog } from "./Common/Problem/Types/ResultAndLog";
-import { computeBranchingFactor } from "./Common/Analytics/BranchingFactor";
-import { findRoot } from "./Common/Analytics/Utils/Newton";
 
 export const _UniformCost = ( problem: Problem, priority: ( node: Node ) => number, analytics?: Analytics ): Action[] | null => {
     const dispatch = store.dispatch;

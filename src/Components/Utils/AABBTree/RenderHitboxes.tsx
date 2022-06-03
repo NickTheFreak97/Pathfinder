@@ -1,12 +1,11 @@
 import { v4 as uuidv4 } from "uuid";
 import { Line } from "react-konva";
-import React, { useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { State } from "../../GUIElements/Types/Redux/State";
 import { Polygon } from "../../GUIElements/Types/Shapes/Polygon";
 import { RunningOptions } from "../../UseCases/RunAlgorithms/Types/RunningOptions";
 import { AABBTree, Node } from "./aabbtree";
-import { AABB } from "./aabb";
 import { Box } from "./box";
 
 interface RenderHitboxesProps {
@@ -23,13 +22,7 @@ const mapStateToProps = (state: State) => {
     }
 }
 
-const RenderHitboxes: React.FC<RenderHitboxesProps> = ({options, tree, polygons}) => {
-
-    useEffect(
-        ()=>{
-            /* console.log(tree.AllNodes); */
-        }, [polygons]
-    )
+const RenderHitboxes: React.FC<RenderHitboxesProps> = ({options, tree}) => {
 
     return <React.Fragment>
         {   options.verbose.show.hitboxes && 

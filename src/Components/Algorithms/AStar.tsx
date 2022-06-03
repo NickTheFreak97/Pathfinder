@@ -11,7 +11,7 @@ import { makeSolutionAndLog, SolutionAndLog } from "./Common/Problem/Types/Resul
 export const AStar = ( problem: Problem, computeEBF?: boolean ) => {
     return new Promise<SolutionAndLog | null>( (resolve, reject)=>{
         const destPoint: PointInfo = store.getState().destinationPoint!;
-        const log: Analytics | undefined = !!computeEBF ? makeEmptyAnalytics("A*") : undefined;
+        const log: Analytics = makeEmptyAnalytics("A*");
 
         const result: Action[] | null = _UniformCost(
             problem,
