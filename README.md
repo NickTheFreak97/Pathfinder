@@ -1,3 +1,11 @@
+# What is Pathfinder
+
+Pathfinder is a Fundamental of Artificial Intelligence (2021-2022) course's exam project. This is part of an attempt to solve part (d) of exercise 3.7 from <emph>Artificial Intelligence, A Modern Approach, 3rd edition<emph>, that requires to implement two or more of the search problem studied in the course to solve instances of the following problem: 
+  
+Find the shortest path between two points on a plane that has (disjoint) convex polygonal obstacles.
+  
+To then compare draw considerations about the achieved results. The full exercise image can be found [here (https://www.dcc.fc.up.pt/~ines/aulas/1112/SI/exCap3.pdf). 
+
 # A guide to Pathfinder's usage
 
 You'll here find a description of what Pathfinder is, how to get it on your PC and how to use its basic functionalities
@@ -72,4 +80,4 @@ Each of the aforementioned controls has two customization features: you can indi
 
 ### Solution
 
-Once an algorithm was executed, a report of interesting statistics is created and displayed through a table view right above the canva itself. The report includes the executed `algorithm name` just in case you're feeling heedless, the `number or polygons` in the scene, the `average & maximum vertices` count, but most importantly useful informations to evaluate the algorithm's performance. This includes the `run time` (in milliseconds), `memory` usage (in Bytes), the `depth` of the found solutions in number of steps from the starting point, the `branching factor` of the specific instance of the problem, defined as the maximum amount of vertices visible from a single point, the `cost` of the solutions, that measures the distance in px from the start and destination point along the solution path, the `Effective Branching Factor` if you opted in for it, and the sizes expressed in number of nodes or both the `frontier` and the `explored` data structures.
+Once an algorithm was executed, a report of interesting statistics is created and displayed through a table view right above the canva itself. The report includes the executed `algorithm name` just in case you're feeling heedless, the `number or polygons` in the scene, the `average & maximum vertices` count, but most importantly useful informations to evaluate the algorithm's performance. This includes the `run time` (in milliseconds), `memory` usage (in Bytes), the `depth` of the found solutions in number of steps from the starting point, the `branching factor` of the specific instance of the problem, defined as the maximum amount of vertices visible from a single point, the `cost` of the solution, that measures the distance in px from the start and destination point along the solution path, the `Effective Branching Factor` if you opted in for it, and the sizes expressed in number of nodes or both the `frontier` and the `explored` data structures.
