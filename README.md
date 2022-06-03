@@ -36,3 +36,16 @@ This tool lets you select a starting point, to be used as initial state in the s
 This tool is the analogus of the 'start point' tool for the selection of a destination point to serve as a goal for the search problem. Everything stated for the previous tool applies to this one, too. You won't be able to run an algorithm if you haven't previously selected both a start and a destination point.
 
 #### Run algorithm
+
+This tool is the core of the application. It is composed of several sections that we're going to discuss here. The first component is the algorithm selection dropdown menu. With this component you can choose which algorithm to run from a predefined list, including `BFS`, `DFS`, `Iterative Deepening`, `Uniform Cost` and `A*`. Be aware that the first three of them won't guarantee you to find the shortest path between the two given points, but BFS and ID will find the shallowest path to the goal, i.e. the one requiring the minimum amount of 'jumps'. 
+
+<b>Note:</b> Currently the 'Breadth first' option is bugged and you can't select it before switching to a new algorithm before. The issue is being investigated with low priority. 
+
+
+When you're all set up and you want to try this amazing tool, you can press the `Find path` button and this will trigger the execution. On run, the visibility map will be recalculated if anything changed from the last run or no visibility map already exists. After that, the execution of the algorithm will be triggered and on completion a complete log will be presented as a table on the top of the canva. You can also copy the log as CSV using the `copy` action button on the extreme right column. 
+
+<b>Note:</b> As of now `create-react-app` doesn't support [web workers](https://it.wikipedia.org/wiki/Web_worker) and therefore all the code will be run on the main thread. For a sufficiently large number of polygons or vertices in the scene (or both) the computation gets quite expensive especially for the visibility map generation. During testing the biggest amount of time elapsed from click to successful result generation was around 10 minutes with 100ish polygons and around 20 vertices at most each (ran on a Macbook Air M1 2020). Inconveniently, this might lead the browser to assume the page is just blocked and will ask you wether or not to quit; it is your choice, but please allow the application some more time if you generated a very large scene.
+
+
+
+
