@@ -78,6 +78,6 @@ Under the `Run algorithm` tool, below the `Randomization` button you can find a 
 
 Each of the aforementioned controls has two customization features: you can individually hide/show one of them altogether, or regulate their opacity through a slider (this section might slip below the viewport bottom line, scroll bottom if you can't see it). 
 
-### Solution
+### Solution log
 
 Once an algorithm was executed, a report of interesting statistics is created and displayed through a table view right above the canva itself. The report includes the executed `algorithm name` just in case you're feeling heedless, the `number or polygons` in the scene, the `average & maximum vertices` count, but most importantly useful informations to evaluate the algorithm's performance. This includes the `run time` (in milliseconds), `memory` usage (in Bytes), the `depth` of the found solutions in number of steps from the starting point, the `branching factor` of the specific instance of the problem, defined as the maximum amount of vertices visible from a single point, the `cost` of the solution, that measures the distance in px from the start and destination point along the solution path, the `Effective Branching Factor` if you opted in for it, and the sizes expressed in number of nodes or both the `frontier` and the `explored` data structures.
