@@ -26,7 +26,6 @@ import { RunningOptions } from "../UseCases/RunAlgorithms/Types/RunningOptions";
 import RenderFrontier from "../UseCases/RunAlgorithms/ViewSolution/RenderFrontier";
 import RenderExplored from "../UseCases/RunAlgorithms/ViewSolution/RenderExplored";
 import RenderHitboxes from "../Utils/AABBTree/RenderHitboxes";
-import RenderLog from "../UseCases/RunAlgorithms/ViewSolution/RenderLog";
 import RenderSamples from "../UseCases/RandomScene/RenderSamples";
 
 const mapStateToProps = (state: State) => {
@@ -141,7 +140,6 @@ const Canva: React.FC<CanvaProps> = ({ width, height, usageMode, options, update
           <RenderExplored />
           <ViewSolution />
           <RenderStartDest />
-          <RenderLog stageWidth={width || 0} stageHeight={height || 0}/>
         </Layer>
       </Provider>
     </Stage>

@@ -62,6 +62,10 @@ import { toString } from "../Types/State";
         }
     } 
 
+    size = () => {
+        return this.queue.length;
+    }
+
     private remove(node: Node) {
         const index: number | undefined = this.statesMap.get(toString(node.state));
         if( index ) {

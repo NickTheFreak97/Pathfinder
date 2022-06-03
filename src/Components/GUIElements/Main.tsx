@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, Dispatch } from 'react';
 import { Container } from '@mantine/core';
 import { connect } from 'react-redux';
-
+import RenderLog from '../UseCases/RunAlgorithms/ViewSolution/RenderLog';
 import { updateSceneRect } from '../UseCases/RandomScene/updateSceneRect';
 import { SceneRect } from '../UseCases/RandomScene/updateSceneRect';
 import Canva from './Canva';
@@ -51,6 +51,7 @@ const Main: React.FC<MainProps> = ({updateSceneRect})=>{
                 maxWidth: "none",
             }}
         >
+            <RenderLog />
             <Canva width={theWidth} height={theHeight}/>
             <Legend />
         </Container>

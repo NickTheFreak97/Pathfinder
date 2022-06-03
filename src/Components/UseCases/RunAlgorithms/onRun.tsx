@@ -29,7 +29,8 @@ const makeProblem = (): Problem => {
     const destinationPoint: PointInfo = store.getState().destinationPoint!;
     const polygons: Polygon[] = store.getState().polygons;
 
-    store.dispatch( updateVisibilityMap(getVisibilityMap( polygons, startPoint, destinationPoint )) );
+    if( !store.getState().visibilityMap )
+        store.dispatch( updateVisibilityMap(getVisibilityMap( polygons, startPoint, destinationPoint )) );
 
     return {
         initialState: {
@@ -64,7 +65,7 @@ export const runAlgorithms = (selected: SelectedAlgorithms) => {
 
     if( selected[Algorithms.BFS] ) {
         const startTime: number = Date.now();
-        BFS(problem).then(
+        BFS(problem, options.computeEBF).then(
             (solution: SolutionAndLog | undefined) => {
                 store.dispatch(updateSolution(solution?.solution));
                 const endTime: number = Date.now();
@@ -76,7 +77,7 @@ export const runAlgorithms = (selected: SelectedAlgorithms) => {
     } else 
         if( selected[Algorithms.DFS] ) {
             const startTime: number = Date.now();
-            DFS(problem).then(
+            DFS(problem, options.computeEBF).then(
                 (solution: SolutionAndLog | undefined ) => {
                     const endTime: number = Date.now();
                     store.dispatch( updateSolution(solution?.solution as Action[]) )
@@ -89,7 +90,7 @@ export const runAlgorithms = (selected: SelectedAlgorithms) => {
         else
             if( selected[Algorithms.ID] ) {
                 const startTime: number = Date.now();
-                ID( problem ).then(
+                ID( problem, options.computeEBF ).then(
                     (report: SolutionAndLog | false) => {
                         const endTime: number = Date.now();
                         store.dispatch( updateSolution((report as SolutionAndLog).solution! as Vertex[]) );
@@ -102,7 +103,7 @@ export const runAlgorithms = (selected: SelectedAlgorithms) => {
                 else
                     if( selected[Algorithms.UC] ){
                         const startTime: number = Date.now();
-                        UniformCost( problem, true ).then(
+                        UniformCost( problem, options.computeEBF ).then(
                             ( report: SolutionAndLog | null ) => {
                                 const endTime: number = Date.now();
                                 store.dispatch( updateSolution(report!.solution as Vertex[]) )
@@ -115,7 +116,7 @@ export const runAlgorithms = (selected: SelectedAlgorithms) => {
                         else
                             if( selected[Algorithms.AStart] ) {
                                 const startTime = Date.now();
-                                AStar( problem, options.computeEFB ).then(
+                                AStar( problem, options.computeEBF ).then(
                                     ( report: SolutionAndLog | null ) => {
                                         const endTime = Date.now();
                                         store.dispatch( updateSolution(report!.solution as Vertex[]) );

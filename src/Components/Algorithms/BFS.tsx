@@ -8,7 +8,7 @@ import { store } from "../Redux/Store/store";
 import { setFrontier } from "../UseCases/SetDataStructures/setFrontier";
 import { setExplored } from "../UseCases/SetDataStructures/setExplored";
 import { pushToFrontier, popFrontier } from "./Common/Problem/Types/Problem";
-import { Analytics, makeEmptyAnalytics } from "./Common/Problem/Types/Analytics";
+import { Analytics, autoComputeAnalytics, makeEmptyAnalytics } from "./Common/Problem/Types/Analytics";
 import { makeSolutionAndLog, SolutionAndLog } from "./Common/Problem/Types/ResultAndLog";
 
 const _BFS = ( problem: Problem, analytics: Analytics | undefined ) : Action[] | undefined => {
@@ -47,8 +47,11 @@ const _BFS = ( problem: Problem, analytics: Analytics | undefined ) : Action[] |
 
                         if( problem.goalTest( nextNode.state ) ) {
     
-                            if( !!analytics )
+                            if( !!analytics ) {
                                 analytics.solutionDepth = 0;
+                                analytics.cost = nextNode.cost;
+                            }
+
                             const solution: Action[] = [];
                             let theNode: Node | null | undefined = nextNode;
                             while( theNode !== null ) {
@@ -75,10 +78,13 @@ const _BFS = ( problem: Problem, analytics: Analytics | undefined ) : Action[] |
     return;
 }
 
-export const BFS = (problem: Problem) => {
+export const BFS = (problem: Problem, computeEBF?: boolean) => {
     return new Promise<SolutionAndLog | undefined>((resolve, reject) => {
-        const analytics = makeEmptyAnalytics();
+        const analytics = makeEmptyAnalytics("BFS");
         const solution = _BFS(problem, analytics);
+
+        autoComputeAnalytics(analytics, solution?.length || -1, !!computeEBF);
+
         if( !!solution ) 
             resolve(makeSolutionAndLog(solution, analytics));
         else    

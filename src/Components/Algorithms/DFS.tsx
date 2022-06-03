@@ -11,7 +11,7 @@ import { Problem } from "./Common/Problem/Types/Problem";
 import { State } from "../GUIElements/Types/Redux/State";
 import { Node } from "./Common/Problem/Types/Node";
 import { toString } from "./Common/Problem/Types/State";
-import { Analytics, makeEmptyAnalytics } from "./Common/Problem/Types/Analytics";
+import { Analytics, autoComputeAnalytics, makeEmptyAnalytics } from "./Common/Problem/Types/Analytics";
 import { makeSolutionAndLog, SolutionAndLog } from "./Common/Problem/Types/ResultAndLog";
 
 const _DFS = ( problem: Problem, analytics: Analytics | undefined ) : Action[] | undefined => {
@@ -37,8 +37,12 @@ const _DFS = ( problem: Problem, analytics: Analytics | undefined ) : Action[] |
 
         const foundSolution: Action[] = [];
         if( problem.goalTest( poppedNode.state ) ) {
-            if( !!analytics )
+
+            if( !!analytics ) {
                 analytics.solutionDepth = 0;
+                analytics.cost = poppedNode.cost;
+            }
+
             let theNode: Node | null | undefined = poppedNode;
             while( !!theNode ) {
                 foundSolution.splice(0, 0, theNode.action );
@@ -67,10 +71,13 @@ const _DFS = ( problem: Problem, analytics: Analytics | undefined ) : Action[] |
     return;
 }
 
-export const DFS = ( problem: Problem ) => {
+export const DFS = ( problem: Problem, computeEBF?: boolean ) => {
     return new Promise<SolutionAndLog | undefined>((resolve, reject) => {
-        const analytics: Analytics = makeEmptyAnalytics();
+        const analytics: Analytics = makeEmptyAnalytics("DFS");
         const solution = _DFS(problem, analytics);
+
+        autoComputeAnalytics(analytics, solution?.length || -1, !!computeEBF);
+
         if( !!solution ) 
             resolve(makeSolutionAndLog(solution, analytics));
         else    
