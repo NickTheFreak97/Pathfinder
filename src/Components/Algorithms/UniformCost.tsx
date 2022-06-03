@@ -10,9 +10,10 @@ import { State as ReduxState } from "../GUIElements/Types/Redux/State";
 import { Problem } from "./Common/Problem/Types/Problem";
 import { Node } from "./Common/Problem/Types/Node";
 import { toString } from "./Common/Problem/Types/State";
-import { Analytics, makeEmptyAnalytics } from "./Common/Problem/Types/Analytics";
+import { Analytics, autoComputeAnalytics, makeEmptyAnalytics } from "./Common/Problem/Types/Analytics";
 import { makeSolutionAndLog, SolutionAndLog } from "./Common/Problem/Types/ResultAndLog";
 import { computeBranchingFactor } from "./Common/Analytics/BranchingFactor";
+import { findRoot } from "./Common/Analytics/Utils/Newton";
 
 export const _UniformCost = ( problem: Problem, priority: ( node: Node ) => number, analytics?: Analytics ): Action[] | null => {
     const dispatch = store.dispatch;
@@ -36,8 +37,10 @@ export const _UniformCost = ( problem: Problem, priority: ( node: Node ) => numb
 
             const theSolution: Action[] = [];
             let prevNode: Node | null | undefined = poppedNode;
-            if( !!analytics )
+            if( !!analytics ) {
                 analytics.solutionDepth = 0;
+                analytics.cost = poppedNode.cost;
+            }
 
             while( !!prevNode ) {
                 theSolution.splice(0, 0, prevNode.action);
@@ -73,11 +76,11 @@ export const _UniformCost = ( problem: Problem, priority: ( node: Node ) => numb
 
 export const UniformCost = ( problem: Problem, computeEBF?: boolean ) => {
     return new Promise<SolutionAndLog | null>( (resolve, reject)=>{
-        const analytics: Analytics | undefined = !!computeEBF? makeEmptyAnalytics() : undefined;
+
+        const analytics: Analytics = makeEmptyAnalytics("UC");
         const solution: Action[] | null = _UniformCost(problem, (node: Node) => node.cost || 0, analytics );
-        
-        if( !!computeEBF ) 
-            analytics!.branchingFactor = computeBranchingFactor(); 
+ 
+        autoComputeAnalytics(analytics, solution?.length || -1, !!computeEBF);
 
         if( solution ) 
             resolve(makeSolutionAndLog(solution, analytics));

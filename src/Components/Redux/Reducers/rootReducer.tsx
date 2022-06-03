@@ -51,7 +51,7 @@ const initialState = {
   }, 
 
   options: {
-    computeEFB: false,
+    computeEBF: false,
     verbose: {
       show: {
         frontier: false,

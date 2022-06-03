@@ -152,10 +152,9 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                             label="Compute effective branching factor"
                             color="dark"
                             radius="xs"
-                            checked={options.computeEFB}
-                            disabled={!selectedAlgorithms.AStar}
+                            checked={options.computeEBF}
                             onChange={(event: React.ChangeEvent<Element & { checked: boolean }>) => {
-                                updateOptions( {...options, computeEFB: event.currentTarget.checked} )
+                                updateOptions( {...options, computeEBF: event.currentTarget.checked} )
                             }} 
                             />
 

@@ -30,4 +30,7 @@ export class FIFOFrontier implements Frontier {
         this.queue = [];
     }
 
+    size = (): number => {
+        return this.queue.length;
+    }
 }

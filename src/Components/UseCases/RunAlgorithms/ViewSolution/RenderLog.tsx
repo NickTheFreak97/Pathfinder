@@ -1,14 +1,12 @@
 import React from "react";
-import { Text } from "react-konva";
+import { Table, ActionIcon, Notification } from '@mantine/core';
 import { connect } from "react-redux";
-import { findRoot } from "../../../Algorithms/Common/Analytics/Utils/Newton";
+import { CopyIcon } from "@modulz/radix-icons";
 
 import { Analytics } from "../../../Algorithms/Common/Problem/Types/Analytics";
 import { State } from "../../../GUIElements/Types/Redux/State";
 
 interface RenderLogProps {
-    stageHeight: number,
-    stageWidth: number, 
     log: Analytics
 }
 
@@ -18,29 +16,69 @@ const mapStateToProps = (state: State) => {
     }
 }
 
-const RenderLogs: React.FC< RenderLogProps > = ({stageHeight, stageWidth, log}) => {
+const RenderLogs: React.FC< RenderLogProps > = ({log}) => {
+    const precision: number = 4;
+
+    const logTxt = [
+        log.algorithmName,
+        log.polygonCount,
+        log.maxVertices,
+        log.avgVertices.toFixed(precision),
+        log.branchingFactor,
+        log.solutionDepth,
+        log.cost.toFixed(precision),
+        log.memory,
+        log.completionTime,
+        log.EBF?.toFixed(precision) || 'N.A',
+        log.frontierSize,
+        log.exploredSize,
+    ]
+
     return <React.Fragment>
-        {   !!log &&
-            <Text
-                width={stageWidth}
-                height={stageHeight}
-                text={ ((log.branchingFactor >= 1) ? `Effective Branching Factor: ${findRoot(log.solutionDepth, log.generatedNodes).toString()}\n` : ``) +
-                        `Memory usage: ${log.memory} Bytes
-                        Completion time: ${log.completionTime/1000} sec`}
-                x={0}
-                y={0}
-                fontSize={16}
-                fontFamily={"Calibri"}
-                align={"right"}
-                verticalAlign={"bottom"}
-                fill={"black"}
-                listening={false}
-                perfectDrawEnabled={false}
-                transformsEnabled="position"
-                shadowEnabled={false}
-                shadowForStrokeEnabled={false}
-            />
+        {   (!!log && log.solutionDepth > 0) &&
+            <Table>
+                <thead>
+                    <tr>
+                    <th>Algorithm</th>
+                    <th>Polygons</th>
+                    <th>Max vertices</th>
+                    <th>Avg vertices</th>
+                    <th>b</th>
+                    <th>Depth</th>
+                    <th>Cost</th>
+                    <th>Memory (B)</th>
+                    <th>Time (ms)</th>
+                    <th>EBF</th>
+                    <th>Frontier #</th>
+                    <th>Explored #</th>
+                    <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {
+                            logTxt.map(
+                                txt => 
+                                    <td>
+                                        {txt}
+                                    </td>
+                            )
+                        }
+                        <td>
+                            <ActionIcon size="lg" variant="light" color="blue"
+                                onClick={
+                                    ()=> navigator.clipboard.writeText(
+                                        logTxt.join(',')
+                                    )
+                                }>
+                                <CopyIcon />
+                            </ActionIcon>
+                        </td>
+                    </tr>
+                </tbody>
+            </Table>
         } 
+
     </React.Fragment>
 }
 

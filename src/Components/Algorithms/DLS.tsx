@@ -1,19 +1,21 @@
 import { store } from "../Redux/Store/store";
 import { setExplored } from "../UseCases/SetDataStructures/setExplored";
+import { setFrontier } from "../UseCases/SetDataStructures/setFrontier";
 import { makeNode } from "./Common/Problem/Types/Node";
 
 import { Action } from "./Common/Problem/Types/Action";
 import { Problem } from "./Common/Problem/Types/Problem";
 import { Node } from "./Common/Problem/Types/Node";
-import { Analytics, makeEmptyAnalytics } from "./Common/Problem/Types/Analytics";
+import { Analytics, autoComputeAnalytics, makeEmptyAnalytics } from "./Common/Problem/Types/Analytics";
 import { makeSolutionAndLog, SolutionAndLog } from "./Common/Problem/Types/ResultAndLog";
+import { LIFOFrontier } from "./Common/Problem/Structures/LIFOFrontier";
 
 /**
  *  @returns [ Action[] ]: the sequence of actions if a solution is found
  *           [ null ]: if no solution is found
  *           [ false ]: if cutoff happened
  */
-export const DLS = (problem: Problem, limit: number): SolutionAndLog | null | false => {
+export const DLS = (problem: Problem, limit: number, computeEBF?: boolean): SolutionAndLog | null | false => {
     const rootNode: Node = {
         state: problem.initialState,
         parent: null, 
@@ -22,12 +24,16 @@ export const DLS = (problem: Problem, limit: number): SolutionAndLog | null | fa
     }
     
     store.dispatch( setExplored({}) );
-    const analytics: Analytics = makeEmptyAnalytics();
+    store.dispatch( setFrontier(new LIFOFrontier()) );
+    const analytics: Analytics = makeEmptyAnalytics("ID");
     analytics.generatedNodes = 1;
 
     const solution: Action[] | null | false = recursiveDLS( rootNode, problem, limit, analytics );
-    if( !!solution )
+
+    if( !!solution ) {
+        autoComputeAnalytics(analytics, !!solution ? solution.length : -1, !!computeEBF);
         return makeSolutionAndLog(solution, analytics);
+    }
     else
         return solution;
 }
@@ -38,8 +44,10 @@ function recursiveDLS( node: Node, problem: Problem, limit: number, analytics: A
 
         const solution: Action[] = [];
         let theNode: Node | null | undefined = node;
-        if( !!analytics )
+        if( !!analytics ) {
             analytics.solutionDepth = 0;
+            analytics.cost = node.cost;
+        }
 
         while( !!theNode ) {
             solution.splice( 0, 0, theNode.action );

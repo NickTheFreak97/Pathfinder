@@ -23,6 +23,7 @@ export interface Frontier {
     isEmpty: () => boolean,
     push: ( node: Node ) => Array<Node>,
     clear: () => void,
+    size: () => number,
 }
 
 export interface Explored {
