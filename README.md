@@ -54,7 +54,7 @@ When you're all set up and you want to try this amazing tool, you can press the 
 
 <b>Note:</b> As of now `create-react-app` doesn't support [web workers](https://it.wikipedia.org/wiki/Web_worker) and therefore all the code will be run on the main thread. For a sufficiently large number of polygons or vertices in the scene (or both) the computation gets quite expensive especially for the visibility map generation. During testing the biggest amount of time elapsed from click to successful result generation was around 10 minutes with 100ish polygons and around 20 vertices at most each (ran on a Macbook Air M1 2020). Inconveniently, this might lead the browser to assume the page is just blocked and will ask you wether or not to quit; it is your choice, but please allow the application some more time if you generated a very large scene.
 
-Keep in mind that if any convex polygon, any point inside a polygon or two any polygons overlapping are detected, this button will be disabled and the problematic polygon highlighted red. Please make sure your scene conforms with the specified properties are satisfied. 
+Keep in mind that if any non-convex polygon, any point inside a polygon or two any polygons overlapping are detected, this button will be disabled and the problematic polygon highlighted red. Please make sure your scene conforms with the specified properties are satisfied. 
 
 You can also opt in for computing the Effective Branching Factor. If this option is selected, after the execution of the algorithm took place the EBF will be estimated using Newton's algorithm and displayed on the results table. 
 
