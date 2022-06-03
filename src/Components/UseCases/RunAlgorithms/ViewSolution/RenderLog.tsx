@@ -103,7 +103,7 @@ const RenderLogs: React.FC< RenderLogProps > = ({log}) => {
                 maxWidth: '350px',
                 display: logNotificationVisible ? 'flex':'none'
             }} >
-            You can now copy the log of the algorithm execution and paste it as CSV values 
+            You copied the log of the algorithm's execution and paste it as CSV values 
         </Notification>
 
     </React.Fragment>

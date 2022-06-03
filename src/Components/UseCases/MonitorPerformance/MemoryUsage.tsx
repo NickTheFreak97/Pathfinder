@@ -14,5 +14,5 @@ export const typeSizes = {
   
 
 export const estimateMemoryUsage = (): number => {
-  return typeSizes.object(store.getState().frontier) + typeSizes.object(store.getState().explored) + typeSizes.object(store.getState().visibilityMap);
+  return typeSizes.object(store.getState().frontier) + typeSizes.object(store.getState().explored) /* + typeSizes.object(store.getState().visibilityMap) */;
 }
