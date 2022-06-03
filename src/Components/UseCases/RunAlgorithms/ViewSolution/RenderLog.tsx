@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { Table, ActionIcon, Notification } from '@mantine/core';
 import { connect } from "react-redux";
 import { CopyIcon } from "@modulz/radix-icons";
@@ -17,8 +17,20 @@ const mapStateToProps = (state: State) => {
 }
 
 const RenderLogs: React.FC< RenderLogProps > = ({log}) => {
-    const precision: number = 4;
+    
+    const [logNotificationVisible, setLogNotificationVisible] = useState<boolean>(false);
 
+    useEffect(
+        ()=>{
+            if( logNotificationVisible )
+                setTimeout(
+                    ()=> setLogNotificationVisible(false),
+                    3500
+                )
+        }, [logNotificationVisible]
+    )
+
+    const precision: number = 4;
     const logTxt = [
         log.algorithmName,
         log.polygonCount,
@@ -67,9 +79,12 @@ const RenderLogs: React.FC< RenderLogProps > = ({log}) => {
                         <td>
                             <ActionIcon size="lg" variant="light" color="blue"
                                 onClick={
-                                    ()=> navigator.clipboard.writeText(
-                                        logTxt.join(',')
-                                    )
+                                    ()=> {
+                                        navigator.clipboard.writeText(
+                                            logTxt.join(',')
+                                        )
+                                        setLogNotificationVisible(true);
+                                    }
                                 }>
                                 <CopyIcon />
                             </ActionIcon>
@@ -78,6 +93,18 @@ const RenderLogs: React.FC< RenderLogProps > = ({log}) => {
                 </tbody>
             </Table>
         } 
+        <Notification title="Log copied" color={'grape'} onClose={() => setLogNotificationVisible(false)}
+            style={{
+                position: 'absolute', 
+                bottom: 0, 
+                left: '50%', 
+                transform: 'translate(-25%, -50%)', 
+                zIndex: 1, 
+                maxWidth: '350px',
+                display: logNotificationVisible ? 'flex':'none'
+            }} >
+            You can now copy the log of the algorithm execution and paste it as CSV values 
+        </Notification>
 
     </React.Fragment>
 }
