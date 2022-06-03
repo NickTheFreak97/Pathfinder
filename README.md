@@ -27,4 +27,12 @@ With this tool you can remove existing polygons if you're unsatisfied of how it 
 
 This tool is thought to give the user the maximum possible flexibility. When using this tool you'll be able to click on a polygon to select it, drag it, move it to a different location, scale it, skew it, and even rotate it. Doing so could potentially make two or more polygons overlap, in which case the overlapping shapes will be highlighted in red. If two any polygons overlap you won't be able to run the selected algorithm. Also, as well as the 'delete' function, moving a polygon from its current position when a solution is being displayed will invalidate it and you won't be able to see the frontier, explored and visibility map anymore. This tool can be used when the starting or destination point match one of the vertices' polygon, too. 
 
-####
+#### Start point
+
+This tool lets you select a starting point, to be used as initial state in the search problem. A starting point can match a vertex of some polygon in the scene or can be picked in the void space. You're not allowed to pick a starting point inside a polygon, and failing to comply will highlight the polygon red and prevent you from running any solving algorithm. A choice of the starting point can be undone through the 'delete' tool, but this will invalidate any previously existing solution.
+
+#### Destination point
+
+This tool is the analogus of the 'start point' tool for the selection of a destination point to serve as a goal for the search problem. Everything stated for the previous tool applies to this one, too. You won't be able to run an algorithm if you haven't previously selected both a start and a destination point.
+
+#### Run algorithm
