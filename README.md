@@ -50,7 +50,7 @@ Keep in mind that if any convex polygon, any point inside a polygon or two any p
 
 You can also opt in for computing the Effective Branching Factor. If this option is selected, after the execution of the algorithm took place the EBF will be estimated using Newton's algorithm and displayed on the results table. 
 
-###### Random scene generator
+##### Random scene generator
 The application allows the user to generate a random scene with the desired specifications. When you click on the `Randomize` button you'll be greeted with a dialog that will allow you to provide parameters to the random scene generation algorithm. Such parameters are the following:
 <ol>
   <li>
@@ -64,4 +64,7 @@ The application allows the user to generate a random scene with the desired spec
   </li>
 </ol>
 
+#### Visibility and opacity controls
+
+Under the `Run algorithm` tool, below the `Randomization` button you can find a `Visibiliy` accordion (dropdown) that allows you to opt-in or opt-out (depending on the default value) for the visualization on canva of some properties of the specific algorithm run. This includes the `Explored` list, the `Frontier` and the solution itself, that are the most interesting under an algorithmc comprehention perspective, but also includes other elements that were initially implemented for debugging purposesm such as a `visibility map` representing the vertices visible from every point in the scene, an `hitbox` set, that includes all the AABB tree nodes (green) and leaves (red/orange depending on hit/not hit) used for broad collision detection phase, and `random circles`, that (only) if a random scenario was generated, will show the outer (gray) and inner (orange) generated encompassing circles for each random polygon. 
 
