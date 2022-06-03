@@ -46,6 +46,22 @@ When you're all set up and you want to try this amazing tool, you can press the 
 
 <b>Note:</b> As of now `create-react-app` doesn't support [web workers](https://it.wikipedia.org/wiki/Web_worker) and therefore all the code will be run on the main thread. For a sufficiently large number of polygons or vertices in the scene (or both) the computation gets quite expensive especially for the visibility map generation. During testing the biggest amount of time elapsed from click to successful result generation was around 10 minutes with 100ish polygons and around 20 vertices at most each (ran on a Macbook Air M1 2020). Inconveniently, this might lead the browser to assume the page is just blocked and will ask you wether or not to quit; it is your choice, but please allow the application some more time if you generated a very large scene.
 
+Keep in mind that if any convex polygon, any point inside a polygon or two any polygons overlapping are detected, this button will be disabled and the problematic polygon highlighted red. Please make sure your scene conforms with the specified properties are satisfied. 
 
+You can also opt in for computing the Effective Branching Factor. If this option is selected, after the execution of the algorithm took place the EBF will be estimated using Newton's algorithm and displayed on the results table. 
+
+###### Random scene generator
+The application allows the user to generate a random scene with the desired specifications. When you click on the `Randomize` button you'll be greeted with a dialog that will allow you to provide parameters to the random scene generation algorithm. Such parameters are the following:
+<ol>
+  <li>
+    <b>Polygon number:</b> The desired amount of polygons to generate. Be aware that basing on the provided value for the remaining parameters it might not     be possible to generate the specified amount of polygons, in which case the algorithm will generate as many of it as possible. Minimum value allowed       for this parameter is 2.
+  </li>
+  <li>
+    <b>Maximum vertices:</b> The maximum amount of vertices each polygon could possibly have. The random scene generation algorithm will generate for each    polygon a random number of vertices between 3 and the specified value with uniform probability. It isn't guaranteed a priori that at least one polygon      with this many of vertices will exist, and if you want to force it you can opt-in for <code>Force maximum vertices</code>. As a polygon needs to have at    least three vertices, the minimum value for this parameter is 3.
+  </li>
+  <li>
+    <b>Minimum circumcenters distance:</b> The random scene generation algorithm, to guarantee that two any generated polygons will be disjoint, will           generate random circles that will enclose the polygons. This parameter allows you to specify the minimum distance between the center of such circles.       Keep in mind that a smaller value will allow you to pack more polygons in the scene, but if the specified amount of polygons to generate is low, this       will likeky lead to generate small polygons that will not be in the way between the starting and destination point and will therefore have little           impact on the performance of the algorithm. If unsure what value to use, leave it as default, i.e. 21.
+  </li>
+</ol>
 
 
