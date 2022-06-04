@@ -33,7 +33,8 @@ With this tool you can remove existing polygons if you're unsatisfied of how it 
 
 #### Selection
 
-This tool is thought to give the user the maximum possible flexibility. When using this tool you'll be able to click on a polygon to select it, drag it, move it to a different location, scale it, skew it, and even rotate it. Doing so could potentially make two or more polygons overlap, in which case the overlapping shapes will be highlighted in red. If two any polygons overlap you won't be able to run the selected algorithm. Also, as well as the 'delete' function, moving a polygon from its current position when a solution is being displayed will invalidate it and you won't be able to see the frontier, explored and visibility map anymore. This tool can be used when the starting or destination point match one of the vertices' polygon, too. 
+This tool is thought to give the user the maximu
+  possible flexibility. When using this tool you'll be able to click on a polygon to select it, drag it, move it to a different location, scale it, skew it, and even rotate it. Doing so could potentially make two or more polygons overlap, in which case the overlapping shapes will be highlighted in red. If two any polygons overlap you won't be able to run the selected algorithm. Also, as well as the 'delete' function, moving a polygon from its current position when a solution is being displayed will invalidate it and you won't be able to see the frontier, explored and visibility map anymore. This tool can be used when the starting or destination point match one of the polygon's vertices, too. 
 
 #### Start point
 
