@@ -48,18 +48,7 @@ const makeProblem = (p?: number): Problem => {
             }
         },
 
-        cost: (s: State, a: Action): number => Math.pow( 
-            Math.abs(  Math.pow(
-                (s.value[1][0] - a[0]), 
-                pDist
-            )) + 
-
-            Math.abs( Math.pow( 
-                (s.value[1][1] - a[1]),
-                pDist
-                )), 
-
-            1/pDist),
+        cost: (s: State, a: Action): number => Math.sqrt((s.value[1][0] - a[0])*(s.value[1][0] - a[0]) + (s.value[1][1] - a[1])*(s.value[1][1] - a[1])),
 
         goalTest: (state: State) => state.value[1][0] === destinationPoint.coordinates.x! && state.value[1][1] === destinationPoint.coordinates.y!,
     }

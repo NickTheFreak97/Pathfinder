@@ -12,13 +12,24 @@ export const AStar = ( problem: Problem, computeEBF?: boolean, p?: number ) => {
     return new Promise<SolutionAndLog | null>( (resolve, reject)=>{
         const destPoint: PointInfo = store.getState().destinationPoint!;
         const log: Analytics = makeEmptyAnalytics(`A*-d${p || 2}`);
+        const pDist = p || 2;
 
         const result: Action[] | null = _UniformCost(
             problem,
             ( node: Node ) => 
                 node.cost + 
-                Math.sqrt(( (node.action[0]-destPoint.coordinates.x! )*(node.action[0]-destPoint.coordinates.x! ) +
-                  (node.action[1]-destPoint.coordinates.y! )*(node.action[1]-destPoint.coordinates.y! ) )), 
+                Math.pow( 
+                    Math.abs(  Math.pow(
+                        (node.action[0]-destPoint.coordinates.x!), 
+                        pDist
+                    )) 
+                        + 
+                    Math.abs( Math.pow( 
+                        (node.action[1]-destPoint.coordinates.y!),
+                        pDist
+                        )), 
+        
+                    1/pDist),
                 log
         )
 

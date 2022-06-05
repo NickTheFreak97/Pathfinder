@@ -158,7 +158,7 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                                         polygons.reduce( ( currentVal: boolean, polygon: Polygon ) => currentVal || !polygon.isConvex || !!polygon.pointInside || polygon.overlappingPolygonsID.length > 0, false) ||
                                         !Object.keys(selectedAlgorithms).reduce( (currentVal: boolean, algo: string) => currentVal || selectedAlgorithms[algo as Algorithms], false )
                                     }
-                            onClick={ ()=> runAlgorithms(selectedAlgorithms, p < 0 ? 2:p ) }>
+                            onClick={ ()=> runAlgorithms(selectedAlgorithms, p < 0 ? 2:Math.floor(p) ) }>
                             Find path
                         </Button>
 
