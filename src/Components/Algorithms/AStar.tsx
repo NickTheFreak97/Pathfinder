@@ -8,10 +8,10 @@ import { Node } from "./Common/Problem/Types/Node";
 import { Analytics, autoComputeAnalytics, makeEmptyAnalytics } from "./Common/Problem/Types/Analytics";
 import { makeSolutionAndLog, SolutionAndLog } from "./Common/Problem/Types/ResultAndLog";
 
-export const AStar = ( problem: Problem, computeEBF?: boolean ) => {
+export const AStar = ( problem: Problem, computeEBF?: boolean, p?: number ) => {
     return new Promise<SolutionAndLog | null>( (resolve, reject)=>{
         const destPoint: PointInfo = store.getState().destinationPoint!;
-        const log: Analytics = makeEmptyAnalytics("A*");
+        const log: Analytics = makeEmptyAnalytics(`A*-d${p || 2}`);
 
         const result: Action[] | null = _UniformCost(
             problem,

@@ -3,7 +3,7 @@ export enum Algorithms {
     DFS = 'DFS',
     UC = 'UC',
     ID = 'ID',
-    AStart = 'AStar',
+    AStar = 'AStar',
 }
 
 export interface SelectedAlgorithms {
@@ -11,7 +11,7 @@ export interface SelectedAlgorithms {
     [Algorithms.DFS]: boolean,
     [Algorithms.UC]: boolean,
     [Algorithms.ID]: boolean,
-    [Algorithms.AStart]: boolean,
+    [Algorithms.AStar]: boolean,
 }
 
 export const makeEmptySelectedAlgorithms = (): SelectedAlgorithms => {
@@ -20,6 +20,6 @@ export const makeEmptySelectedAlgorithms = (): SelectedAlgorithms => {
         [Algorithms.DFS]: false,
         [Algorithms.UC]: false,
         [Algorithms.ID]: false,
-        [Algorithms.AStart]: false,
+        [Algorithms.AStar]: false,
     }
 }

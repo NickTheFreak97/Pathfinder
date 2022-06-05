@@ -24,10 +24,11 @@ import { setFrontier } from "../SetDataStructures/setFrontier";
 import { setExplored } from "../SetDataStructures/setExplored";
 
 
-const makeProblem = (): Problem => {
+const makeProblem = (p?: number): Problem => {
     const startPoint: PointInfo = store.getState().startPoint!;
     const destinationPoint: PointInfo = store.getState().destinationPoint!;
     const polygons: Polygon[] = store.getState().polygons;
+    const pDist = p || 2;
 
     if( !store.getState().visibilityMap )
         store.dispatch( updateVisibilityMap(getVisibilityMap( polygons, startPoint, destinationPoint )) );
@@ -47,15 +48,26 @@ const makeProblem = (): Problem => {
             }
         },
 
-        cost: (s: State, a: Action): number => Math.sqrt((s.value[1][0] - a[0])*(s.value[1][0] - a[0]) + (s.value[1][1] - a[1])*(s.value[1][1] - a[1])),
+        cost: (s: State, a: Action): number => Math.pow( 
+            Math.abs(  Math.pow(
+                (s.value[1][0] - a[0]), 
+                pDist
+            )) + 
+
+            Math.abs( Math.pow( 
+                (s.value[1][1] - a[1]),
+                pDist
+                )), 
+
+            1/pDist),
 
         goalTest: (state: State) => state.value[1][0] === destinationPoint.coordinates.x! && state.value[1][1] === destinationPoint.coordinates.y!,
     }
 }
 
-export const runAlgorithms = (selected: SelectedAlgorithms) => {
+export const runAlgorithms = (selected: SelectedAlgorithms, p?: number) => {
     const options: RunningOptions = store.getState().options;
-    const problem: Problem = makeProblem();
+    const problem: Problem = makeProblem(p);
 
     store.dispatch(updateSolution(null));
     store.dispatch(setFrontier(null));
@@ -114,9 +126,9 @@ export const runAlgorithms = (selected: SelectedAlgorithms) => {
                         )
                     }
                         else
-                            if( selected[Algorithms.AStart] ) {
+                            if( selected[Algorithms.AStar] ) {
                                 const startTime = Date.now();
-                                AStar( problem, options.computeEBF ).then(
+                                AStar( problem, options.computeEBF, p ).then(
                                     ( report: SolutionAndLog | null ) => {
                                         const endTime = Date.now();
                                         store.dispatch( updateSolution(report!.solution as Vertex[]) );
