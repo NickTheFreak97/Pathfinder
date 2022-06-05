@@ -1,6 +1,6 @@
 import React, { Dispatch, useState } from 'react';
 import { Stack, Checkbox, Button, Modal, Accordion, Slider, Title, Group, Text, ScrollArea, NativeSelect, NumberInput } from '@mantine/core';
-import { InputWrapper, Input } from '@mantine/core';
+import { InputWrapper } from '@mantine/core';
 import { connect } from 'react-redux';
 import { runAlgorithms } from './onRun';
 import { store } from '../../Redux/Store/store';
@@ -50,7 +50,7 @@ const data = [
     { value: Algorithms.DFS, label: 'Depth First' },
     { value: Algorithms.UC, label: 'Uniform cost' },
     { value: Algorithms.ID, label: 'Iterative Deepening' },
-    { value: Algorithms.AStart, label: 'A*' },
+    { value: Algorithms.AStar, label: 'A*' },
   ];
 
 const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, polygons, options, startPoint, destinationPoint, randomizationStatus, updateOptions, makeRandomScene, setRandomizationStatus }) => {
@@ -60,6 +60,7 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
     const [ minRandPolyCentersDist, setMinRandPolyCentersDist ] = useState<number>(21);
     const [ maxVerticesCnt, setMaxVerticesCnt ] = useState<number>(3);
     const [ forceMaxVertices, setForceMaxVertices ] = useState<boolean>(false);
+    const [ p, setP ] = useState<number>(2);
 
     const [ isModalOpen, setModalOpen] = useState<boolean>(false);
 
@@ -137,14 +138,27 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
                         required
                     />
 
+                    {
+                        selectedAlgorithms.AStar &&
+                        <InputWrapper
+                            style={{marginTop: '0.5rem'}}
+                            label="P-distance Heuristic"
+                            description="Set the distance to use as heuristic for A*. Default value is 2."
+                        >
+                            <NumberInput placeholder="p" min={1}
+                                value={p} 
+                                onChange={(value) => setP(value || 2)}
+                            />
+                            
+                        </InputWrapper>
+                    }
                     <Stack justify="flex-start" spacing="xs" style={{ marginTop: '1.25rem' }}>
-
                         <Button color="dark" style={{alignSelf: "flex-start"}}
                             disabled={  polygons.length <= 0 || !startPoint || !destinationPoint ||
                                         polygons.reduce( ( currentVal: boolean, polygon: Polygon ) => currentVal || !polygon.isConvex || !!polygon.pointInside || polygon.overlappingPolygonsID.length > 0, false) ||
                                         !Object.keys(selectedAlgorithms).reduce( (currentVal: boolean, algo: string) => currentVal || selectedAlgorithms[algo as Algorithms], false )
                                     }
-                            onClick={ ()=> runAlgorithms(selectedAlgorithms) }>
+                            onClick={ ()=> runAlgorithms(selectedAlgorithms, p < 0 ? 2:p ) }>
                             Find path
                         </Button>
 
