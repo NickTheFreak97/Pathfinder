@@ -94,6 +94,8 @@ const rootReducer = (state: State = initialState, action: Action) => {
       return {
         ...state,
         useMode: action.payload.mode,
+        currentPoint: undefined,
+        newPolygonVertices: [],
       };
     }
 
