@@ -4,7 +4,7 @@ Pathfinder is a Fundamental of Artificial Intelligence (2021-2022) course's exam
   
 Find the shortest path between two points on a plane that has (disjoint) convex polygonal obstacles.
   
-To then compare draw considerations about the achieved results. The full exercise image can be found [here] (https://www.dcc.fc.up.pt/~ines/aulas/1112/SI/exCap3.pdf). 
+To then compare draw considerations about the achieved results. The full exercise image can be found [here](https://www.dcc.fc.up.pt/~ines/aulas/1112/SI/exCap3.pdf). 
 
 # A guide to Pathfinder's usage
 
