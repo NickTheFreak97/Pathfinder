@@ -1,6 +1,6 @@
 # What is Pathfinder
 
-Pathfinder is a Fundamental of Artificial Intelligence (2021-2022) course's exam project. This is part of an attempt to solve part (d) of exercise 3.7 from <emph>Artificial Intelligence, A Modern Approach, 3rd edition<emph>, that requires to implement two or more of the search problem studied in the course to solve instances of the following problem: 
+Pathfinder is a Fundamental of Artificial Intelligence (2021-2022) course's exam project. This is part of an attempt to solve point (d) of exercise 3.7 from <emph>Artificial Intelligence, A Modern Approach, 3rd edition<emph>, that requires to implement two or more of the search algorithms studied in the course to solve instances of the following problem: 
   
 Find the shortest path between two points on a plane that has (disjoint) convex polygonal obstacles.
   
