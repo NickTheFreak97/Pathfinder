@@ -1,10 +1,10 @@
 # What is Pathfinder
 
-Pathfinder is a Fundamental of Artificial Intelligence (2021-2022) course's exam project. This is part of an attempt to solve part (d) of exercise 3.7 from <emph>Artificial Intelligence, A Modern Approach, 3rd edition<emph>, that requires to implement two or more of the search problem studied in the course to solve instances of the following problem: 
+Pathfinder is a Fundamental of Artificial Intelligence (2021-2022) course's exam project. This is part of an attempt to solve point (d) of exercise 3.7 from <emph>Artificial Intelligence, A Modern Approach, 3rd edition<emph>, that requires to implement two or more of the search algorithms studied in the course to solve instances of the following problem: 
   
 Find the shortest path between two points on a plane that has (disjoint) convex polygonal obstacles.
   
-To then compare draw considerations about the achieved results. The full exercise image can be found [here] (https://www.dcc.fc.up.pt/~ines/aulas/1112/SI/exCap3.pdf). 
+To then compare the algorithms and draw considerations about the achieved results. The full exercise image can be found [here](https://www.dcc.fc.up.pt/~ines/aulas/1112/SI/exCap3.pdf). 
 
 # A guide to Pathfinder's usage
 
@@ -47,9 +47,10 @@ This tool is the analogus of the 'start point' tool for the selection of a desti
 #### Run algorithm
 
 This tool is the core of the application. It is composed of several sections that we're going to discuss here. The first component is the algorithm selection dropdown menu. With this component you can choose which algorithm to run from a predefined list, including `BFS`, `DFS`, `Iterative Deepening`, `Uniform Cost` and `A*`. Be aware that the first three of them won't guarantee you to find the shortest path between the two given points, but BFS and ID will find the shallowest path to the goal, i.e. the one requiring the minimum amount of 'jumps'. 
+  
+When A* is selected you'll be able to choose which heuristic to use, picking between all the possible p-distances through a number input box. Be aware that `Math.pow` is being used under the hood to implement this functionality, which tries to approximate the result and thus might be inaccurate for large p values ([ref](https://stackoverflow.com/questions/48905858/math-pow-gives-wrong-result)).
 
 <b>Note:</b> Currently the 'Breadth first' option is bugged and you can't select it before switching to a new algorithm before. The issue is being investigated with low priority. 
-
 
 When you're all set up and you want to try this amazing tool, you can press the `Find path` button and this will trigger the execution. On run, the visibility map will be recalculated if anything changed from the last run or no visibility map already exists. After that, the execution of the algorithm will be triggered and on completion a complete log will be presented as a table on the top of the canva. You can also copy the log as CSV using the `copy` action button on the extreme right column. 
 
