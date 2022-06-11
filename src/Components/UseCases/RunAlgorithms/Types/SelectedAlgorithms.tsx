@@ -16,7 +16,7 @@ export interface SelectedAlgorithms {
 
 export const makeEmptySelectedAlgorithms = (): SelectedAlgorithms => {
     return {
-        [Algorithms.BFS]: false,
+        [Algorithms.BFS]: true,
         [Algorithms.DFS]: false,
         [Algorithms.UC]: false,
         [Algorithms.ID]: false,

@@ -103,6 +103,7 @@ const AlgorithmsSelector: React.FC<AlgorithmsSelectorProps> = ({ usageMode, poly
 
     const updateSelectedAlgorithms = (selected: string[]) : SelectedAlgorithms=> {
         const newAlgorithms: SelectedAlgorithms = makeEmptySelectedAlgorithms();
+        newAlgorithms["BFS"] = false;
 
         selected.forEach( (selectedAlgo: string) => {
             if( selectedAlgo in newAlgorithms) 
